@@ -14,6 +14,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Log\LoggerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -43,6 +44,9 @@ class SwordController extends Controller {
     public function serviceDocumentAction(Request $request) {
         $obh = $this->fetchHeader($request, 'On-Behalf-Of');
         $journalUrl = $this->fetchHeader($request, 'Journal-Url');
+        /** @var LoggerInterface */
+        $logger = $this->get('monolog.logger.sword');
+        $logger->notice("service document - {$request->getClientIp()} - {$locale} - {$obh} - {$journalUrl}");
 //        if($obh === null) {
 //            return new Response('Missing On-Behalf-Of header.', 400);
 //        }
