@@ -1,0 +1,42 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>MicroService</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>Microservice</th>
+                <td>{{ entity.microservice }}</td>
+            </tr>
+            <tr>
+                <th>Started</th>
+                <td>{{ entity.started|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Finished</th>
+                <td>{{ entity.finished|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Outcome</th>
+                <td>{{ entity.outcome }}</td>
+            </tr>
+            <tr>
+                <th>Error</th>
+                <td>{{ entity.error }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('microservice') }}">
+            Back to the list
+        </a>
+    </li>
+</ul>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>Journal</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>Uuid</th>
+                <td>{{ entity.uuid }}</td>
+            </tr>
+            <tr>
+                <th>Contacted</th>
+                <td>{{ entity.contacted|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Notified</th>
+                <td>{{ entity.notified|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ entity.title }}</td>
+            </tr>
+            <tr>
+                <th>Issn</th>
+                <td>{{ entity.issn }}</td>
+            </tr>
+            <tr>
+                <th>Url</th>
+                <td>{{ entity.url }}</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>{{ entity.status }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ entity.email }}</td>
+            </tr>
+            <tr>
+                <th>Publishername</th>
+                <td>{{ entity.publisherName }}</td>
+            </tr>
+            <tr>
+                <th>Publisherurl</th>
+                <td>{{ entity.publisherUrl }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('journal') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('journal_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% endblock %}
