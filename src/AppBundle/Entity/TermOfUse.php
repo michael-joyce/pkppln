@@ -2,13 +2,15 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * TermOfUse
  *
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="AppBundle\Entity\TermOfUseRepository")
+ * @ORM\HasLifecycleCallbacks
+ * @ORM\Entity(repositoryClass="TermOfUseRepository")
  */
 class TermOfUse
 {
@@ -104,10 +106,10 @@ class TermOfUse
     /**
      * Set created
      *
-     * @param \DateTime $created
+     * @param DateTime $created
      * @return TermOfUse
      */
-    public function setCreated($created)
+    public function setCreated(DateTime $created)
     {
         $this->created = $created;
 
@@ -117,7 +119,7 @@ class TermOfUse
     /**
      * Get created
      *
-     * @return \DateTime 
+     * @return DateTime
      */
     public function getCreated()
     {
@@ -191,5 +193,12 @@ class TermOfUse
     public function getContent()
     {
         return $this->content;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setTimestamp() {
+        $this->created = new DateTime();
     }
 }

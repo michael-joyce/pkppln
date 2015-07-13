@@ -9,6 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Deposit
  *
  * @ORM\Table()
+ * @ORM\HasLifecycleCallbacks
  * @ORM\Entity(repositoryClass="AppBundle\Entity\DepositRepository")
  */
 class Deposit
@@ -573,5 +574,12 @@ class Deposit
     public function getJournal()
     {
         return $this->journal;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setTimestamp() {
+        $this->received = new DateTime();
     }
 }

@@ -9,6 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Journal
  *
  * @ORM\Table(name="journal")
+ * @ORM\HasLifecycleCallbacks
  * @ORM\Entity(repositoryClass="AppBundle\Entity\JournalRepository")
  */
 class Journal {
@@ -345,5 +346,12 @@ class Journal {
     public function getPublisherUrl()
     {
         return $this->publisherUrl;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setTimestamp() {
+        $this->contacted = new DateTime();
     }
 }

@@ -9,6 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Blacklist
  *
  * @ORM\Table()
+ * @ORM\HasLifecycleCallbacks
  * @ORM\Entity(repositoryClass="AppBundle\Entity\BlacklistRepository")
  */
 class Blacklist {
@@ -104,5 +105,12 @@ class Blacklist {
     public function getCreated()
     {
         return $this->created;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setTimestamp() {
+        $this->created = new DateTime();
     }
 }
