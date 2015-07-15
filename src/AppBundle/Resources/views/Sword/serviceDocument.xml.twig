@@ -5,8 +5,8 @@
     xmlns="http://www.w3.org/2007/app">
     
     <sword:version>2.0</sword:version>
-    <sword:maxUploadSize>{{ maxUpload }}</sword:maxUploadSize>
-    <pkp:uploadChecksumType>{{ checksumType }}</pkp:uploadChecksumType>
+    <sword:maxUploadSize>{{ pln_maxUploadSize }}</sword:maxUploadSize>
+    <pkp:uploadChecksumType>{{ pln_uploadChecksumType }}</pkp:uploadChecksumType>
     
     {% if accepting == true %}
         <pkp:pln_accepting is_accepting="Yes">The PKP PLN is currently accepting deposits.</pkp:pln_accepting>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sword:error xmlns="http://www.w3.org/2005/Atom"
+       xmlns:sword="http://purl.org/net/sword/"
+       xmlns:arxiv="http://arxiv.org/schemas/atom"
+       href="http://example.org/errors/BadManifest">
+    <title>ERROR</title>
+    <updated>2008-02-19T09:34:27Z</updated>
+    <summary>{{ error.message|escape('html') }} </summary>
+    <sword:verboseDescription>
+        {{ error|escape('html') }}
+    </sword:verboseDescription>
+</sword:error>

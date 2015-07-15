@@ -402,4 +402,10 @@ class Journal {
     {
         return $this->deposits;
     }
+    
+        
+    public function __toString() {
+        return $this->title;
+    }
+
 }

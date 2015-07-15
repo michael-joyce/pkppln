@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * MicroService
@@ -223,4 +224,10 @@ class MicroService
     {
         return $this->deposit;
     }
+    
+    
+    public function __toString() {
+        return $this->microservice . ' ' . $this->outcome;
+    }
+    
 }

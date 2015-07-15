@@ -137,4 +137,10 @@ class Blacklist {
     {
         return $this->comment;
     }
+    
+        
+    public function __toString() {
+        return $this->uuid;
+    }
+
 }

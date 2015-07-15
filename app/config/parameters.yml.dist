@@ -17,3 +17,8 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
+
+    pln_accepting: false
+    pln_maxUploadSize: 1000
+    pln_uploadChecksumType: SHA-1
+    pln_defaultLocale: en-US

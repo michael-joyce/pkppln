@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * TermOfUse
@@ -200,5 +201,9 @@ class TermOfUse
      */
     public function setTimestamp() {
         $this->created = new DateTime();
+    }
+    
+    public function __toString() {
+        return $this->content;
     }
 }

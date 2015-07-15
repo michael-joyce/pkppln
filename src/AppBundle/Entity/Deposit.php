@@ -587,4 +587,10 @@ class Deposit
     public function setTimestamp() {
         $this->received = new DateTime();
     }
+    
+        
+    public function __toString() {
+        return $this->deposit_uuid;
+    }
+
 }

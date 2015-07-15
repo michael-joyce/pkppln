@@ -11,6 +11,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Deposit;
 use AppBundle\Entity\Journal;
 use AppBundle\Entity\TermOfUseRepository;
+use AppBundle\Exception\SwordException;
 use DateTime;
 use Exception;
 use J20\Uuid\Uuid;
@@ -75,7 +76,7 @@ class SwordController extends Controller {
         if ($locale !== null) {
             return $locale;
         }
-        return $this->container->getParameter("pln.defaultLocale");
+        return $this->container->getParameter("pln_defaultLocale");
     }
 
     private function getXmlValue(SimpleXMLElement $xml, $xpath) {
@@ -93,6 +94,7 @@ class SwordController extends Controller {
         $em = $this->getDoctrine()->getManager();
         $wlEntry = $em->getRepository('AppBundle:Whitelist')
                 ->findOneBy(array('uuid' => $journal_uuid));
+
         if ($wlEntry !== null) {
             return true;
         }
@@ -103,7 +105,7 @@ class SwordController extends Controller {
             return false;
         }
 
-        return $this->container->getParameter("pln.accepting");
+        return $this->container->getParameter("pln_accepting");
     }
 
     /**
@@ -126,10 +128,10 @@ class SwordController extends Controller {
 
         $logger->notice("service document - {$request->getClientIp()} - {$locale} - {$obh} - {$journalUrl} - {$acceptingLog}");
         if ($obh === null) {
-            return new Response("Missing On-Behalf-Of header.", 400);
+            throw new SwordException(400, "Missing On-Behalf-Of header");
         }
         if ($journalUrl === null) {
-            return new Response("Missing Journal-URL header.", 400);
+            throw new SwordException(400, "Missing Journal-Url header");
         }
         $em = $this->getDoctrine()->getManager();
         /** @var TermOfUseRepository */
@@ -138,12 +140,12 @@ class SwordController extends Controller {
 
         /** @var Response */
         $response = $this->render("AppBundle:Sword:serviceDocument.xml.twig", array(
-            "accepting" => $accepting,
-            "maxUpload" => $this->container->getParameter("pln.maxUploadSize"),
-            "checksumType" => $this->container->getParameter("pln.uploadChecksumType"),
             "onBehalfOf" => $obh,
+            "accepting" => $accepting,
             "colIri" => $this->generateUrl(
-                    "create_deposit", array("journal_uuid" => $obh), UrlGeneratorInterface::ABSOLUTE_URL
+                    "create_deposit", 
+                    array("journal_uuid" => $obh), 
+                    UrlGeneratorInterface::ABSOLUTE_URL
             ),
             "terms" => $terms,
         ));
@@ -233,15 +235,15 @@ class SwordController extends Controller {
         $deposit = $em->getRepository('AppBundle:Deposit')->findOneBy(array('deposit_uuid' => $deposit_uuid));
 
         if($journal === null) {
-            return new Response("Journal UUID not found.", 400);
+            throw new SwordException(400, "Journal UUID not found.");
         }
 
         if($deposit === null) {
-            return new Response("Deposit UUID not found.", 400);
+            throw new SwordException(400, "Deposit UUID not found.");
         }
 
         if($journal->getId() !== $deposit->getJournal()->getId()) {
-            return new Response("Journal UUID or Deposit UUID is incorrect.", 400);
+            throw new SwordException(400, "Deposit does not belong to journal.");
         }
 
         $journal->setContacted(new DateTime());
@@ -266,7 +268,66 @@ class SwordController extends Controller {
      * @Method("PUT")
      */
     public function editAction(Request $request, $journal_uuid, $deposit_uuid) {
+        /** @var LoggerInterface */
+        $logger = $this->get('monolog.logger.sword');
+        $logger->notice("edit - {$request->getClientIp()} - {$journal_uuid} - {$deposit_uuid}");
         
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var Journal */
+        $journal = $em->getRepository('AppBundle:Journal')->findOneBy(array('uuid' => $journal_uuid));
+
+        /** @var Deposit */
+        $deposit = $em->getRepository('AppBundle:Deposit')->findOneBy(array('deposit_uuid' => $deposit_uuid));
+
+        if($journal === null) {
+            throw new SwordException(400, "Journal UUID not found.");
+        }
+
+        if($deposit === null) {
+            throw new SwordException(400, "Deposit UUID not found.");
+        }
+
+        if($journal->getId() !== $deposit->getJournal()->getId()) {
+            throw new SwordException(400, "Deposit does not belong to journal.");
+        }
+
+        $journal->setContacted(new DateTime());
+        
+        $newDeposit = new Deposit();
+        $newDeposit->setAction('edit');
+        $newDeposit->setOutcome('success');
+        $newDeposit->setChecksumType($this->getXmlValue($xml, 'pkp:content/@checksumType'));
+        $newDeposit->setChecksumValue($this->getXmlValue($xml, 'pkp:content/@checksumValue'));
+        $newDeposit->setDepositUuid($deposit_uuid);
+        $newDeposit->setFileUuid(Uuid::v4(true));
+        $newDeposit->setIssue($this->getXmlValue($xml, 'pkp:content/@issue'));
+        $newDeposit->setVolume($this->getXmlValue($xml, 'pkp:content/@volume'));
+        $newDeposit->setPubDate(new DateTime($this->getXmlValue($xml, 'pkp:content/@pubdate')));
+        $newDeposit->setJournal($journal);
+        $newDeposit->setSize($this->getXmlValue($xml, 'pkp:content/@size'));
+        $newDeposit->setUrl($this->getXmlValue($xml, 'pkp:content'));
+        $newDeposit->setDepositReceipt($this->generateUrl(
+                "statement", array(
+                    'journal_uuid' => $journal_uuid,
+                    'deposit_uuid' => $newDeposit->getDepositUuid(),
+                ), UrlGeneratorInterface::ABSOLUTE_URL
+                )
+        );
+
+        $em->persist($deposit);
+        $em->flush();
+
+        /** @var Response */
+        $response = $this->statementAction($request, $journal_uuid, $deposit_uuid);
+        $response->headers->set(
+                'Location', 
+                $deposit->getDepositReceipt(), 
+                true
+        );
+        $response->setStatusCode(Response::HTTP_CREATED);
+
+        return $response;
     }
 
 }

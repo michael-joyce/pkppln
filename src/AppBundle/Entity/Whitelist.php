@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -9,7 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Whitelist
  *
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="AppBundle\Entity\WhitelistRepository")
+ * @ORM\Entity(repositoryClass="WhitelistRepository")
  */
 class Whitelist {
 
@@ -37,7 +38,7 @@ class Whitelist {
     /**
      * Short message describing why the journal was listed.
      *
-     * @var type
+     * @var string
      * @ORM\Column(type="text")
      */
     private $comment;
@@ -45,12 +46,15 @@ class Whitelist {
     /**
      * The whitelist entry was created.
      *
-     * @var string
-     * 
+     * @var Datetime
      * @ORM\Column(type="datetime")
      */
     private $created;
 
+    public function __construct() {
+        $this->created = new DateTime();
+    }
+    
     /**
      * Get id
      *
@@ -87,10 +91,10 @@ class Whitelist {
     /**
      * Set created
      *
-     * @param \DateTime $created
+     * @param DateTime $created
      * @return Whitelist
      */
-    public function setCreated($created)
+    public function setCreated(DateTime $created)
     {
         $this->created = $created;
 
@@ -100,7 +104,7 @@ class Whitelist {
     /**
      * Get created
      *
-     * @return \DateTime 
+     * @return DateTime 
      */
     public function getCreated()
     {
@@ -128,5 +132,9 @@ class Whitelist {
     public function getComment()
     {
         return $this->comment;
+    }
+    
+    public function __toString() {
+        return $this->uuid;
     }
 }
