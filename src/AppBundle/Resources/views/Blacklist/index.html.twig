@@ -8,6 +8,7 @@
             <tr>
                 <th>Id</th>
                 <th>Uuid</th>
+                <th>Comment</th>
                 <th>Created</th>
                 <th>Actions</th>
             </tr>
@@ -17,6 +18,7 @@
             <tr>
                 <td><a href="{{ path('blacklist_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
                 <td>{{ entity.uuid }}</td>
+                <td>{{ entity.comment }}</td>
                 <td>{% if entity.created %}{{ entity.created|date('Y-m-d H:i:s') }}{% endif %}</td>
                 <td>
                 <ul>

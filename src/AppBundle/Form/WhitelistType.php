@@ -16,6 +16,7 @@ class WhitelistType extends AbstractType
     {
         $builder
             ->add('uuid')
+            ->add('comment')
             ->add('created')
         ;
     }

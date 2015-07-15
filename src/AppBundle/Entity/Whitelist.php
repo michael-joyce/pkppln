@@ -37,7 +37,8 @@ class Whitelist {
     /**
      * Short message describing why the journal was listed.
      *
-     * @var type 
+     * @var type
+     * @ORM\Column(type="text")
      */
     private $comment;
 
@@ -68,7 +69,7 @@ class Whitelist {
      */
     public function setUuid($uuid)
     {
-        $this->uuid = $uuid;
+        $this->uuid = strtoupper($uuid);
 
         return $this;
     }
@@ -104,5 +105,28 @@ class Whitelist {
     public function getCreated()
     {
         return $this->created;
+    }
+
+    /**
+     * Set comment
+     *
+     * @param string $comment
+     * @return Whitelist
+     */
+    public function setComment($comment)
+    {
+        $this->comment = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Get comment
+     *
+     * @return string 
+     */
+    public function getComment()
+    {
+        return $this->comment;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -10,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table()
  * @ORM\HasLifecycleCallbacks
- * @ORM\Entity(repositoryClass="AppBundle\Entity\DepositRepository")
+ * @ORM\Entity(repositoryClass="DepositRepository")
  */
 class Deposit
 {
@@ -26,7 +27,7 @@ class Deposit
     /**
      * The journal that sent this deposit.
      *
-     * @var AppBundle\Entity\Journal
+     * @var Journal
      * 
      * @ORM\ManyToOne(targetEntity="Journal", inversedBy="deposits")
      * @ORM\JoinColumn(name="journal_id", referencedColumnName="id")
@@ -59,7 +60,7 @@ class Deposit
      *
      * @var string
      * 
-     * @ORM\Column(type="date", nullable=false)
+     * @ORM\Column(type="datetime", nullable=false)
      */
     private $received;
 
@@ -154,7 +155,7 @@ class Deposit
      * Stae of the deposit in LOCKSSOMatic or the PLN.
      *
      * @var string
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $plnState;
 
@@ -162,7 +163,7 @@ class Deposit
      * Date the deposit was sent to LOCKSSOmatic or the PLN.
      *
      * @var date
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="date", nullable=true)
      */
     private $depositDate;
     
@@ -174,6 +175,10 @@ class Deposit
      * @ORM\Column(type="string", length=2048)
      */
     private $depositReceipt;
+
+    public function __construct() {
+         $this->received = new DateTime();
+    }
 
     /**
      * Get id
@@ -193,7 +198,7 @@ class Deposit
      */
     public function setFileUuid($fileUuid)
     {
-        $this->file_uuid = $fileUuid;
+        $this->file_uuid = strtoupper($fileUuid);
 
         return $this;
     }
@@ -216,7 +221,7 @@ class Deposit
      */
     public function setDepositUuid($depositUuid)
     {
-        $this->deposit_uuid = $depositUuid;
+        $this->deposit_uuid = strtoupper($depositUuid);
 
         return $this;
     }
@@ -234,7 +239,7 @@ class Deposit
     /**
      * Set received
      *
-     * @param \DateTime $received
+     * @param DateTime $received
      * @return Deposit
      */
     public function setReceived($received)
@@ -247,7 +252,7 @@ class Deposit
     /**
      * Get received
      *
-     * @return \DateTime 
+     * @return DateTime
      */
     public function getReceived()
     {
@@ -326,10 +331,10 @@ class Deposit
     /**
      * Set pubDate
      *
-     * @param \DateTime $pubDate
+     * @param DateTime $pubDate
      * @return Deposit
      */
-    public function setPubDate($pubDate)
+    public function setPubDate(DateTime $pubDate)
     {
         $this->pubDate = $pubDate;
 
@@ -339,7 +344,7 @@ class Deposit
     /**
      * Get pubDate
      *
-     * @return \DateTime 
+     * @return DateTime
      */
     public function getPubDate()
     {
@@ -510,10 +515,10 @@ class Deposit
     /**
      * Set depositDate
      *
-     * @param \DateTime $depositDate
+     * @param DateTime $depositDate
      * @return Deposit
      */
-    public function setDepositDate($depositDate)
+    public function setDepositDate(DateTime $depositDate)
     {
         $this->depositDate = $depositDate;
 
@@ -523,7 +528,7 @@ class Deposit
     /**
      * Get depositDate
      *
-     * @return \DateTime 
+     * @return DateTime
      */
     public function getDepositDate()
     {
@@ -556,10 +561,10 @@ class Deposit
     /**
      * Set journal
      *
-     * @param \AppBundle\Entity\Journal $journal
+     * @param Journal $journal
      * @return Deposit
      */
-    public function setJournal(\AppBundle\Entity\Journal $journal = null)
+    public function setJournal(Journal $journal = null)
     {
         $this->journal = $journal;
 
@@ -569,7 +574,7 @@ class Deposit
     /**
      * Get journal
      *
-     * @return \AppBundle\Entity\Journal 
+     * @return Journal
      */
     public function getJournal()
     {

@@ -2,6 +2,9 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -10,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="journal")
  * @ORM\HasLifecycleCallbacks
- * @ORM\Entity(repositoryClass="AppBundle\Entity\JournalRepository")
+ * @ORM\Entity(repositoryClass="JournalRepository")
  */
 class Journal {
 
@@ -37,7 +40,7 @@ class Journal {
      * When the journal last contacted the staging server
      *
      * @var string
-     * @ORM\Column(type="date", nullable=false)
+     * @ORM\Column(type="datetime", nullable=false)
      */
     private $contacted;
 
@@ -45,7 +48,7 @@ class Journal {
      * When the journal manager was notified.
      *
      * @var string
-     * @ORM\Column(type="date", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $notified;
 
@@ -80,7 +83,7 @@ class Journal {
      * @var string
      * @ORM\Column(type="string", nullable=false)
      */
-    private $status;
+    private $status = 'healthy';
 
     /**
      * Email address to contact the journal manager.
@@ -109,6 +112,18 @@ class Journal {
     private $publisherUrl;
 
     /**
+     * The journal's deposits.
+     *
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="Deposit", mappedBy="journal")
+     */
+    private $deposits;
+
+    public function __construct() {
+        $this->deposits = new ArrayCollection();
+    }
+
+    /**
      * Get id
      *
      * @return integer 
@@ -126,7 +141,7 @@ class Journal {
      */
     public function setUuid($uuid)
     {
-        $this->uuid = $uuid;
+        $this->uuid = strtoupper($uuid);
 
         return $this;
     }
@@ -144,10 +159,10 @@ class Journal {
     /**
      * Set contacted
      *
-     * @param \DateTime $contacted
+     * @param DateTime $contacted
      * @return Journal
      */
-    public function setContacted($contacted)
+    public function setContacted(DateTime $contacted)
     {
         $this->contacted = $contacted;
 
@@ -157,7 +172,7 @@ class Journal {
     /**
      * Get contacted
      *
-     * @return \DateTime 
+     * @return DateTime
      */
     public function getContacted()
     {
@@ -167,7 +182,7 @@ class Journal {
     /**
      * Set notified
      *
-     * @param \DateTime $notified
+     * @param DateTime $notified
      * @return Journal
      */
     public function setNotified($notified)
@@ -180,7 +195,7 @@ class Journal {
     /**
      * Get notified
      *
-     * @return \DateTime 
+     * @return DateTime
      */
     public function getNotified()
     {
@@ -353,5 +368,38 @@ class Journal {
      */
     public function setTimestamp() {
         $this->contacted = new DateTime();
+    }
+
+    /**
+     * Add deposits
+     *
+     * @param Deposit $deposits
+     * @return Journal
+     */
+    public function addDeposit(Deposit $deposits)
+    {
+        $this->deposits[] = $deposits;
+
+        return $this;
+    }
+
+    /**
+     * Remove deposits
+     *
+     * @param Deposit $deposits
+     */
+    public function removeDeposit(Deposit $deposits)
+    {
+        $this->deposits->removeElement($deposits);
+    }
+
+    /**
+     * Get deposits
+     *
+     * @return Collection
+     */
+    public function getDeposits()
+    {
+        return $this->deposits;
     }
 }

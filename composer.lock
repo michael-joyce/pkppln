@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "11cb418d4d88ec0d528bc381c985792d",
+    "hash": "8be33fba343cb929bea213387c2da6c1",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -871,6 +871,41 @@
             "time": "2015-06-03 08:27:03"
         },
         {
+            "name": "j20/php-uuid",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/j20/php-uuid.git",
+                "reference": "c686320f8c6104a5ded60b622a89bfd4eb9f4021"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/j20/php-uuid/zipball/c686320f8c6104a5ded60b622a89bfd4eb9f4021",
+                "reference": "c686320f8c6104a5ded60b622a89bfd4eb9f4021",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "J20\\Uuid": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Generate a UUID v4 with PHP.",
+            "keywords": [
+                "guid",
+                "token",
+                "uuid"
+            ],
+            "time": "2013-04-03 18:44:02"
+        },
+        {
             "name": "jdorn/sql-formatter",
             "version": "v1.2.17",
             "source": {
@@ -1504,16 +1539,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v2.7.1",
+            "version": "v2.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "932b6e7499c670f4db6d0b871477a4a3ca161e74"
+                "reference": "969d709ad428076bf1084e386dc26dd904d9fb84"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/932b6e7499c670f4db6d0b871477a4a3ca161e74",
-                "reference": "932b6e7499c670f4db6d0b871477a4a3ca161e74",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/969d709ad428076bf1084e386dc26dd904d9fb84",
+                "reference": "969d709ad428076bf1084e386dc26dd904d9fb84",
                 "shasum": ""
             },
             "require": {
@@ -1622,7 +1657,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2015-06-11 21:15:28"
+            "time": "2015-07-13 19:27:49"
         },
         {
             "name": "twig/twig",
@@ -1734,7 +1769,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "j20/php-uuid": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

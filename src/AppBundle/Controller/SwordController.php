@@ -8,7 +8,12 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Deposit;
+use AppBundle\Entity\Journal;
 use AppBundle\Entity\TermOfUseRepository;
+use DateTime;
+use Exception;
+use J20\Uuid\Uuid;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use SimpleXMLElement;
@@ -29,15 +34,23 @@ class SwordController extends Controller {
         'atom' => 'http://www.w3.org/2005/Atom',
         'dc' => "http://purl.org/dc/terms/",
         'sword' => "http://purl.org/net/sword/terms/",
-        'pkp'=> 'http://pkp.sfu.ca/SWORD',
+        'pkp' => 'http://pkp.sfu.ca/SWORD',
         'app' => 'http://www.w3.org/2007/app',
         'lom' => 'http://lockssomatic.info/SWORD2',
         'xsi' => 'http://www.w3.org/2001/XMLSchema-instance'
     );
 
+    private static $states = array(
+        'failed' => 'The deposit to the PKP PLN staging server (or LOCKSS-O-Matic) has failed.',
+        'inProgress' => 'The deposit to the staging server has succeeded but the deposit has not yet been registered with the PLN.',
+        'disagreement' => 'The PKP LOCKSS network is not in agreement on content checksums.',
+        'agreement' => 'The PKP LOCKSS network agrees internally on content checksums.',
+        'unknown' => 'The deposit is in an unknown state.'
+    );
+
     private function parseXml($content) {
         $xml = new SimpleXMLElement($content);
-        foreach($namespaces as $key => $value) {
+        foreach (self::$namespaces as $key => $value) {
             $xml->registerXPathNamespace($key, $value);
         }
         return $xml;
@@ -51,7 +64,7 @@ class SwordController extends Controller {
             return $request->headers->has("X-" . $name);
         }
         if ($request->query->has($name)) {
-            return $request->query->has($name);
+            return $request->query->get($name);
         }
         return null;
     }
@@ -65,6 +78,34 @@ class SwordController extends Controller {
         return $this->container->getParameter("pln.defaultLocale");
     }
 
+    private function getXmlValue(SimpleXMLElement $xml, $xpath) {
+        $data = $xml->xpath($xpath);
+        if (count($data) === 1) {
+            return (string) $data[0];
+        }
+        if (count($data) === 0) {
+            return null;
+        }
+        throw new Exception("Too many elements for '{$xpath}'");
+    }
+
+    private function checkAccess($journal_uuid) {
+        $em = $this->getDoctrine()->getManager();
+        $wlEntry = $em->getRepository('AppBundle:Whitelist')
+                ->findOneBy(array('uuid' => $journal_uuid));
+        if ($wlEntry !== null) {
+            return true;
+        }
+
+        $blEntry = $em->getRepository('AppBundle:Blacklist')
+                ->findOneBy(array('uuid' => $journal_uuid));
+        if ($blEntry !== null) {
+            return false;
+        }
+
+        return $this->container->getParameter("pln.accepting");
+    }
+
     /**
      * @Route("/sd-iri", name="service_document")
      * @Method("GET")
@@ -75,16 +116,21 @@ class SwordController extends Controller {
 
         $obh = $this->fetchHeader($request, "On-Behalf-Of");
         $journalUrl = $this->fetchHeader($request, "Journal-Url");
+
         $locale = $this->getLocale($request);
+        $accepting = $this->checkAccess($obh);
+        $acceptingLog = 'not accepting';
+        if ($accepting) {
+            $acceptingLog = 'accepting';
+        }
 
-        $logger->notice("service document - {$request->getClientIp()} - {$locale} - {$obh} - {$journalUrl}");
-//        if($obh === null) {
-//            return new Response("Missing On-Behalf-Of header.", 400);
-//        }
-//        if($journalUrl === null) {
-//            return new Response("Missing Journal-URL header.", 400);
-//        }
-
+        $logger->notice("service document - {$request->getClientIp()} - {$locale} - {$obh} - {$journalUrl} - {$acceptingLog}");
+        if ($obh === null) {
+            return new Response("Missing On-Behalf-Of header.", 400);
+        }
+        if ($journalUrl === null) {
+            return new Response("Missing Journal-URL header.", 400);
+        }
         $em = $this->getDoctrine()->getManager();
         /** @var TermOfUseRepository */
         $repo = $em->getRepository("AppBundle:TermOfUse");
@@ -92,17 +138,16 @@ class SwordController extends Controller {
 
         /** @var Response */
         $response = $this->render("AppBundle:Sword:serviceDocument.xml.twig", array(
-            "accepting" => $this->container->getParameter("pln.accepting"),
+            "accepting" => $accepting,
             "maxUpload" => $this->container->getParameter("pln.maxUploadSize"),
-            "checksumType" => $this->container->getParameter("pln.uploadChecksum"),
+            "checksumType" => $this->container->getParameter("pln.uploadChecksumType"),
             "onBehalfOf" => $obh,
             "colIri" => $this->generateUrl(
-                    "create_deposit",
-                    array("uuid" => "uuid"),
-                    UrlGeneratorInterface::ABSOLUTE_URL
+                    "create_deposit", array("journal_uuid" => $obh), UrlGeneratorInterface::ABSOLUTE_URL
             ),
             "terms" => $terms,
         ));
+        /** @var Response */
         $response->headers->set("Content-Type", "text/xml");
         return $response;
     }
@@ -112,24 +157,112 @@ class SwordController extends Controller {
      * @Method("POST")
      */
     public function createDepositAction(Request $request, $journal_uuid) {
-        $xml = $this->parseXml($request->getContent());
-        $title = $xml->xpath('//atom:title');
         /** @var LoggerInterface */
         $logger = $this->get('monolog.logger.sword');
-        $logger->notice($title);
+        $logger->notice("create deposit - {$request->getClientIp()} - {$journal_uuid}");
 
+        $em = $this->getDoctrine()->getManager();
+        $journalRepo = $em->getRepository('AppBundle:Journal');
+        $journal = $journalRepo->findOneBy(array('uuid' => $journal_uuid));
+        $xml = $this->parseXml($request->getContent());
+        if ($journal === null) {
+            $journal = new Journal();
+            $journal->setUuid($journal_uuid);
+            $journal->setTitle($this->getXmlValue($xml, '//atom:title'));
+            $journal->setUrl($this->getXmlValue($xml, '//pkp:journal_url'));
+            $journal->setEmail($this->getXmlValue($xml, '//atom:email'));
+            $journal->setIssn($this->getXmlValue($xml, '//pkp:issn'));
+            $journal->setPublisherName($this->getXmlValue($xml, '//pkp:publisherName'));
+            $journal->setPublisherUrl($this->getXmlValue($xml, '//pkp:publisherUrl'));
+            $em->persist($journal);
+        }
+
+        $id = $this->getXmlValue($xml, '//atom:id');
+        $deposit_uuid = substr($id, 9, 36);
+
+        $deposit = new Deposit();
+        $deposit->setAction('add');
+        $deposit->setOutcome('success');
+        $deposit->setChecksumType($this->getXmlValue($xml, 'pkp:content/@checksumType'));
+        $deposit->setChecksumValue($this->getXmlValue($xml, 'pkp:content/@checksumValue'));
+        $deposit->setDepositUuid($deposit_uuid);
+        $deposit->setFileUuid(Uuid::v4(true));
+        $deposit->setIssue($this->getXmlValue($xml, 'pkp:content/@issue'));
+        $deposit->setVolume($this->getXmlValue($xml, 'pkp:content/@volume'));
+        $deposit->setPubDate(new DateTime($this->getXmlValue($xml, 'pkp:content/@pubdate')));
+        $deposit->setJournal($journal);
+        $deposit->setSize($this->getXmlValue($xml, 'pkp:content/@size'));
+        $deposit->setUrl($this->getXmlValue($xml, 'pkp:content'));
+        $deposit->setDepositReceipt($this->generateUrl(
+                "statement", array(
+                    'journal_uuid' => $journal_uuid,
+                    'deposit_uuid' => $deposit->getDepositUuid(),
+                ), UrlGeneratorInterface::ABSOLUTE_URL
+                )
+        );
+
+        $em->persist($deposit);
+        $em->flush();
+
+        /** @var Response */
+        $response = $this->statementAction($request, $journal_uuid, $deposit_uuid);
+        $response->headers->set(
+                'Location',
+                $deposit->getDepositReceipt(),
+                true);
+        $response->setStatusCode(Response::HTTP_CREATED);
+
+        return $response;
     }
 
     /**
-     * @Route("/cont-iri/:journal_uuid/:deposit_uuid/state")
+     * @Route("/cont-iri/{journal_uuid}/{deposit_uuid}/state", name="statement")
      * @Method("GET")
      */
     public function statementAction(Request $request, $journal_uuid, $deposit_uuid) {
+        /** @var LoggerInterface */
+        $logger = $this->get('monolog.logger.sword');
+        $logger->notice("statement - {$request->getClientIp()} - {$journal_uuid} - {$deposit_uuid}");
 
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var Journal */
+        $journal = $em->getRepository('AppBundle:Journal')->findOneBy(array('uuid' => $journal_uuid));
+
+        /** @var Deposit */
+        $deposit = $em->getRepository('AppBundle:Deposit')->findOneBy(array('deposit_uuid' => $deposit_uuid));
+
+        if($journal === null) {
+            return new Response("Journal UUID not found.", 400);
+        }
+
+        if($deposit === null) {
+            return new Response("Deposit UUID not found.", 400);
+        }
+
+        if($journal->getId() !== $deposit->getJournal()->getId()) {
+            return new Response("Journal UUID or Deposit UUID is incorrect.", 400);
+        }
+
+        $journal->setContacted(new DateTime());
+        $em->flush();
+
+        $state = 'The deposit is in an unknown state.';
+        if(array_key_exists($deposit->getPlnState(), self::$states)) {
+            $state = self::$states[$deposit->getPlnState()];
+        }
+
+        /** @var Response */
+        $response = $this->render("AppBundle:Sword:statement.xml.twig", array(
+            "deposit" => $deposit,
+            "state" => $state,
+        ));
+        $response->headers->set('Content-Type', 'text/xml');
+        return $response;
     }
 
     /**
-     * @Route("/cont-iri/:journal_uuid/:deposit_uuid/edit")
+     * @Route("/cont-iri/{journal_uuid}/{deposit_uuid}/edit")
      * @Method("PUT")
      */
     public function editAction(Request $request, $journal_uuid, $deposit_uuid) {

@@ -38,7 +38,8 @@ class Blacklist {
     /**
      * Short message describing why the journal was listed.
      *
-     * @var type 
+     * @var type
+     * @ORM\Column(type="text")
      */
     private $comment;
 
@@ -69,7 +70,7 @@ class Blacklist {
      */
     public function setUuid($uuid)
     {
-        $this->uuid = $uuid;
+        $this->uuid = strtoupper($uuid);
 
         return $this;
     }
@@ -112,5 +113,28 @@ class Blacklist {
      */
     public function setTimestamp() {
         $this->created = new DateTime();
+    }
+
+    /**
+     * Set comment
+     *
+     * @param string $comment
+     * @return Blacklist
+     */
+    public function setComment($comment)
+    {
+        $this->comment = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Get comment
+     *
+     * @return string 
+     */
+    public function getComment()
+    {
+        return $this->comment;
     }
 }
