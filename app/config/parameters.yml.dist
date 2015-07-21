@@ -23,5 +23,7 @@ parameters:
     pln_uploadChecksumType: SHA-1
     pln_defaultLocale: en-US
 
+    # directories for deposit processing. Absolute directory/path or
+    # a path relative to the Symfony install.
     pln_service_directory: data/received
     pln_staging_directory: data/staged

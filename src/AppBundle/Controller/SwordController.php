@@ -189,6 +189,7 @@ class SwordController extends Controller {
         $deposit->setChecksumValue($this->getXmlValue($xml, 'pkp:content/@checksumValue'));
         $deposit->setDepositUuid($deposit_uuid);
         $deposit->setFileUuid(Uuid::v4(true));
+        $deposit->setFileType('');
         $deposit->setIssue($this->getXmlValue($xml, 'pkp:content/@issue'));
         $deposit->setVolume($this->getXmlValue($xml, 'pkp:content/@volume'));
         $deposit->setPubDate(new DateTime($this->getXmlValue($xml, 'pkp:content/@pubdate')));

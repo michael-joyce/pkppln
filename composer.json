@@ -27,11 +27,18 @@
         "components/jquery": "1.11.1",
         "friendsofsymfony/user-bundle": "~2.0@dev",
         "ircmaxell/password-compat": "^1.0",
-        "guzzlehttp/guzzle": "5.3"
+        "guzzlehttp/guzzle": "5.3",
+        "scholarslab/bagit": "~0.2"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/scholarslab/BagItPHP"
+        }
+    ],
     "scripts": {
         "post-root-package-install": [
             "SymfonyStandard\\Composer::hookRootPackageInstall"

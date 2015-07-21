@@ -17,7 +17,10 @@ use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
-class HarvestCommand extends ContainerAwareCommand {
+require 'vendor/scholarslab/bagit/lib/bagit.php';
+use \Bagit;
+
+class ValidateBagCommand extends ContainerAwareCommand {
 
     /**
      * @var Registry
@@ -48,8 +51,8 @@ class HarvestCommand extends ContainerAwareCommand {
      * Configure the command.
      */
     protected function configure() {
-        $this->setName('pln:harvest');
-        $this->setDescription('Harvest OJS deposits.');
+        $this->setName('pln:validate-bag');
+        $this->setDescription('Validate PLN deposit packages.');
     }
 
     /**
@@ -64,29 +67,9 @@ class HarvestCommand extends ContainerAwareCommand {
         $this->em = $container->get('doctrine')->getManager();
         $this->fs = new Filesystem();
         $this->depositDir = $container->getParameter('pln_service_directory');
-        if( ! $this->fs->isAbsolutePath($this->depositDir)) {
+        if (!$this->fs->isAbsolutePath($this->depositDir)) {
             $this->depositDir = $this->container->get('kernel')->getRootDir() . '/' . $this->depositDir;
         }
-    }
-
-    /**
-     * Write a deposit's data to the filesystem at $path. Returns true on
-     * success and false on failure.
-     *
-     * @param string $path
-     * @param string $data
-     * @return boolean
-     */
-    protected function writeDeposit($path, $data) {
-        $this->logger->info("Writing deposit to {$path}");
-        try {
-            $this->fs->dumpFile($path, $data);
-        } catch(IOException $ex) {
-            $this->logger->error("Cannot write data to {$path}.");
-            $this->logger->error($ex->getMessage());
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -111,28 +94,6 @@ class HarvestCommand extends ContainerAwareCommand {
     }
 
     /**
-     * Fetch a deposit URL with Guzzle. Returns the data on success or false
-     * on failure.
-     *
-     * @param string $url
-     * @return false on failure, or a Guzzle Response on success.
-     */
-    protected function fetchDeposit($url) {
-        $client = new Client();
-        try {
-            $response = $client->get($url);
-            $this->logger->info("Harvest {$url} - {$response->getStatusCode()} - {$response->getHeader('Content-Length')}");
-        } catch (RequestException $e) {
-            $this->logger->error($e);
-            if ($e->hasResponse()) {
-                $this->logger->error($e->getResponse()->getStatusCode() . ' ' . $this->logger->error($e->getResponse()->getReasonPhrase()));
-            }
-            return false;
-        }
-        return $response;
-    }
-
-    /**
      * Process one deposit. Fetch the data and write it to the file system.
      * Updates the deposit status.
      *
@@ -140,27 +101,29 @@ class HarvestCommand extends ContainerAwareCommand {
      * @return type
      */
     protected function processDeposit(Deposit $deposit) {
-        $response = $this->fetchDeposit($deposit->getUrl());
-        if ($response === false) {
-            $deposit->setOutcome('failure');
-            return;
-        }
-        $data = $response->getBody();
-        $deposit->setFileType($response->getHeader('Content-Type'));
-
         $journal = $deposit->getJournal();
+
         $journalDir = $this->depositDir . '/' . $journal->getUuid();
-        if (!$this->checkPerms($journalDir)) {
-            $deposit->setOutcome('failure');
+        $depositPath = $journalDir . '/' . $deposit->getFileName();
+
+        if (!$this->fs->exists($depositPath)) {
+            $this->logger->error("Deposit file {$depositPath} does not exist");
+            $deposit->setOutcome("failure");
             return;
         }
-        $filePath = $journalDir . '/' . $deposit->getFileName();
-        if (!$this->writeDeposit($filePath, $data)) {
-            $deposit->setOutcome('failure');
-            return;
+
+        $this->logger->info("Processing {$depositPath}");
+
+        $bag = new BagIt($depositPath);
+        $bag->validate();
+        if(count($bag->getBagErrors()) > 0) {
+            foreach($bag->getBagErrors() as $error) {
+                $this->logger->error("Bagit validation error for {$error[0]} - {$error[1]}");
+            }
+            $deposit->setOutcome("failure");
         }
-        $deposit->setState("harvested");
         $deposit->setOutcome("success");
+        $deposit->setState("bagValidated");
     }
 
     /**
@@ -175,10 +138,10 @@ class HarvestCommand extends ContainerAwareCommand {
 
         $this->checkPerms($this->depositDir);
 
-        $deposits = $repo->findByState('deposited');
+        $deposits = $repo->findByState('payloadValidated');
         $count = count($deposits);
 
-        $this->logger->info("Fetching {$count} deposits.");
+        $this->logger->info("Validating {$count} bags.");
 
         foreach ($deposits as $deposit) {
             $this->processDeposit($deposit);
