@@ -1,9 +1,13 @@
 {% extends '::base.html.twig' %}
 
-{% block body -%}
-    <h1>Blacklist creation</h1>
+    
+{% block pageheader %}
+    <h1>New Blacklist</h1>
+{% endblock %}
 
-    {{ form(form) }}
+{% block body -%}
+
+    {{ form(form, {"style": "horizontal"}) }}
 
         <ul class="record_actions">
     <li>
@@ -11,5 +15,7 @@
             Back to the list
         </a>
     </li>
+
+
 </ul>
 {% endblock %}

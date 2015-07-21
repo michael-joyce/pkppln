@@ -1,9 +1,32 @@
 {% extends '::base.html.twig' %}
 
-{% block body -%}
+    
+{% block pageheader %}
     <h1>Whitelist</h1>
+{% endblock %}
+    
+{% block body -%}
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('whitelist') }}">
+            Back to the list
+        </a>
+    </li>
 
-    <table class="record_properties">
+    <li>
+        <a href="{{ path('whitelist_edit', { 'id': entity.id }) }}">
+            <span class='glyphicon glyphicon-edit'></span>
+        </a>
+    </li>
+
+    <li>
+        <a href="{{ path('whitelist_delete', { 'id': entity.id }) }}">
+            <span class='glyphicon glyphicon-remove'></span>
+        </a>
+    </li>
+</ul>
+
+    <table class="record_properties table table-striped table-bordered table-hover">
         <tbody>
             <tr>
                 <th>Id</th>
@@ -23,18 +46,4 @@
             </tr>
         </tbody>
     </table>
-
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('whitelist') }}">
-            Back to the list
-        </a>
-    </li>
-    <li>
-        <a href="{{ path('whitelist_edit', { 'id': entity.id }) }}">
-            Edit
-        </a>
-    </li>
-    <li>{{ form(delete_form) }}</li>
-</ul>
 {% endblock %}

@@ -10,7 +10,7 @@ parameters:
 
 framework:
     #esi:             ~
-    #translator:      { fallbacks: ["%locale%"] }
+    translator:      ~
     secret:          "%secret%"
     router:
         resource: "%kernel.root_dir%/config/routing.yml"
@@ -119,3 +119,9 @@ monolog:
             channels: ['sword']
             path: "%kernel.logs_dir%/sword.log"
             level: info
+
+fos_user:
+    db_driver: orm
+    firewall_name: main
+    user_class: AppUserBundle\Entity\User
+    

@@ -13,7 +13,7 @@ use AppBundle\Form\TermOfUseType;
 /**
  * TermOfUse controller.
  *
- * @Route("/terms")
+ * @Route("/termofuse")
  */
 class TermOfUseController extends Controller
 {
@@ -205,25 +205,19 @@ class TermOfUseController extends Controller
     /**
      * Deletes a TermOfUse entity.
      *
-     * @Route("/{id}", name="termofuse_delete")
-     * @Method("DELETE")
+     * @Route("/{id}/delete", name="termofuse_delete")
      */
     public function deleteAction(Request $request, $id)
     {
-        $form = $this->createDeleteForm($id);
-        $form->handleRequest($request);
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('AppBundle:TermOfUse')->find($id);
 
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('AppBundle:TermOfUse')->find($id);
-
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find TermOfUse entity.');
-            }
-
-            $em->remove($entity);
-            $em->flush();
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find TermOfUse entity.');
         }
+
+        $em->remove($entity);
+        $em->flush();
 
         return $this->redirect($this->generateUrl('termofuse'));
     }

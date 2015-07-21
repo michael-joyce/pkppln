@@ -1,9 +1,13 @@
 {% extends '::base.html.twig' %}
 
-{% block body -%}
-    <h1>Deposit list</h1>
 
-    <table class="records_list">
+{% block pageheader %}
+    <h1>Deposit List</h1>
+{% endblock %}
+
+{% block body -%}
+
+    <table class="records_list table table-striped table-bordered table-hover">
         <thead>
             <tr>
                 <th>Id</th>

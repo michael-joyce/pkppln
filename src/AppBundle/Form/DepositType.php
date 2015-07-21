@@ -17,11 +17,11 @@ class DepositType extends AbstractType
         $builder
             ->add('file_uuid')
             ->add('deposit_uuid')
-            ->add('received')
+            ->add('received', 'datetime', array('date_widget' => 'single_text', 'time_widget' => 'single_text'))
             ->add('action')
             ->add('volume')
             ->add('issue')
-            ->add('pubDate')
+            ->add('pubDate', 'date', array('widget' => 'single_text'))
             ->add('checksumType')
             ->add('checksumValue')
             ->add('url')

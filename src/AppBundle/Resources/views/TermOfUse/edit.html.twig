@@ -1,7 +1,11 @@
 {% extends '::base.html.twig' %}
 
+    
+{% block pageheader %}
+    <h1>TermOfUse Edit</h1>
+{% endblock %}
+    
 {% block body -%}
-    <h1>TermOfUse edit</h1>
 
     {{ form(edit_form) }}
 
@@ -11,6 +15,7 @@
             Back to the list
         </a>
     </li>
-    <li>{{ form(delete_form) }}</li>
+
+
 </ul>
 {% endblock %}

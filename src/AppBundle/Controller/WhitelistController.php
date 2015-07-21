@@ -205,25 +205,19 @@ class WhitelistController extends Controller
     /**
      * Deletes a Whitelist entity.
      *
-     * @Route("/{id}", name="whitelist_delete")
-     * @Method("DELETE")
+     * @Route("/{id}/delete", name="whitelist_delete")
      */
     public function deleteAction(Request $request, $id)
     {
-        $form = $this->createDeleteForm($id);
-        $form->handleRequest($request);
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('AppBundle:Whitelist')->find($id);
 
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('AppBundle:Whitelist')->find($id);
-
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find Whitelist entity.');
-            }
-
-            $em->remove($entity);
-            $em->flush();
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Whitelist entity.');
         }
+
+        $em->remove($entity);
+        $em->flush();
 
         return $this->redirect($this->generateUrl('whitelist'));
     }

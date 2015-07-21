@@ -1,9 +1,13 @@
 {% extends '::base.html.twig' %}
 
-{% block body -%}
-    <h1>MicroService list</h1>
 
-    <table class="records_list">
+{% block pageheader %}
+    <h1>MicroService List</h1>
+{% endblock %}
+
+{% block body -%}
+
+    <table class="records_list table table-striped table-bordered table-hover">
         <thead>
             <tr>
                 <th>Id</th>
@@ -29,6 +33,9 @@
                     <li>
                         <a href="{{ path('microservice_show', { 'id': entity.id }) }}">show</a>
                     </li>
+                    <li>
+                        <a href="{{ path('microservice_edit', { 'id': entity.id }) }}">edit</a>
+                    </li>
                 </ul>
                 </td>
             </tr>
@@ -36,4 +43,11 @@
         </tbody>
     </table>
 
+        <ul>
+        <li>
+            <a href="{{ path('microservice_new') }}">
+                Create a new entry
+            </a>
+        </li>
+    </ul>
     {% endblock %}

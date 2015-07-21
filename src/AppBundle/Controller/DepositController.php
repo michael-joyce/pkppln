@@ -205,25 +205,19 @@ class DepositController extends Controller
     /**
      * Deletes a Deposit entity.
      *
-     * @Route("/{id}", name="deposit_delete")
-     * @Method("DELETE")
+     * @Route("/{id}/delete", name="deposit_delete")
      */
     public function deleteAction(Request $request, $id)
     {
-        $form = $this->createDeleteForm($id);
-        $form->handleRequest($request);
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('AppBundle:Deposit')->find($id);
 
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('AppBundle:Deposit')->find($id);
-
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find Deposit entity.');
-            }
-
-            $em->remove($entity);
-            $em->flush();
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Deposit entity.');
         }
+
+        $em->remove($entity);
+        $em->flush();
 
         return $this->redirect($this->generateUrl('deposit'));
     }
