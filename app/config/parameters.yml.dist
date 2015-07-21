@@ -22,3 +22,6 @@ parameters:
     pln_maxUploadSize: 1000
     pln_uploadChecksumType: SHA-1
     pln_defaultLocale: en-US
+
+    pln_service_directory: data/received
+    pln_staging_directory: data/staged

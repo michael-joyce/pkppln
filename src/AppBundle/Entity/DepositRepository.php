@@ -12,4 +12,16 @@ use Doctrine\ORM\EntityRepository;
  */
 class DepositRepository extends EntityRepository
 {
+    /**
+     * Find deposits by state.
+     * 
+     * @param string $state
+     * 
+     * @return Deposit[]
+     */
+    public function findByState($state) {
+        return $this->findBy(array(
+            'state' => $state
+        ));
+    }
 }
