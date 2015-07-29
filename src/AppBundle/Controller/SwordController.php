@@ -12,6 +12,7 @@ use AppBundle\Entity\Deposit;
 use AppBundle\Entity\Journal;
 use AppBundle\Entity\TermOfUseRepository;
 use AppBundle\Exception\SwordException;
+use AppBundle\Services\BlackWhitelist;
 use DateTime;
 use Exception;
 use J20\Uuid\Uuid;
@@ -91,20 +92,14 @@ class SwordController extends Controller {
     }
 
     private function checkAccess($journal_uuid) {
-        $em = $this->getDoctrine()->getManager();
-        $wlEntry = $em->getRepository('AppBundle:Whitelist')
-                ->findOneBy(array('uuid' => $journal_uuid));
-
-        if ($wlEntry !== null) {
+        /** @var BlackWhitelist */
+        $bw = $this->get('blackwhitelist');
+        if($bw->isWhitelisted($journal_uuid)) {
             return true;
         }
-
-        $blEntry = $em->getRepository('AppBundle:Blacklist')
-                ->findOneBy(array('uuid' => $journal_uuid));
-        if ($blEntry !== null) {
+        if($bw->isBlacklisted($journal_uuid)) {
             return false;
         }
-
         return $this->container->getParameter("pln_accepting");
     }
 
@@ -161,6 +156,11 @@ class SwordController extends Controller {
     public function createDepositAction(Request $request, $journal_uuid) {
         /** @var LoggerInterface */
         $logger = $this->get('monolog.logger.sword');
+
+        if( $this->checkAccess($journal_uuid) !== false) {
+            $logger->notice("create deposit [Not Authorized to make deposits] - {$request->getClientIp()} - {$journal_uuid}");
+            throw new SwordException(400, "Not authorized to make deposits.");
+        }
         $logger->notice("create deposit - {$request->getClientIp()} - {$journal_uuid}");
 
         $em = $this->getDoctrine()->getManager();
@@ -225,6 +225,12 @@ class SwordController extends Controller {
     public function statementAction(Request $request, $journal_uuid, $deposit_uuid) {
         /** @var LoggerInterface */
         $logger = $this->get('monolog.logger.sword');
+
+        if( $this->checkAccess($journal_uuid) !== false) {
+            $logger->notice("statement [NOT AUTHORIZED FOR STATEMENTS] - {$request->getClientIp()} - {$journal_uuid} - {$deposit_uuid}");
+            throw new SwordException(400, "Not authorized to request statements.");
+        }
+
         $logger->notice("statement - {$request->getClientIp()} - {$journal_uuid} - {$deposit_uuid}");
 
         $em = $this->getDoctrine()->getManager();
@@ -271,6 +277,12 @@ class SwordController extends Controller {
     public function editAction(Request $request, $journal_uuid, $deposit_uuid) {
         /** @var LoggerInterface */
         $logger = $this->get('monolog.logger.sword');
+
+        if( $this->checkAccess($journal_uuid) !== false) {
+            $logger->notice("edit [NOT AUTHORIZED FOR EDIT] - {$request->getClientIp()} - {$journal_uuid} - {$deposit_uuid}");
+            throw new SwordException(400, "Not authorized to edit deposits.");
+        }
+
         $logger->notice("edit - {$request->getClientIp()} - {$journal_uuid} - {$deposit_uuid}");
         
         $em = $this->getDoctrine()->getManager();
@@ -294,7 +306,7 @@ class SwordController extends Controller {
         }
 
         $journal->setContacted(new DateTime());
-        
+        $xml = $this->parseXml($request->getContent());
         $newDeposit = new Deposit();
         $newDeposit->setAction('edit');
         $newDeposit->setOutcome('success');

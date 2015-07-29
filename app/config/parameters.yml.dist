@@ -25,5 +25,9 @@ parameters:
 
     # directories for deposit processing. Absolute directory/path or
     # a path relative to the Symfony install.
-    pln_service_directory: data/received
+    pln_harvest_directory: data/received
     pln_staging_directory: data/staged
+    pln_processing_directory: data/processing
+
+    # path to clamdscan
+    clamdscan_path: /usr/bin/clamdscan

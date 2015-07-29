@@ -28,7 +28,10 @@
         "friendsofsymfony/user-bundle": "~2.0@dev",
         "ircmaxell/password-compat": "^1.0",
         "guzzlehttp/guzzle": "5.3",
-        "scholarslab/bagit": "~0.2"
+        "scholarslab/bagit": "~0.2",
+        "cleentfaar/tissue": "dev-master",
+        "cleentfaar/tissue-clamav-adapter": "dev-master",
+        "cleentfaar/tissue-bundle": "*"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"

@@ -2,50 +2,14 @@
 
 namespace AppBundle\Command;
 
-use AppBundle\Entity\Deposit;
-use AppBundle\Entity\DepositRepository;
-use Doctrine\Bundle\DoctrineBundle\Registry;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-use Symfony\Bridge\Monolog\Logger;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\Dump\Container;
-use Symfony\Component\Filesystem\Exception\IOException;
-use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
-use Symfony\Component\Filesystem\Filesystem;
-
 require 'vendor/scholarslab/bagit/lib/bagit.php';
-use \Bagit;
 
-class ValidateBagCommand extends ContainerAwareCommand {
+use AppBundle\Entity\Deposit;
+use BagIt;
+use Exception;
+use ZipArchive;
 
-    /**
-     * @var Registry
-     */
-    private $em;
-
-    /**
-     * @var Container
-     */
-    private $container;
-
-    /**
-     * @var Logger
-     */
-    private $logger;
-
-    /**
-     * @var Filesystem
-     */
-    private $fs;
-
-    /**
-     * @var string
-     */
-    private $depositDir;
+class ValidateBagCommand extends AbstractProcessingCmd {
 
     /**
      * Configure the command.
@@ -53,44 +17,7 @@ class ValidateBagCommand extends ContainerAwareCommand {
     protected function configure() {
         $this->setName('pln:validate-bag');
         $this->setDescription('Validate PLN deposit packages.');
-    }
-
-    /**
-     * Set the service container, and initialize the command.
-     *
-     * @param ContainerInterface $container
-     */
-    public function setContainer(ContainerInterface $container = null) {
-        parent::setContainer($container);
-        $this->container = $container;
-        $this->logger = $container->get('monolog.logger.processing');
-        $this->em = $container->get('doctrine')->getManager();
-        $this->fs = new Filesystem();
-        $this->depositDir = $container->getParameter('pln_service_directory');
-        if (!$this->fs->isAbsolutePath($this->depositDir)) {
-            $this->depositDir = $this->container->get('kernel')->getRootDir() . '/' . $this->depositDir;
-        }
-    }
-
-    /**
-     * Check the permissions of a path, make sure it exists and is writeable.
-     * Returns true if the directory exists and is writeable.
-     *
-     * @param string $path
-     * @return boolean
-     */
-    protected function checkPerms($path) {
-        try {
-            if (!$this->fs->exists($path)) {
-                $this->logger->warn("Creating directory {$path}");
-                $this->fs->mkdir($path);
-            }
-        } catch (IOExceptionInterface $e) {
-            $this->logger->error("Error creating directory {$path}");
-            $this->logger->error($e);
-            return false;
-        }
-        return true;
+        parent::configure();
     }
 
     /**
@@ -103,50 +30,47 @@ class ValidateBagCommand extends ContainerAwareCommand {
     protected function processDeposit(Deposit $deposit) {
         $journal = $deposit->getJournal();
 
-        $journalDir = $this->depositDir . '/' . $journal->getUuid();
-        $depositPath = $journalDir . '/' . $deposit->getFileName();
+        $harvestedPath = $this->getHarvestDir($journal) . '/' . $deposit->getFileName();
+        $extractedPath = $this->getProcessingDir($journal) . '/' . $deposit->getFileUuid();
 
-        if (!$this->fs->exists($depositPath)) {
-            $this->logger->error("Deposit file {$depositPath} does not exist");
-            $deposit->setOutcome("failure");
-            return;
+        $this->logger->info("Processing {$harvestedPath}");
+
+        if (!$this->fs->exists($harvestedPath)) {
+            $this->logger->error("Deposit file {$harvestedPath} does not exist");
+            return false;
         }
 
-        $this->logger->info("Processing {$depositPath}");
+        $this->checkPerms($extractedPath);
+        $zipFile = new ZipArchive();
+        if($zipFile->open($harvestedPath) === false) {
+            $this->logger->error("Cannot open {$harvestedPath}: " . $zipFile->getStatusString());
+            return false;
+        }
 
-        $bag = new BagIt($depositPath);
+        $this->logger->info("Extracting to {$extractedPath}");
+        if($zipFile->extractTo($extractedPath) === false) {
+            $this->logger->error("Cannot extract to {$this->depositDir} "  . $zipFile->getStatusString());
+            return false;
+        }
+
+        $this->logger->info("Validating {$extractedPath}/bag");
+        $bag = new BagIt($extractedPath . '/bag');
         $bag->validate();
         if(count($bag->getBagErrors()) > 0) {
             foreach($bag->getBagErrors() as $error) {
                 $this->logger->error("Bagit validation error for {$error[0]} - {$error[1]}");
             }
-            $deposit->setOutcome("failure");
+            return false;
         }
-        $deposit->setOutcome("success");
-        $deposit->setState("bagValidated");
+        return true;
     }
 
-    /**
-     * Execute the command. Get all the deposits needing to be harvested.
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     */
-    protected function execute(InputInterface $input, OutputInterface $output) {
-        /** @var DepositRepository */
-        $repo = $this->em->getRepository('AppBundle:Deposit');
+    public function nextState() {
+        return "bag-validated";
+    }
 
-        $this->checkPerms($this->depositDir);
-
-        $deposits = $repo->findByState('payloadValidated');
-        $count = count($deposits);
-
-        $this->logger->info("Validating {$count} bags.");
-
-        foreach ($deposits as $deposit) {
-            $this->processDeposit($deposit);
-        }
-        $this->em->flush();
+    public function processingState() {
+        return "payload-validated";
     }
 
 }

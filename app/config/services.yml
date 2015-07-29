@@ -9,3 +9,15 @@ services:
         arguments: ["@templating"]
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException } 
+
+    blackwhitelist:
+        class: AppBundle\Services\BlackWhitelist
+        arguments: ["@doctrine"]
+
+    dtdvalidator:
+        class: AppBundle\Services\DtdValidator
+
+    virus_scanner:
+        class: AppBundle\Services\VirusScanner
+        arguments: ["%clamdscan_path%"]
+

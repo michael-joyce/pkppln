@@ -636,6 +636,6 @@ class Deposit
                 $extension = '.tgz';
                 break;
         }
-        return $this->getDepositUuid() . $extension;
+        return $this->getFileUuid() . $extension;
     }
 }

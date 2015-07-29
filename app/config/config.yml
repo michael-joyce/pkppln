@@ -38,6 +38,7 @@ twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
     globals:
+        blackwhitelist: "@blackwhitelist"
         pln_accepting: "%pln_accepting%"
         pln_maxUploadSize: "%pln_maxUploadSize%"
         pln_uploadChecksumType: "%pln_uploadChecksumType%"
@@ -129,4 +130,6 @@ fos_user:
     db_driver: orm
     firewall_name: main
     user_class: AppUserBundle\Entity\User
-    
+
+cl_tissue:
+    adapter: clamav
