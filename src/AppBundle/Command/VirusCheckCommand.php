@@ -52,7 +52,7 @@ class VirusCheckCommand extends AbstractProcessingCmd {
         return true;
     }
 
-    protected function scanEmbeddedData($path) {
+    protected function scanEmbeddedData($path, &$report) {
         $dom = new DOMDocument();
         $dom->load($path);
         $xp = new DOMXPath($dom);
@@ -61,7 +61,7 @@ class VirusCheckCommand extends AbstractProcessingCmd {
             /** @var DOMNamedNodeMap */
             $attrs = $em->attributes;
             if (!$attrs) {
-                return; // should this be an error?
+                $this->logger->error("No attributes found on embed element.");
             }
             $filename = $attrs->getNamedItem('filename')->nodeValue;
             $fs = new Filesystem();
@@ -71,21 +71,12 @@ class VirusCheckCommand extends AbstractProcessingCmd {
             $fs->dumpFile($path, base64_decode($em->nodeValue));
             if (!$this->scan($path)) {
                 $clean = false;
-                $this->report[basename($path)] = 'virus detected';
+                $report .= "{$filename} - virus detected\n";
             } else {
-                $this->report[basename($path)] = 'clean';
+                $report .= "{$filename} - clean\n";
             }
         }
         return $clean;
-    }
-
-    public function generateReport($startTimestamp, $endTimestamp) {
-        $report = "# Virus scan started at {$startTimestamp} by ClamAV.";
-        foreach($this->report as $filename => $status) {
-            $report .= "{$filename}\t{$status}\n";
-        }
-        $report .= "# Virus scan finished at {$endTimestamp}";
-        return $report;
     }
 
     /**
@@ -96,32 +87,32 @@ class VirusCheckCommand extends AbstractProcessingCmd {
      * @return type
      */
     protected function processDeposit(Deposit $deposit) {
-        $journal = $deposit->getJournal();
-        $extractedPath = $this->getProcessingDir($journal) . '/' . $deposit->getFileUuid();
+        $extractedPath = $this->getBagPath($deposit);
         $clean = true;
-        $this->report = array();
-        $startTimestamp = date('c');
+        $report = "";
 
         $this->logger->info("Checking {$extractedPath} for viruses.");
         // first scan the whole bag.
         $result = $this->scanner->scan([$extractedPath]);
-
+        
+        $report .= "Scanned bag files for viruses.\n";
         if ($result->hasVirus()) {
             $this->logInfections($result);
+            $report .= "Virus infections found in bag files.\n";
             $clean = false;
         }
-        $bag = new BagIt($extractedPath . '/bag');
+        $bag = new BagIt($extractedPath);
         foreach ($bag->getBagContents() as $filename) {
             if (substr($filename, -4) !== '.xml') {
+                $this->logger->notice("{$filename} is not xml. skipping. ");
                 continue;
             }
-            if (!$this->scanEmbeddedData($filename)) {
+            $this->logger->notice("Scanning {$filename} for embedded viruses.");
+            if (!$this->scanEmbeddedData($filename, $report)) {
                 $clean = false;
             }
         }
-        $finishTimestamp = date('c');
-        $report = $this->generateReport($startTimestamp, $endTimestamp);
-        $bag->createFile($extractedPath, $dest);
+        $deposit->addToProcessingLog($report);
         return $clean;
     }
 
@@ -131,6 +122,14 @@ class VirusCheckCommand extends AbstractProcessingCmd {
 
     public function processingState() {
         return "bag-validated";
+    }
+
+    public function failureLogMessage() {
+        return "Virus check failed.";
+    }
+
+    public function successLogMessage() {
+        return "Virus check passed. No infections found.";
     }
 
 }

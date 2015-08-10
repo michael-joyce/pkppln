@@ -185,8 +185,17 @@ class Deposit
      */
     private $depositReceipt;
 
+    /**
+     * Processing log for this deposit.
+     *
+     * @var string
+     * @ORM\Column(type="text")
+     */
+    private $processingLog;
+
     public function __construct() {
          $this->received = new DateTime();
+         $this->processingLog = '';
     }
 
     /**
@@ -637,5 +646,14 @@ class Deposit
                 break;
         }
         return $this->getFileUuid() . $extension;
+    }
+
+    public function getProcessingLog() {
+        return $this->processingLog;
+    }
+
+    public function addToProcessingLog($content) {
+        $date = date('c');
+        $this->processingLog .= "{$date}\n{$content}\n\n";
     }
 }

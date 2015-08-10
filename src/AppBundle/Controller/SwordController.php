@@ -94,10 +94,13 @@ class SwordController extends Controller {
     private function checkAccess($journal_uuid) {
         /** @var BlackWhitelist */
         $bw = $this->get('blackwhitelist');
+        $this->get('monolog.logger.sword')->notice("Checking access for {$journal_uuid}");
         if($bw->isWhitelisted($journal_uuid)) {
+            $this->get('monolog.logger.sword')->notice("whitelisted {$journal_uuid}");
             return true;
         }
         if($bw->isBlacklisted($journal_uuid)) {
+            $this->get('monolog.logger.sword')->notice("blacklisted {$journal_uuid}");
             return false;
         }
         return $this->container->getParameter("pln_accepting");
@@ -157,8 +160,8 @@ class SwordController extends Controller {
         /** @var LoggerInterface */
         $logger = $this->get('monolog.logger.sword');
 
-        if( $this->checkAccess($journal_uuid) !== false) {
-            $logger->notice("create deposit [Not Authorized to make deposits] - {$request->getClientIp()} - {$journal_uuid}");
+        if( $this->checkAccess($journal_uuid) === false) {
+            $logger->notice("create deposit [Not Authorized] - {$request->getClientIp()} - {$journal_uuid}");
             throw new SwordException(400, "Not authorized to make deposits.");
         }
         $logger->notice("create deposit - {$request->getClientIp()} - {$journal_uuid}");
@@ -203,6 +206,7 @@ class SwordController extends Controller {
                 ), UrlGeneratorInterface::ABSOLUTE_URL
                 )
         );
+        $deposit->addToProcessingLog("Deposit received.");
 
         $em->persist($deposit);
         $em->flush();
@@ -226,8 +230,8 @@ class SwordController extends Controller {
         /** @var LoggerInterface */
         $logger = $this->get('monolog.logger.sword');
 
-        if( $this->checkAccess($journal_uuid) !== false) {
-            $logger->notice("statement [NOT AUTHORIZED FOR STATEMENTS] - {$request->getClientIp()} - {$journal_uuid} - {$deposit_uuid}");
+        if( $this->checkAccess($journal_uuid) === false) {
+            $logger->notice("statement [not authorized] - {$request->getClientIp()} - {$journal_uuid} - {$deposit_uuid}");
             throw new SwordException(400, "Not authorized to request statements.");
         }
 
@@ -278,8 +282,8 @@ class SwordController extends Controller {
         /** @var LoggerInterface */
         $logger = $this->get('monolog.logger.sword');
 
-        if( $this->checkAccess($journal_uuid) !== false) {
-            $logger->notice("edit [NOT AUTHORIZED FOR EDIT] - {$request->getClientIp()} - {$journal_uuid} - {$deposit_uuid}");
+        if( $this->checkAccess($journal_uuid) === false) {
+            $logger->notice("edit [not authorized] - {$request->getClientIp()} - {$journal_uuid} - {$deposit_uuid}");
             throw new SwordException(400, "Not authorized to edit deposits.");
         }
 
@@ -327,6 +331,7 @@ class SwordController extends Controller {
                 ), UrlGeneratorInterface::ABSOLUTE_URL
                 )
         );
+        $newDeposit->addToProcessingLog("Deposit edited.");
 
         $em->persist($deposit);
         $em->flush();

@@ -96,6 +96,10 @@
                 <th>Depositreceipt</th>
                 <td>{{ entity.depositReceipt }}</td>
             </tr>
+            <tr>
+                <th>Processing History</th>
+                <td>{{ entity.processingLog|nl2br }}</td>
+            </tr>
         </tbody>
     </table>
 {% endblock %}

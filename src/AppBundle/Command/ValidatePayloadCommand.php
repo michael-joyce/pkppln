@@ -66,4 +66,12 @@ class ValidatePayloadCommand extends AbstractProcessingCmd {
         return "harvested";
     }
 
+    public function failureLogMessage() {
+        return "Payload checksum validation failed.";
+    }
+
+    public function successLogMessage() {
+        return "Payload checksum validation succeeded.";
+    }
+
 }

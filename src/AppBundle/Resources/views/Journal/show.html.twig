@@ -58,6 +58,16 @@
                     {%endif%}
                 </td>
             <tr>
+            <tr>
+                <th>Blacklisted</th>
+                <td>
+                    {% if(blackwhitelist.isBlacklisted(entity.uuid)) %}
+                        Yes
+                    {% else %}
+                        No
+                    {%endif%}
+                </td>
+            <tr>
                 <th>Issn</th>
                 <td>{{ entity.issn }}</td>
             </tr>

@@ -79,15 +79,29 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
         return $root . '/' . $path;
     }
 
+    public final function getStagingDir(Journal $journal) {
+        $path = $this->container->getParameter('pln_staging_directory') . '/' . $journal->getUuid();
+        if ($this->fs->isAbsolutePath($path)) {
+            return $path;
+        }
+        $root = dirname($this->container->get('kernel')->getRootDir());
+        return $root . '/' . $path;
+    }
+
+    public final function getBagPath(Deposit $deposit) {
+        return $this->getProcessingDir($deposit->getJournal()) 
+                . '/' 
+                . $deposit->getDepositUuid() 
+                . '/'
+                . $deposit->getFileUuid();
+    }
+
     protected function configure() {
         $this->addOption(
                 'dry-run', 'd', InputOption::VALUE_NONE, 'Do not update processing status'
         );
         $this->addOption(
                 'force', 'f', InputOption::VALUE_NONE, 'Force the processing state to be updated'
-        );
-        $this->addArgument(
-                'deposit', InputArgument::IS_ARRAY, 'Deposit UUID(s) to process'
         );
     }
 
@@ -124,6 +138,10 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
 
     abstract function nextState();
 
+    abstract function successLogMessage();
+
+    abstract function failureLogMessage();
+
     /**
      * Code to run before executing the command.
      */
@@ -159,11 +177,14 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
             if ($result) {
                 $deposit->setState($this->nextState());
                 $deposit->setOutcome('success');
+                $deposit->addToProcessingLog($this->successLogMessage());
                 continue;
             }
+            $deposit->addToProcessingLog($this->failureLogMessage());
             if($input->getOption('force')) {
                 $deposit->setState($this->nextState());
                 $deposit->setOutcome('forced');
+                $deposit->addToProcessingLog("Ignoring error.");
                 continue;
             }
             $deposit->setOutcome('failure');

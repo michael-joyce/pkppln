@@ -99,4 +99,12 @@ class HarvestCommand extends AbstractProcessingCmd {
         return "deposited";
     }
 
+    public function failureLogMessage() {
+        return "Deposit harvest failed.";
+    }
+
+    public function successLogMessage() {
+        return "Deposit harvest succeeded.";
+    }
+
 }

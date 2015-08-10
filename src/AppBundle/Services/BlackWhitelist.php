@@ -10,7 +10,7 @@ class BlackWhitelist {
     private $em;
 
     public function __construct(Registry $doctrine) {
-        $this->em = $doctrine->getEntityManager();
+        $this->em = $doctrine->getManager();
     }
 
     public function isWhitelisted($uuid) {
@@ -18,7 +18,7 @@ class BlackWhitelist {
         return $repo->findOneBy(array('uuid' => $uuid)) !== null;
     }
 
-    public function isBlacklisted(Journal $journal) {
+    public function isBlacklisted($uuid) {
         $repo = $this->em->getRepository('AppBundle:Blacklist');
         return $repo->findOneBy(array('uuid' => $uuid)) !== null;
     }
