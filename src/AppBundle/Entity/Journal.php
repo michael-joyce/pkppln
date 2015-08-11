@@ -98,7 +98,7 @@ class Journal {
      * Name of the publisher
      *
      * @var string
-     * @ORM\Column(type="string", nullable=false)
+     * @ORM\Column(type="string", nullable=true)
      */
     private $publisherName;
 
@@ -107,7 +107,7 @@ class Journal {
      *
      * @var string
      * @Assert\Url
-     * @ORM\Column(type="string", nullable=false)
+     * @ORM\Column(type="string", nullable=true)
      */
     private $publisherUrl;
 

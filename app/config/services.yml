@@ -20,4 +20,10 @@ services:
     virus_scanner:
         class: AppBundle\Services\VirusScanner
         arguments: ["%clamdscan_path%"]
+        
+    sword_client:
+        class: AppBundle\Services\SwordClient
+        arguments: ["%lockssomatic_sd_iri%", "%staging_server_uuid%"]
+        calls: 
+            - [ setLogger, ["@monolog.logger.sword"]]
 

@@ -21,7 +21,7 @@ class DepositRepository extends EntityRepository
      */
     public function findByState($state) {
         return $this->findBy(array(
-            'state' => $state
+            'state' => $state,
         ));
     }
 }

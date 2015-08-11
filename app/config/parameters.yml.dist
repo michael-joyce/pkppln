@@ -31,3 +31,9 @@ parameters:
 
     # path to clamdscan
     clamdscan_path: /usr/bin/clamdscan
+
+    # URI for LOCKSSOMatic's service document.
+    lockssomatic_sd_iri: http://lockssomatic.info/api/sword/2.0/sd-iri
+
+    # Staging Server's UUID for LOCKSSOMatic
+    staging_server_uuid: ~

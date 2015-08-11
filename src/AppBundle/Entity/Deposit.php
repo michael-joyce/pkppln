@@ -153,14 +153,6 @@ class Deposit
     private $state = "deposited";
     
     /**
-     * Success or failure of the processing in $state.
-     *
-     * @var string
-     * @ORM\Column(type="string")
-     */
-    private $outcome;
-
-    /**
      * Stae of the deposit in LOCKSSOMatic or the PLN.
      *
      * @var string
@@ -482,29 +474,6 @@ class Deposit
     public function getState()
     {
         return $this->state;
-    }
-
-    /**
-     * Set outcome
-     *
-     * @param string $outcome
-     * @return Deposit
-     */
-    public function setOutcome($outcome)
-    {
-        $this->outcome = $outcome;
-
-        return $this;
-    }
-
-    /**
-     * Get outcome
-     *
-     * @return string 
-     */
-    public function getOutcome()
-    {
-        return $this->outcome;
     }
 
     /**

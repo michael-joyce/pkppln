@@ -27,7 +27,6 @@ class DepositType extends AbstractType
             ->add('url')
             ->add('size')
             ->add('state')
-            ->add('outcome')
             ->add('plnState')
             ->add('depositDate')
             ->add('depositReceipt')

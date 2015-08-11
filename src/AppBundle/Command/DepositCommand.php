@@ -3,6 +3,7 @@
 namespace AppBundle\Command;
 
 use AppBundle\Entity\Deposit;
+use AppBundle\Services\SwordClient;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Symfony\Component\Filesystem\Exception\IOException;
@@ -26,23 +27,13 @@ class DepositCommand extends AbstractProcessingCmd {
      * @return type
      */
     protected function processDeposit(Deposit $deposit) {
-        $response = $this->fetchDeposit($deposit->getUrl());
-        if ($response === false) {            
-            return false;
-        }
-        $data = $response->getBody();
-        $deposit->setFileType($response->getHeader('Content-Type'));
-
-        $journal = $deposit->getJournal();
-        $dir = $this->getHarvestDir($journal);
-        if (!$this->checkPerms($dir)) {
-            return false;
-        }
-        $filePath = $dir . '/' . $deposit->getFileName();
-        if (!$this->writeDeposit($filePath, $data)) {
-            return false;
-        }
-        return true;
+        /**
+         * @var SwordClient
+         */
+        $client = $this->container->get('sword_client');
+        $client->setLogger($this->logger);
+        $client->serviceDocument($deposit->getJournal());
+        return false;
     }
 
     public function nextState() {

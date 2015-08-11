@@ -23,7 +23,6 @@
                 <th>Url</th>
                 <th>Size</th>
                 <th>State</th>
-                <th>Outcome</th>
                 <th>Plnstate</th>
                 <th>Depositdate</th>
                 <th>Depositreceipt</th>
@@ -46,7 +45,6 @@
                 <td>{{ entity.url }}</td>
                 <td>{{ entity.size }}</td>
                 <td>{{ entity.state }}</td>
-                <td>{{ entity.outcome }}</td>
                 <td>{{ entity.plnState }}</td>
                 <td>{% if entity.depositDate %}{{ entity.depositDate|date('Y-m-d H:i:s') }}{% endif %}</td>
                 <td>{{ entity.depositReceipt }}</td>
