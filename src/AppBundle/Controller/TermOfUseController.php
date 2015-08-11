@@ -90,7 +90,7 @@ class TermOfUseController extends Controller
      * Show the edit history of a term.
      *
      * @param Request $request
-     * @Route("/history/{id}", name="termhistory")
+     * @Route("/history/{id}", name="termofuse_history")
      * @Method("GET")
      * @Template()
      */

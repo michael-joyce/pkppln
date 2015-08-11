@@ -9,7 +9,7 @@
     <ul class="record_actions">
         <li>
             <a href="{{ path('journal') }}">
-                Back to the list
+                <span class="glyphicon glyphicon-list"></span>
             </a>
         </li>
 
@@ -20,7 +20,7 @@
         </li>
 
         <li>
-            <a href="{{ path('journal_delete', { 'id': entity.id }) }}">
+            <a href="{{ path('journal_delete', { 'id': entity.id }) }}" class="js-confirm" data-confirm="Are you sure you want to delete this journal?">
                 <span class='glyphicon glyphicon-remove'></span>
             </a>
         </li>
@@ -33,6 +33,14 @@
                 <td>{{ entity.id }}</td>
             </tr>
             <tr>
+                <th>Title</th>
+                <td>{{ entity.title }}</td>
+            </tr>
+            <tr>
+                <th>Deposits</th>
+                <td><a href="{{ path('journal_deposits', { 'id' : entity.id }) }}">{{ entity.countDeposits }}</a></td>
+            </tr>
+            <tr>
                 <th>Uuid</th>
                 <td>{{ entity.uuid }}</td>
             </tr>
@@ -43,10 +51,6 @@
             <tr>
                 <th>Notified</th>
                 <td>{{ entity.notified|date('Y-m-d H:i:s') }}</td>
-            </tr>
-            <tr>
-                <th>Title</th>
-                <td>{{ entity.title }}</td>
             </tr>
             <tr>
                 <th>Whitelisted</th>
@@ -73,7 +77,7 @@
             </tr>
             <tr>
                 <th>Url</th>
-                <td>{{ entity.url }}</td>
+                <td><a href="{{ entity.url }}">{{ entity.url }}</a></td>
             </tr>
             <tr>
                 <th>Status</th>
@@ -81,7 +85,7 @@
             </tr>
             <tr>
                 <th>Email</th>
-                <td>{{ entity.email }}</td>
+                <td><a href="mailto:{{ entity.email }}">{{ entity.email }}</a></td>
             </tr>
             <tr>
                 <th>Publishername</th>
@@ -89,7 +93,7 @@
             </tr>
             <tr>
                 <th>Publisherurl</th>
-                <td>{{ entity.publisherUrl }}</td>
+                <td><a href="{{ entity.publisherUrl }}">{{ entity.publisherUrl }}</a></td>
             </tr>
         </tbody>
     </table>

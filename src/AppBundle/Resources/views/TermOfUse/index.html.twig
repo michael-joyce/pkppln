@@ -10,34 +10,19 @@
     <table class="records_list table table-striped table-bordered table-hover">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Weight</th>
                 <th>Created</th>
-                <th>Keycode</th>
-                <th>Langcode</th>
+                <th>Key code</th>
+                <th>Language</th>
                 <th>Content</th>
-                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for entity in entities %}
             <tr>
-                <td><a href="{{ path('termofuse_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
-                <td>{{ entity.weight }}</td>
                 <td>{% if entity.created %}{{ entity.created|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>{{ entity.keyCode|preg_replace('/\\./', '&#8203;.')|raw }}</td>
+                <td><a href="{{ path('termofuse_show', { 'id': entity.id }) }}">{{ entity.keyCode|preg_replace('/\\./', '&#8203;.')|raw }}</a></td>
                 <td>{{ entity.langCode }}</td>
                 <td>{{ entity.content }}</td>
-                <td>
-                <ul>
-                    <li>
-                        <a href="{{ path('termofuse_show', { 'id': entity.id }) }}">show</a>
-                    </li>
-                    <li>
-                        <a href="{{ path('termofuse_edit', { 'id': entity.id }) }}">edit</a>
-                    </li>
-                </ul>
-                </td>
             </tr>
         {% endfor %}
         </tbody>
@@ -46,7 +31,12 @@
         <ul>
         <li>
             <a href="{{ path('termofuse_new') }}">
-                Create a new entry
+                <span class="glyphicon glyphicon-plus"></span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('termofuse_sort') }}">
+                <span class="glyphicon glyphicon-sort"></span>
             </a>
         </li>
     </ul>

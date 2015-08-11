@@ -19,7 +19,6 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('bundles/bmatznerjqueryui/css/smoothness/jquery-ui.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ asset('bundles/bmatznerjqueryui/css/smoothness/jquery.ui.theme.css') }}" />
 
-
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 </head>
 <body>
@@ -97,7 +96,7 @@
 
 </div>
 
-{% javascripts '@jquery' '@bootstrap_js' %}
+{% javascripts '@jquery' '@bootstrap_js' 'bundles/app/js/*' %}
 <script type="text/javascript" src="{{ asset_url }}"></script>
 {% endjavascripts %}
 <script type="text/javascript" src="{{ asset('bundles/bmatznerjqueryui/js/minified/jquery-ui.min.js') }}"></script>

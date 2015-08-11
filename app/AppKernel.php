@@ -21,6 +21,7 @@ class AppKernel extends Kernel
             new AppUserBundle\AppUserBundle(),
             new CL\Bundle\TissueBundle\CLTissueBundle(),
             new Bmatzner\JQueryUIBundle\BmatznerJQueryUIBundle(),
+            new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

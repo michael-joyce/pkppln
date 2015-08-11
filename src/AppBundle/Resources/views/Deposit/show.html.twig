@@ -1,30 +1,18 @@
 {% extends '::base.html.twig' %}
 
-    
+
 {% block pageheader %}
     <h1>Deposit</h1>
 {% endblock %}
-    
+
 {% block body -%}
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('deposit') }}">
-            Back to the list
-        </a>
-    </li>
-
-    <li>
-        <a href="{{ path('deposit_edit', { 'id': entity.id }) }}">
-            <span class='glyphicon glyphicon-edit'></span>
-        </a>
-    </li>
-
-    <li>
-        <a href="{{ path('deposit_delete', { 'id': entity.id }) }}">
-            <span class='glyphicon glyphicon-remove'></span>
-        </a>
-    </li>
-</ul>
+    <ul class="record_actions">
+        <li>
+            <a href="{{ path('deposit') }}">
+                <span class="glyphicon glyphicon-list"></span>
+            </a>
+        </li>
+    </ul>
 
     <table class="record_properties table table-striped table-bordered table-hover">
         <tbody>
@@ -33,11 +21,11 @@
                 <td>{{ entity.id }}</td>
             </tr>
             <tr>
-                <th>File_uuid</th>
+                <th>File uuid</th>
                 <td>{{ entity.fileuuid }}</td>
             </tr>
             <tr>
-                <th>Deposit_uuid</th>
+                <th>Deposit uuid</th>
                 <td>{{ entity.deposituuid }}</td>
             </tr>
             <tr>
@@ -49,6 +37,10 @@
                 <td>{{ entity.action }}</td>
             </tr>
             <tr>
+                <th>Journal</th>
+                <td><a href="{{ path('journal_show', { 'id' : entity.journal.id }) }}">{{ entity.journal.title }}</a>
+            </tr>
+            <tr>
                 <th>Volume</th>
                 <td>{{ entity.volume }}</td>
             </tr>
@@ -57,20 +49,20 @@
                 <td>{{ entity.issue }}</td>
             </tr>
             <tr>
-                <th>Pubdate</th>
-                <td>{{ entity.pubDate|date('Y-m-d H:i:s') }}</td>
+                <th>Publication date</th>
+                <td>{{ entity.pubDate|date('Y-m-d') }}</td>
             </tr>
             <tr>
-                <th>Checksumtype</th>
+                <th>Checksum type</th>
                 <td>{{ entity.checksumType }}</td>
             </tr>
             <tr>
-                <th>Checksumvalue</th>
+                <th>Checksum value</th>
                 <td>{{ entity.checksumValue }}</td>
             </tr>
             <tr>
                 <th>Url</th>
-                <td>{{ entity.url }}</td>
+                <td><a href="{{ entity.url }}">{{ entity.url }}</a></td>
             </tr>
             <tr>
                 <th>Size</th>
@@ -81,19 +73,23 @@
                 <td>{{ entity.state }}</td>
             </tr>
             <tr>
-                <th>Plnstate</th>
+                <th>Pln state</th>
                 <td>{{ entity.plnState }}</td>
             </tr>
             <tr>
-                <th>Depositdate</th>
+                <th>Deposit date</th>
                 <td>{{ entity.depositDate|date('Y-m-d H:i:s') }}</td>
             </tr>
             <tr>
-                <th>Depositreceipt</th>
-                <td>{{ entity.depositReceipt }}</td>
+                <th>Deposit receipt</th>
+                <td>
+                    {% if entity.depositReceipt %}
+                        <a href="{{ entity.depositReceipt }}"</a>
+                    {% endif %}
+                </td>
             </tr>
             <tr>
-                <th>Processing History</th>
+                <th>Processing history</th>
                 <td>{{ entity.processingLog|nl2br }}</td>
             </tr>
         </tbody>

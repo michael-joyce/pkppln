@@ -7,13 +7,14 @@
 
 {% block body -%}
 
+<p>Showing deposits for {{ journal.title }}</p>
+
     <table class="records_list table table-striped table-bordered table-hover">
         <thead>
             <tr>
                 <th>Deposit Uuid</th>
                 <th>Received</th>
                 <th>Action</th>
-                <th>Journal</th>
                 <th>Volume</th>
                 <th>Issue</th>
                 <th>Pubdate</th>
@@ -29,11 +30,10 @@
                     <td><a href="{{ path('deposit_show', { 'id': entity.id }) }}">{{ entity.deposituuid }}</a></td>
                     <td>{% if entity.received %}{{ entity.received|date('Y-m-d H:i:s') }}{% endif %}</td>
                     <td>{{ entity.action }}</td>
-                    <td><a href="{{ path('journal_show', { 'id': entity.journal.id }) }}"> {{ entity.journal.title }} </a></td>
                     <td>{{ entity.volume }}</td>
                     <td>{{ entity.issue }}</td>
                     <td>{% if entity.pubDate %}{{ entity.pubDate|date('Y-m-d') }}{% endif %}</td>
-                    <td><a href="{{ entity.url }}">{{ entity.url }}</a></td>
+                    <td>{{ entity.url }}</td>
                     <td>{{ entity.size }}</td>
                     <td>{{ entity.state }}</td>
                     <td>{{ entity.plnState }}</td>

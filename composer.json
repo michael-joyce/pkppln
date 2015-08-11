@@ -33,7 +33,8 @@
         "cleentfaar/tissue-clamav-adapter": "dev-master",
         "cleentfaar/tissue-bundle": "*",
         "jasny/twig-extensions": "~1.0",
-        "bmatzner/jquery-ui-bundle": "^1.10"
+        "bmatzner/jquery-ui-bundle": "^1.10",
+        "knplabs/knp-paginator-bundle": "^2.4"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"

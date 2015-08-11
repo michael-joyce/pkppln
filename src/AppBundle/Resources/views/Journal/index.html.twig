@@ -10,54 +10,44 @@
     <table class="records_list table table-striped table-bordered table-hover">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Uuid</th>
-                <th>Contacted</th>
-                <th>Notified</th>
                 <th>Title</th>
                 <th>Issn</th>
                 <th>Url</th>
                 <th>Status</th>
                 <th>Email</th>
-                <th>Publishername</th>
-                <th>Publisherurl</th>
-                <th>Actions</th>
+                <th>Publisher</th>
             </tr>
         </thead>
         <tbody>
         {% for entity in entities %}
             <tr>
-                <td><a href="{{ path('journal_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
-                <td>{{ entity.uuid }}</td>
-                <td>{% if entity.contacted %}{{ entity.contacted|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>{% if entity.notified %}{{ entity.notified|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>{{ entity.title }}</td>
+                <td><a href="{{ path('journal_show', { 'id': entity.id }) }}">{{ entity.title }}</a></td>
                 <td>{{ entity.issn }}</td>
-                <td>{{ entity.url }}</td>
+                <td><a href="{{ entity.url }}">{{ entity.url }}</a></td>
                 <td>{{ entity.status }}</td>
                 <td>{{ entity.email }}</td>
-                <td>{{ entity.publisherName }}</td>
-                <td>{{ entity.publisherUrl }}</td>
-                <td>
-                <ul>
-                    <li>
-                        <a href="{{ path('journal_show', { 'id': entity.id }) }}">show</a>
-                    </li>
-                    <li>
-                        <a href="{{ path('journal_edit', { 'id': entity.id }) }}">edit</a>
-                    </li>
-                </ul>
+                <td> {% if entity.publisherUrl and entity.publisherName %}
+                    <a href="{{ entity.publisherUrl }}">
+                        {{ entity.publisherName }}
+                    </a>
+                    {% else %}
+                        {{ entity.publisherName }}
+                    {% endif %}
                 </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-        <ul>
+    <div class="navigation">
+        {{ knp_pagination_render(entities) }}
+    </div>
+
+    <ul>
         <li>
             <a href="{{ path('journal_new') }}">
-                Create a new entry
+                <span class="glyphicon glyphicon-plus"></span>
             </a>
         </li>
     </ul>
-    {% endblock %}
+{% endblock %}

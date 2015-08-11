@@ -25,16 +25,50 @@ class JournalController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-
-        $entities = $em->getRepository('AppBundle:Journal')->findAll();
+        $dql = "SELECT j FROM AppBundle:Journal j";
+        $query = $em->createQuery($dql);
+        $paginator = $this->get('knp_paginator');
+        $entities = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1)
+        );
 
         return array(
             'entities' => $entities,
         );
     }
+
+    /**
+     * Show deposits for a journal
+     * @Route("/deposits/{id}", name="journal_deposits")
+     * @Method("GET")
+     * @Template()
+     */
+    public function depositsAction(Request $request, $id) {
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('AppBundle:Journal')->find($id);
+        
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Journal entity.');
+        }
+
+        $paginator = $this->get('knp_paginator');
+        $entities = $paginator->paginate(
+            $entity->getDeposits(),
+            $request->query->getInt('page', 1)
+        );
+
+
+        return array(
+            'journal' => $entity,
+            'entities' => $entities,
+        );
+    }
+
+
     /**
      * Creates a new Journal entity.
      *
