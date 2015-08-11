@@ -48,5 +48,19 @@ class TermOfUseRepository extends EntityRepository
         }
         return $terms;
     }
-    
+
+    public function getTermHistory($id) {
+        $term = $this->findOneBy(array('id' => $id));
+        if($term === null) {
+            return null;
+        }
+        $qb = $this->createQueryBuilder('t')
+                ->select('t')
+                ->Where('t.keyCode = :key')
+                ->setParameter('key', $term->getKeyCode())
+                ->orderBy('t.id', 'ASC')
+                ->getQuery();
+        return $qb->getResult();
+    }
+
 }

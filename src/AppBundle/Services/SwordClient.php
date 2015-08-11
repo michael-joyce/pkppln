@@ -4,6 +4,7 @@ namespace AppBundle\Services;
 
 use AppBundle\Entity\Deposit;
 use AppBundle\Entity\Journal;
+use AppBundle\Utility\Namespaces;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Monolog\Logger;
@@ -17,9 +18,8 @@ class SwordClient {
     private $uploadChecksum;
     private $siteName;
     private $colIri;
-    private $providerName;
-    private $plugins;
-    
+
+    private $namespaces;
 
     /**
      * @var Logger
@@ -30,6 +30,7 @@ class SwordClient {
         $this->sdIri = $sdIri;
         $this->serverUuid = $serverUuid;
         $this->logger = null;
+        $this->namespaces = new Namespaces();
     }
 
     public function setLogger(Logger $logger) {
@@ -53,10 +54,15 @@ class SwordClient {
         );
         $response = $client->get($this->sdIri, [ 'headers' => $headers ]);
         $xml = new \SimpleXMLElement($response->getBody());
+        $this->namespaces->registerNamespaces($xml);
+        $this->maxUpload = $xml->xpath('sword:maxUploadSize')[0];
+        $this->uploadChecksum = $xml->xpath('lom:uploadChecksumType')[0];
+        $this->siteName = $xml->xpath('.//atom:title');
+        $this->colIri = $xml->xpath('.//app:collection/@href')[0];
     }
 
     public function createDeposit(Deposit $deposit) {
-        
+        $this->serviceDocument($deposit->getJournal());
     }
 
     public function statement(Deposit $deposit) {

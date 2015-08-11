@@ -187,7 +187,6 @@ class SwordController extends Controller {
 
         $deposit = new Deposit();
         $deposit->setAction('add');
-        $deposit->setOutcome('success');
         $deposit->setChecksumType($this->getXmlValue($xml, 'pkp:content/@checksumType'));
         $deposit->setChecksumValue($this->getXmlValue($xml, 'pkp:content/@checksumValue'));
         $deposit->setDepositUuid($deposit_uuid);
@@ -313,7 +312,6 @@ class SwordController extends Controller {
         $xml = $this->parseXml($request->getContent());
         $newDeposit = new Deposit();
         $newDeposit->setAction('edit');
-        $newDeposit->setOutcome('success');
         $newDeposit->setChecksumType($this->getXmlValue($xml, 'pkp:content/@checksumType'));
         $newDeposit->setChecksumValue($this->getXmlValue($xml, 'pkp:content/@checksumValue'));
         $newDeposit->setDepositUuid($deposit_uuid);

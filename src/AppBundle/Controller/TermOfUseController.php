@@ -18,6 +18,28 @@ use AppBundle\Form\TermOfUseType;
 class TermOfUseController extends Controller
 {
 
+    private function fetchHeader(Request $request, $name) {
+        if ($request->headers->has($name)) {
+            return $request->headers->get($name);
+        }
+        if ($request->headers->has("X-" . $name)) {
+            return $request->headers->has("X-" . $name);
+        }
+        if ($request->query->has($name)) {
+            return $request->query->get($name);
+        }
+        return null;
+    }
+
+    private function getLocale(Request $request) {
+        $languageHeader = $this->fetchHeader($request, "Accept-Language");
+        $locale = locale_accept_from_http($languageHeader);
+        if ($locale !== null) {
+            return $locale;
+        }
+        return $this->container->getParameter("pln_defaultLocale");
+    }
+
     /**
      * Lists all TermOfUse entities.
      *
@@ -25,16 +47,63 @@ class TermOfUseController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
+        $locale = $this->getLocale($request);
         $em = $this->getDoctrine()->getManager();
-
-        $entities = $em->getRepository('AppBundle:TermOfUse')->findAll();
+        $entities = $em->getRepository('AppBundle:TermOfUse')->getCurrentTerms($locale);
 
         return array(
             'entities' => $entities,
         );
     }
+
+    /**
+     * Sort the TermOfUse entities.
+     *
+     * @Route("/sort", name="termofuse_sort")
+     * @Template("AppBundle:TermOfUse:sort.html.twig")
+     */
+    public function sortAction(Request $request) {
+        $locale = $this->getLocale($request);
+        $em = $this->getDoctrine()->getManager();
+        $repo = $em->getRepository('AppBundle:TermOfUse');
+
+        if($request->getMethod() === 'POST') {
+            $order = explode(',', $request->request->get('order'));
+            for($w = 0; $w < count($order); $w++) {
+                $terms = $repo->findBy(array('keyCode' => $order[$w]));
+                foreach($terms as $term) {
+                    $term->setWeight($w);
+                }
+            }
+            $em->flush();
+        }
+
+        $entities = $repo->getCurrentTerms($locale);
+        return array(
+            'entities' => $entities,
+        );
+    }
+
+    /**
+     * Show the edit history of a term.
+     *
+     * @param Request $request
+     * @Route("/history/{id}", name="termhistory")
+     * @Method("GET")
+     * @Template()
+     */
+    public function historyAction(Request $request, $id) {
+        $locale = $this->getLocale($request);
+        $em = $this->getDoctrine()->getManager();
+        $repo = $em->getRepository('AppBundle:TermOfUse');
+        $entities = $repo->getTermHistory($id, $locale);
+        return array(
+            'entities' => $entities,
+        );
+    }
+
     /**
      * Creates a new TermOfUse entity.
      *

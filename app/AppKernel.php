@@ -20,7 +20,7 @@ class AppKernel extends Kernel
             new AppBundle\AppBundle(),
             new AppUserBundle\AppUserBundle(),
             new CL\Bundle\TissueBundle\CLTissueBundle(),
-
+            new Bmatzner\JQueryUIBundle\BmatznerJQueryUIBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

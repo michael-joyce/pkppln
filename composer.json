@@ -31,11 +31,12 @@
         "scholarslab/bagit": "~0.2",
         "cleentfaar/tissue": "dev-master",
         "cleentfaar/tissue-clamav-adapter": "dev-master",
-        "cleentfaar/tissue-bundle": "*"
+        "cleentfaar/tissue-bundle": "*",
+        "jasny/twig-extensions": "~1.0",
+        "bmatzner/jquery-ui-bundle": "^1.10"
     },
     "require-dev": {
-        "sensio/generator-bundle": "~2.3",
-        "apigen/apigen": "^4.1"
+        "sensio/generator-bundle": "~2.3"
     },
     "repositories": [
         {

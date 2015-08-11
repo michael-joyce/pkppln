@@ -16,6 +16,10 @@
     <link rel='stylesheet' href='{{ asset_url }}'>
     {% endstylesheets %}
 
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/bmatznerjqueryui/css/smoothness/jquery-ui.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/bmatznerjqueryui/css/smoothness/jquery.ui.theme.css') }}" />
+
+
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 </head>
 <body>
@@ -39,8 +43,8 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Journals <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="{{ url('journal') }}">All Journals</a></li>
-                            <li><a href="#">Whitelist</a></li>
-                            <li><a href="#">Blacklist</a></li>
+                            <li><a href="{{ url('whitelist') }}">Whitelist</a></li>
+                            <li><a href="{{ url('blacklist') }}">Blacklist</a></li>
                             <li><a href="#">Unhealthy</a></li>
                         </ul>
                     </li>
@@ -93,9 +97,10 @@
 
 </div>
 
-{% block javascripts %}{% endblock %}
 {% javascripts '@jquery' '@bootstrap_js' %}
 <script type="text/javascript" src="{{ asset_url }}"></script>
 {% endjavascripts %}
+<script type="text/javascript" src="{{ asset('bundles/bmatznerjqueryui/js/minified/jquery-ui.min.js') }}"></script>
+{% block javascripts %}{% endblock %}
 </body>
 </html>
