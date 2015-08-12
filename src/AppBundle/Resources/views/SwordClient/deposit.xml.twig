@@ -1,0 +1,19 @@
+<entry xmlns="http://www.w3.org/2005/Atom"
+        xmlns:dcterms="http://purl.org/dc/terms/"
+        xmlns:lom="http://lockssomatic.info/SWORD2">
+    <title>{{ title }}</title>
+    <id>urn:uuid:{{ deposit.depositUuid }}</id>
+    <updated>{{ deposit.received|date('Y-m-d') }}</updated>
+    <author><name>{{ deposit.journal.title }}</name></author>
+    <summary type="text">
+        Content deposited to LOCKSS-O-Matic via the PKP PLN Staging Server.
+    </summary>
+    <!-- @size is the file size in kB (1,000 bytes) -->
+    <lom:content 
+        size="{{ deposit_size }}"
+        checksumType="{{ deposit_checksum_type }}"
+        checksumValue="{{ deposit_checksum_value }}">
+        {{ path('fetch', { 'depositId': deposit.depositUuid, 'fileId': deposit.fileUuid }) }}
+    </lom:content>
+</entry>
+

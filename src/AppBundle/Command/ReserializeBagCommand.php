@@ -28,15 +28,14 @@ class ReserializeBagCommand extends AbstractProcessingCmd {
         if (!$this->checkPerms($dir)) {
             return false;
         }
-        $journal = $deposit->getJournal();
-        $bag->setBagInfoData('External-Identifier', $deposit->getFileUuid());
-        
+        $bag->setBagInfoData('External-Identifier', $deposit->getFileUuid());        
         $bag->setBagInfoData('PKP-PLN-Deposit-UUID', $deposit->getDepositUuid());
         $bag->setBagInfoData('PKP-PLN-Deposit-Received', $deposit->getReceived()->format('c'));
         $bag->setBagInfoData('PKP-PLN-Deposit-Volume', $deposit->getVolume());
         $bag->setBagInfoData('PKP-PLN-Deposit-Issue', $deposit->getIssue());
         $bag->setBagInfoData('PKP-PLN-Deposit-PubDate', $deposit->getPubDate()->format('c'));
 
+        $journal = $deposit->getJournal();
         $bag->setBagInfoData('PKP-PLN-Journal-UUID', $journal->getUuid());
         $bag->setBagInfoData('PKP-PLN-Journal-Title', $journal->getTitle());
         $bag->setBagInfoData('PKP-PLN-Journal-ISSN', $journal->getIssn());
@@ -44,9 +43,9 @@ class ReserializeBagCommand extends AbstractProcessingCmd {
         $bag->setBagInfoData('PKP-PLN-Publisher-Name', $journal->getPublisherName());
         $bag->setBagInfoData('PKP-PLN-Publisher-URL', $journal->getPublisherUrl());
 
-        $bag->update();
-        
+        $bag->update();        
         $bag->package($this->getStagingDir($deposit->getJournal()) . '/' . $deposit->getFileUuid(), 'zip');
+        $deposit->setPackagePath($this->getStagingDir($deposit->getJournal()) . '/' . $deposit->getFileUuid() . '.zip');
         return true;
     }
 

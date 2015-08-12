@@ -161,6 +161,37 @@ class Deposit
     private $plnState;
 
     /**
+     * Size of the processed package file, ready for deposit to LOCKSS.
+     *
+     * @var int
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $packageSize;
+
+    /**
+     * Path to the processed package file.
+     *
+     * @var string
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $packagePath;
+
+    /**
+     * Processed package checksum type.
+     *
+     * @var string
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $packageChecksumType;
+
+    /**
+     * Checksum for the processed package file.
+     * @var string
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $packageChecksumValue;
+
+    /**
      * Date the deposit was sent to LOCKSSOmatic or the PLN.
      *
      * @var date
@@ -624,5 +655,110 @@ class Deposit
     public function addToProcessingLog($content) {
         $date = date('c');
         $this->processingLog .= "{$date}\n{$content}\n\n";
+    }
+
+    /**
+     * Set packageSize
+     *
+     * @param integer $packageSize
+     * @return Deposit
+     */
+    public function setPackageSize($packageSize)
+    {
+        $this->packageSize = $packageSize;
+
+        return $this;
+    }
+
+    /**
+     * Get packageSize
+     *
+     * @return integer 
+     */
+    public function getPackageSize()
+    {
+        return $this->packageSize;
+    }
+
+    /**
+     * Set packagePath
+     *
+     * @param string $packagePath
+     * @return Deposit
+     */
+    public function setPackagePath($packagePath)
+    {
+        $this->packagePath = $packagePath;
+
+        return $this;
+    }
+
+    /**
+     * Get packagePath
+     *
+     * @return string 
+     */
+    public function getPackagePath()
+    {
+        return $this->packagePath;
+    }
+
+    /**
+     * Set packageChecksumType
+     *
+     * @param string $packageChecksumType
+     * @return Deposit
+     */
+    public function setPackageChecksumType($packageChecksumType)
+    {
+        $this->packageChecksumType = $packageChecksumType;
+
+        return $this;
+    }
+
+    /**
+     * Get packageChecksumType
+     *
+     * @return string 
+     */
+    public function getPackageChecksumType()
+    {
+        return $this->packageChecksumType;
+    }
+
+    /**
+     * Set packageChecksumValue
+     *
+     * @param string $packageChecksumValue
+     * @return Deposit
+     */
+    public function setPackageChecksumValue($packageChecksumValue)
+    {
+        $this->packageChecksumValue = $packageChecksumValue;
+
+        return $this;
+    }
+
+    /**
+     * Get packageChecksumValue
+     *
+     * @return string 
+     */
+    public function getPackageChecksumValue()
+    {
+        return $this->packageChecksumValue;
+    }
+
+    /**
+     * Set processingLog
+     *
+     * @param string $processingLog
+     * @return Deposit
+     */
+    public function setProcessingLog($processingLog)
+    {
+        $this->processingLog = $processingLog;
+
+        return $this;
     }
 }

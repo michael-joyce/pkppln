@@ -23,8 +23,8 @@ services:
         
     sword_client:
         class: AppBundle\Services\SwordClient
-        arguments: ["%lockssomatic_sd_iri%", "%staging_server_uuid%"]
-        calls: 
+        arguments: ["%lockssomatic_sd_iri%", "%staging_server_uuid%", "@templating", "@router"]
+        calls:
             - [ setLogger, ["@monolog.logger.sword"]]
 
     twig.extension.pcre:
