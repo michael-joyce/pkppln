@@ -30,7 +30,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/fetch/{depositId}/{fileId}", name="fetch")
+     * @Route("/fetch/{depositId}/{fileId}.zip", name="fetch")
      * @param Request $request
      */
     public function fetchAction(Request $request, $depositId, $fileId) {

@@ -11,6 +11,7 @@ use Monolog\Logger;
 use SimpleXMLElement;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\Router;
 
 class SwordClient {
 
@@ -32,6 +33,10 @@ class SwordClient {
      */
     private $templating;
 
+    /**
+     *
+     * @var Router
+     */
     private $router;
 
     /**
@@ -39,7 +44,7 @@ class SwordClient {
      */
     private $logger;
 
-    public function __construct($sdIri, $serverUuid, $templating, $router) {
+    public function __construct($sdIri, $serverUuid, TwigEngine $templating, Router $router) {
         $this->sdIri = $sdIri;
         $this->serverUuid = $serverUuid;
         $this->logger = null;
@@ -86,10 +91,18 @@ class SwordClient {
             ), UrlGeneratorInterface::ABSOLUTE_URL),
             'deposit_size' => filesize($deposit->getPackagePath()),
             'deposit_checksum_type' => $this->uploadChecksum,
-            'deposit_checksum_value' => hash_file($this->uploadChecksum, $deposit->getPackagePath()),
+            'deposit_checksum_value' => 1, //hash_file($this->uploadChecksum, $deposit->getPackagePath()),
         ));
-        $this->log('Generating XML for ' . $deposit->getPackagePath());
-        $this->log($xml);
+        try {
+        $client = new Client();
+        $request = $client->post($this->colIri);
+        $request->setBody($xml);
+        $response = $request->send();
+        $this->log($response->getBody());
+        } catch(\Exception $e) {
+            $this->log("Error posting to {$this->colIri}.");
+            $this->log($e->getMessage());
+        }
     }
 
     public function statement(Deposit $deposit) {

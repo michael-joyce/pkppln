@@ -13,7 +13,7 @@
         size="{{ deposit_size }}"
         checksumType="{{ deposit_checksum_type }}"
         checksumValue="{{ deposit_checksum_value }}">
-        {{ path('fetch', { 'depositId': deposit.depositUuid, 'fileId': deposit.fileUuid }) }}
+        {{ url('fetch', { 'depositId': deposit.depositUuid, 'fileId': deposit.fileUuid }) }}
     </lom:content>
 </entry>
 
