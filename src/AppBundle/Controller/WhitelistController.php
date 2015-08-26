@@ -25,11 +25,17 @@ class WhitelistController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('AppBundle:Whitelist')->findAll();
+        $paginator = $this->get('knp_paginator');
+        $entities = $paginator->paginate(
+            $em->getRepository('AppBundle:Whitelist')->findAll(),
+            $request->query->getInt('page', 1),
+            25
+        );
+
 
         return array(
             'entities' => $entities,
@@ -209,15 +215,15 @@ class WhitelistController extends Controller
      */
     public function deleteAction(Request $request, $id)
     {
-        $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository('AppBundle:Whitelist')->find($id);
+            $em = $this->getDoctrine()->getManager();
+            $entity = $em->getRepository('AppBundle:Whitelist')->find($id);
 
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Whitelist entity.');
-        }
+            if (!$entity) {
+                throw $this->createNotFoundException('Unable to find Whitelist entity.');
+            }
 
-        $em->remove($entity);
-        $em->flush();
+            $em->remove($entity);
+            $em->flush();
 
         return $this->redirect($this->generateUrl('whitelist'));
     }

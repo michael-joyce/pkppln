@@ -7,6 +7,10 @@
 
 {% block body -%}
 
+    <div class="navigation">
+        {{ knp_pagination_render(entities) }}
+    </div>
+
     <table class="records_list table table-striped table-bordered table-hover">
         <thead>
             <tr>
@@ -43,11 +47,4 @@
         {{ knp_pagination_render(entities) }}
     </div>
 
-    <ul>
-        <li>
-            <a href="{{ path('journal_new') }}">
-                <span class="glyphicon glyphicon-plus"></span>
-            </a>
-        </li>
-    </ul>
 {% endblock %}

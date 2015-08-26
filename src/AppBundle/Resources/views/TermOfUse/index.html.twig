@@ -7,6 +7,10 @@
 
 {% block body -%}
 
+    <div class="navigation">
+        {{ knp_pagination_render(entities) }}
+    </div>
+
     <table class="records_list table table-striped table-bordered table-hover">
         <thead>
             <tr>
@@ -28,15 +32,19 @@
         </tbody>
     </table>
 
+    <div class="navigation">
+        {{ knp_pagination_render(entities) }}
+    </div>
+
         <ul>
         <li>
             <a href="{{ path('termofuse_new') }}">
-                <span class="glyphicon glyphicon-plus"></span>
+                Create a new entry
             </a>
         </li>
         <li>
             <a href="{{ path('termofuse_sort') }}">
-                <span class="glyphicon glyphicon-sort"></span>
+                Sort the terms
             </a>
         </li>
     </ul>

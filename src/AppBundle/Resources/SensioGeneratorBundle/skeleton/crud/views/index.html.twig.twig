@@ -10,6 +10,10 @@
 
 {{ "{% block body -%}" }}
 
+    <div class="navigation">
+        {{ '{{ knp_pagination_render(entities) }}' }}
+    </div>
+
     <table class="records_list table table-striped table-bordered table-hover">
         <thead>
             <tr>
@@ -54,6 +58,10 @@
         {{ '{% endfor %}' }}
         </tbody>
     </table>
+
+    <div class="navigation">
+        {{ '{{ knp_pagination_render(entities) }}' }}
+    </div>
 
     {% if 'new' in actions %}
     <ul>

@@ -25,11 +25,17 @@ class BlacklistController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('AppBundle:Blacklist')->findAll();
+        $paginator = $this->get('knp_paginator');
+        $entities = $paginator->paginate(
+            $em->getRepository('AppBundle:Blacklist')->findAll(),
+            $request->query->getInt('page', 1),
+            25
+        );
+
 
         return array(
             'entities' => $entities,
@@ -209,15 +215,15 @@ class BlacklistController extends Controller
      */
     public function deleteAction(Request $request, $id)
     {
-        $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository('AppBundle:Blacklist')->find($id);
+            $em = $this->getDoctrine()->getManager();
+            $entity = $em->getRepository('AppBundle:Blacklist')->find($id);
 
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Blacklist entity.');
-        }
+            if (!$entity) {
+                throw $this->createNotFoundException('Unable to find Blacklist entity.');
+            }
 
-        $em->remove($entity);
-        $em->flush();
+            $em->remove($entity);
+            $em->flush();
 
         return $this->redirect($this->generateUrl('blacklist'));
     }

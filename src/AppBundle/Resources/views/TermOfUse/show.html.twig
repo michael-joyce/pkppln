@@ -9,13 +9,7 @@
         <ul class="record_actions">
     <li>
         <a href="{{ path('termofuse') }}">
-            <span class="glyphicon glyphicon-list"></span>
-        </a>
-    </li>
-
-    <li>
-        <a href="{{ path('termofuse_history', { 'id': entity.id }) }}" class="js-confirm" data-confirm="Are you sure you want to delete this term?">
-            <span class='glyphicon glyphicon-time'></span>
+            Back to the list
         </a>
     </li>
 
@@ -26,7 +20,7 @@
     </li>
 
     <li>
-        <a href="{{ path('termofuse_delete', { 'id': entity.id }) }}" class="js-confirm" data-confirm="Are you sure you want to delete this term?">
+        <a href="{{ path('termofuse_delete', { 'id': entity.id }) }}" class="js-confirm" data-confirm="Are you sure you want to delete this TermOfUse?">
             <span class='glyphicon glyphicon-remove'></span>
         </a>
     </li>
@@ -47,11 +41,11 @@
                 <td>{{ entity.created|date('Y-m-d H:i:s') }}</td>
             </tr>
             <tr>
-                <th>Key code</th>
+                <th>Keycode</th>
                 <td>{{ entity.keyCode }}</td>
             </tr>
             <tr>
-                <th>Language</th>
+                <th>Langcode</th>
                 <td>{{ entity.langCode }}</td>
             </tr>
             <tr>

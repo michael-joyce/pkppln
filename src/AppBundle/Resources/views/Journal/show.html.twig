@@ -1,44 +1,36 @@
 {% extends '::base.html.twig' %}
 
-
+    
 {% block pageheader %}
     <h1>Journal</h1>
 {% endblock %}
-
+    
 {% block body -%}
-    <ul class="record_actions">
-        <li>
-            <a href="{{ path('journal') }}">
-                <span class="glyphicon glyphicon-list"></span>
-            </a>
-        </li>
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('journal') }}">
+            Back to the list
+        </a>
+    </li>
 
-        <li>
-            <a href="{{ path('journal_edit', { 'id': entity.id }) }}">
-                <span class='glyphicon glyphicon-edit'></span>
-            </a>
-        </li>
+    <li>
+        <a href="{{ path('journal_edit', { 'id': entity.id }) }}">
+            <span class='glyphicon glyphicon-edit'></span>
+        </a>
+    </li>
 
-        <li>
+    <li>
             <a href="{{ path('journal_delete', { 'id': entity.id }) }}" class="js-confirm" data-confirm="Are you sure you want to delete this journal?">
-                <span class='glyphicon glyphicon-remove'></span>
-            </a>
-        </li>
-    </ul>
+            <span class='glyphicon glyphicon-remove'></span>
+        </a>
+    </li>
+</ul>
 
     <table class="record_properties table table-striped table-bordered table-hover">
         <tbody>
             <tr>
                 <th>Id</th>
                 <td>{{ entity.id }}</td>
-            </tr>
-            <tr>
-                <th>Title</th>
-                <td>{{ entity.title }}</td>
-            </tr>
-            <tr>
-                <th>Deposits</th>
-                <td><a href="{{ path('journal_deposits', { 'id' : entity.id }) }}">{{ entity.countDeposits }}</a></td>
             </tr>
             <tr>
                 <th>Uuid</th>

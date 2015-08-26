@@ -18,28 +18,6 @@ use AppBundle\Form\TermOfUseType;
 class TermOfUseController extends Controller
 {
 
-    private function fetchHeader(Request $request, $name) {
-        if ($request->headers->has($name)) {
-            return $request->headers->get($name);
-        }
-        if ($request->headers->has("X-" . $name)) {
-            return $request->headers->has("X-" . $name);
-        }
-        if ($request->query->has($name)) {
-            return $request->query->get($name);
-        }
-        return null;
-    }
-
-    private function getLocale(Request $request) {
-        $languageHeader = $this->fetchHeader($request, "Accept-Language");
-        $locale = locale_accept_from_http($languageHeader);
-        if ($locale !== null) {
-            return $locale;
-        }
-        return $this->container->getParameter("pln_defaultLocale");
-    }
-
     /**
      * Lists all TermOfUse entities.
      *
@@ -49,61 +27,51 @@ class TermOfUseController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $locale = $this->getLocale($request);
         $em = $this->getDoctrine()->getManager();
-        $entities = $em->getRepository('AppBundle:TermOfUse')->getCurrentTerms($locale);
+
+        $paginator = $this->get('knp_paginator');
+        $entities = $paginator->paginate(
+            $em->getRepository('AppBundle:TermOfUse')->getCurrentTerms(),
+            $request->query->getInt('page', 1),
+            25
+        );
+
 
         return array(
             'entities' => $entities,
         );
     }
-
+    
     /**
-     * Sort the TermOfUse entities.
-     *
+     * Sort the terms of use.
+     * 
      * @Route("/sort", name="termofuse_sort")
-     * @Template("AppBundle:TermOfUse:sort.html.twig")
+     * @Method({"GET", "POST"})
+     * @Template()
+     * 
+     * @param Request $request
      */
     public function sortAction(Request $request) {
-        $locale = $this->getLocale($request);
         $em = $this->getDoctrine()->getManager();
         $repo = $em->getRepository('AppBundle:TermOfUse');
-
-        if($request->getMethod() === 'POST') {
-            $order = explode(',', $request->request->get('order'));
-            for($w = 0; $w < count($order); $w++) {
-                $terms = $repo->findBy(array('keyCode' => $order[$w]));
+        
+        if($request->getMethod() === "POST") {
+            $order = $request->request->get("order");
+            $list = explode(",", $order);
+            for($i = 0; $i < count($list); $i++) {
+                $terms = $repo->findBy(array('keyCode' => $list[$i]));
                 foreach($terms as $term) {
-                    $term->setWeight($w);
+                    $term->setWeight($i);
                 }
             }
             $em->flush();
+            $this->addFlash("success", "The terms have been sorted.");
         }
-
-        $entities = $repo->getCurrentTerms($locale);
-        return array(
-            'entities' => $entities,
-        );
+        
+        $entities = $em->getRepository("AppBundle:TermOfUse")->getCurrentTerms();
+        return array('entities' => $entities);
     }
-
-    /**
-     * Show the edit history of a term.
-     *
-     * @param Request $request
-     * @Route("/history/{id}", name="termofuse_history")
-     * @Method("GET")
-     * @Template()
-     */
-    public function historyAction(Request $request, $id) {
-        $locale = $this->getLocale($request);
-        $em = $this->getDoctrine()->getManager();
-        $repo = $em->getRepository('AppBundle:TermOfUse');
-        $entities = $repo->getTermHistory($id, $locale);
-        return array(
-            'entities' => $entities,
-        );
-    }
-
+    
     /**
      * Creates a new TermOfUse entity.
      *
@@ -278,15 +246,15 @@ class TermOfUseController extends Controller
      */
     public function deleteAction(Request $request, $id)
     {
-        $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository('AppBundle:TermOfUse')->find($id);
+            $em = $this->getDoctrine()->getManager();
+            $entity = $em->getRepository('AppBundle:TermOfUse')->find($id);
 
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find TermOfUse entity.');
-        }
+            if (!$entity) {
+                throw $this->createNotFoundException('Unable to find TermOfUse entity.');
+            }
 
-        $em->remove($entity);
-        $em->flush();
+            $em->remove($entity);
+            $em->flush();
 
         return $this->redirect($this->generateUrl('termofuse'));
     }

@@ -15,8 +15,7 @@ use AppBundle\Form\JournalType;
  *
  * @Route("/journal")
  */
-class JournalController extends Controller
-{
+class JournalController extends Controller {
 
     /**
      * Lists all Journal entities.
@@ -25,16 +24,14 @@ class JournalController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function indexAction(Request $request)
-    {
+    public function indexAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
-        $dql = "SELECT j FROM AppBundle:Journal j";
-        $query = $em->createQuery($dql);
+
         $paginator = $this->get('knp_paginator');
         $entities = $paginator->paginate(
-            $query,
-            $request->query->getInt('page', 1)
+                $em->getRepository('AppBundle:Journal')->findAll(), $request->query->getInt('page', 1), 25
         );
+
 
         return array(
             'entities' => $entities,
@@ -42,32 +39,38 @@ class JournalController extends Controller
     }
 
     /**
-     * Show deposits for a journal
-     * @Route("/deposits/{id}", name="journal_deposits")
+     * Search journals.
+     * 
+     * @Route("/search", name="journal_search")
      * @Method("GET")
      * @Template()
+     * 
+     * @param Request $request
      */
-    public function depositsAction(Request $request, $id) {
+    public function searchAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository('AppBundle:Journal')->find($id);
-        
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Journal entity.');
+        $q = $request->query->get('q', '');
+
+        $repo = $em->getRepository("AppBundle:Journal");
+        $paginator = $this->get('knp_paginator');
+
+        $results = array();
+        if ($q !== '') {
+            $results = $repo->search($q);
+
+            $entities = $paginator->paginate(
+                    $results,
+                    $request->query->getInt('page', 1), 
+                    25
+            );
         }
 
-        $paginator = $this->get('knp_paginator');
-        $entities = $paginator->paginate(
-            $entity->getDeposits(),
-            $request->query->getInt('page', 1)
-        );
-
-
         return array(
-            'journal' => $entity,
-            'entities' => $entities,
+            'q' => $q,
+            'count' => count($results),
+            'entities' => $entities
         );
     }
-
 
     /**
      * Creates a new Journal entity.
@@ -76,8 +79,7 @@ class JournalController extends Controller
      * @Method("POST")
      * @Template("AppBundle:Journal:new.html.twig")
      */
-    public function createAction(Request $request)
-    {
+    public function createAction(Request $request) {
         $entity = new Journal();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
@@ -92,7 +94,7 @@ class JournalController extends Controller
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
@@ -103,8 +105,7 @@ class JournalController extends Controller
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createCreateForm(Journal $entity)
-    {
+    private function createCreateForm(Journal $entity) {
         $form = $this->createForm(new JournalType(), $entity, array(
             'action' => $this->generateUrl('journal_create'),
             'method' => 'POST',
@@ -122,14 +123,13 @@ class JournalController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function newAction()
-    {
+    public function newAction() {
         $entity = new Journal();
-        $form   = $this->createCreateForm($entity);
+        $form = $this->createCreateForm($entity);
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
@@ -140,8 +140,7 @@ class JournalController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function showAction($id)
-    {
+    public function showAction($id) {
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AppBundle:Journal')->find($id);
@@ -153,7 +152,7 @@ class JournalController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
-            'entity'      => $entity,
+            'entity' => $entity,
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -165,8 +164,7 @@ class JournalController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function editAction($id)
-    {
+    public function editAction($id) {
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AppBundle:Journal')->find($id);
@@ -179,21 +177,20 @@ class JournalController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
 
     /**
-    * Creates a form to edit a Journal entity.
-    *
-    * @param Journal $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
-    private function createEditForm(Journal $entity)
-    {
+     * Creates a form to edit a Journal entity.
+     *
+     * @param Journal $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    private function createEditForm(Journal $entity) {
         $form = $this->createForm(new JournalType(), $entity, array(
             'action' => $this->generateUrl('journal_update', array('id' => $entity->getId())),
             'method' => 'PUT',
@@ -203,6 +200,7 @@ class JournalController extends Controller
 
         return $form;
     }
+
     /**
      * Edits an existing Journal entity.
      *
@@ -210,8 +208,7 @@ class JournalController extends Controller
      * @Method("PUT")
      * @Template("AppBundle:Journal:edit.html.twig")
      */
-    public function updateAction(Request $request, $id)
-    {
+    public function updateAction(Request $request, $id) {
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AppBundle:Journal')->find($id);
@@ -231,18 +228,18 @@ class JournalController extends Controller
         }
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
+
     /**
      * Deletes a Journal entity.
      *
      * @Route("/{id}/delete", name="journal_delete")
      */
-    public function deleteAction(Request $request, $id)
-    {
+    public function deleteAction(Request $request, $id) {
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('AppBundle:Journal')->find($id);
 
@@ -263,13 +260,13 @@ class JournalController extends Controller
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createDeleteForm($id)
-    {
+    private function createDeleteForm($id) {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('journal_delete', array('id' => $id)))
-            ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
+                        ->setAction($this->generateUrl('journal_delete', array('id' => $id)))
+                        ->setMethod('DELETE')
+                        ->add('submit', 'submit', array('label' => 'Delete'))
+                        ->getForm()
         ;
     }
+
 }

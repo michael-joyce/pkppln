@@ -31,7 +31,7 @@ class TermOfUseRepository extends EntityRepository
         }
     }
     
-    public function getCurrentTerms($lang) {
+    public function getCurrentTerms($lang = 'en-us') {
         $qb = $this->createQueryBuilder('t')
                 ->select('t.keyCode')
                 ->distinct()

@@ -28,13 +28,14 @@ class DepositController extends Controller
     public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $dql = "SELECT d FROM AppBundle:Deposit d";
-        $query = $em->createQuery($dql);
+
         $paginator = $this->get('knp_paginator');
         $entities = $paginator->paginate(
-            $query,
-            $request->query->getInt('page', 1)
+            $em->getRepository('AppBundle:Deposit')->findAll(),
+            $request->query->getInt('page', 1),
+            25
         );
+
 
         return array(
             'entities' => $entities,
