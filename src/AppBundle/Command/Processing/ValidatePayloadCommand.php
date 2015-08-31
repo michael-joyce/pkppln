@@ -3,9 +3,6 @@
 namespace AppBundle\Command\Processing;
 
 use AppBundle\Entity\Deposit;
-use AppBundle\Entity\DepositRepository;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class ValidatePayloadCommand extends AbstractProcessingCmd {
 

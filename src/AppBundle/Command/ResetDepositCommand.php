@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Command\Processing;
+namespace AppBundle\Command;
 
 use AppBundle\Entity\DepositRepository;
 use Monolog\Registry;

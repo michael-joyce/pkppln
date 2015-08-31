@@ -1,8 +1,8 @@
 <?php
 
-namespace AppBundle\Command;
+namespace AppBundle\Command\Processing;
 
-use AppBundle\Entity\Deposit\Processing;
+use AppBundle\Entity\Deposit;
 use BagIt;
 
 class ReserializeBagCommand extends AbstractProcessingCmd {

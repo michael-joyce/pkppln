@@ -2,8 +2,6 @@
 
 namespace AppBundle\Command\Processing;
 
-require 'vendor/scholarslab/bagit/lib/bagit.php';
-
 use AppBundle\Entity\Deposit;
 use BagIt;
 use Exception;
