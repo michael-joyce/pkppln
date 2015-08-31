@@ -35,5 +35,8 @@ parameters:
     # URI for LOCKSSOMatic's service document.
     lockssomatic_sd_iri: http://lockssomatic.info/api/sword/2.0/sd-iri
 
+    # Base URI for the staging server
+    staging_server_uri: http://pkppln3.dev/
+
     # Staging Server's UUID for LOCKSSOMatic
     staging_server_uuid: ~

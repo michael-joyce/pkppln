@@ -1,15 +1,11 @@
 <?php
 
-namespace AppBundle\Command;
+namespace AppBundle\Command\Processing;
 
 use AppBundle\Entity\Deposit;
-use AppBundle\Entity\DepositRepository;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
-use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 class HarvestCommand extends AbstractProcessingCmd {
 

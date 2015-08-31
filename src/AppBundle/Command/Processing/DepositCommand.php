@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Command;
+namespace AppBundle\Command\Processing;
 
 use AppBundle\Entity\Deposit;
 use AppBundle\Services\SwordClient;
@@ -32,8 +32,7 @@ class DepositCommand extends AbstractProcessingCmd {
          */
         $client = $this->container->get('sword_client');
         $client->setLogger($this->logger);
-        $client->createDeposit($deposit);
-        return false;
+        return $client->createDeposit($deposit);
     }
 
     public function nextState() {

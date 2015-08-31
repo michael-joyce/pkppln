@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Command;
+namespace AppBundle\Command\Processing;
 
 require 'vendor/scholarslab/bagit/lib/bagit.php';
 

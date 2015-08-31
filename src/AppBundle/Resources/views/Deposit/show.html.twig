@@ -77,6 +77,23 @@
                 <td>{{ entity.plnState }}</td>
             </tr>
             <tr>
+                <th>Packaged path</th>
+                <td>{{ entity.packagePath }}</td>
+            </tr>
+            <tr>
+                <th>Packaged size</th>
+                <td>{{ entity.packageSize }}</td>
+            </tr>
+            <tr>
+                <th>Packaged checksum type</th>
+                <td>{{ entity.packageChecksumType}}</td>
+            </tr>
+            <tr>
+                <th>Packaged checksum value</th>
+                <td>{{ entity.packageChecksumValue }}</td>
+            </tr>
+            
+            <tr>
                 <th>Deposit date</th>
                 <td>{{ entity.depositDate|date('Y-m-d H:i:s') }}</td>
             </tr>

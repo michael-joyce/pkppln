@@ -10,10 +10,10 @@
     </summary>
     <!-- @size is the file size in kB (1,000 bytes) -->
     <lom:content 
-        size="{{ deposit_size }}"
-        checksumType="{{ deposit_checksum_type }}"
-        checksumValue="{{ deposit_checksum_value }}">
-        {{ url('fetch', { 'depositId': deposit.depositUuid, 'fileId': deposit.fileUuid }) }}
+        size="{{ deposit.packageSize / 1000 }}"
+        checksumType="{{ deposit.packageChecksumType }}"
+        checksumValue="{{ deposit.checksumValue }}">
+        {{ baseUri }}{{ path('fetch', { 'depositId': deposit.depositUuid, 'fileId': deposit.fileUuid }) }}
     </lom:content>
 </entry>
 

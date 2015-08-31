@@ -6,7 +6,9 @@ use AppBundle\Entity\Deposit;
 use AppBundle\Entity\Journal;
 use AppBundle\Utility\Namespaces;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Stream\Stream;
 use Monolog\Logger;
 use SimpleXMLElement;
 use Symfony\Bundle\TwigBundle\TwigEngine;
@@ -17,11 +19,11 @@ class SwordClient {
 
     private $sdIri;
     private $serverUuid;
-    
     private $maxUpload;
     private $uploadChecksum;
     private $siteName;
     private $colIri;
+    private $baseUri;
 
     /**
      * @var Namespaces
@@ -44,21 +46,28 @@ class SwordClient {
      */
     private $logger;
 
-    public function __construct($sdIri, $serverUuid, TwigEngine $templating, Router $router) {
+    public function __construct($sdIri, $baseUri, $serverUuid) {
         $this->sdIri = $sdIri;
+        $this->baseUri = $baseUri;
         $this->serverUuid = $serverUuid;
         $this->logger = null;
         $this->namespaces = new Namespaces();
-        $this->templating = $templating;
-        $this->router = $router;
     }
 
     public function setLogger(Logger $logger) {
         $this->logger = $logger;
     }
 
+    public function setTemplating(TwigEngine $templating) {
+        $this->templating = $templating;
+    }
+
+    public function setRouter(Router $router) {
+        $this->router = $router;
+    }
+
     private function log($message, $context = array(), $level = 'info') {
-            $this->logger->log($level, $message, $context);
+        $this->logger->log($level, $message, $context);
     }
 
     /**
@@ -71,7 +80,7 @@ class SwordClient {
             'On-Behalf-Of' => $this->serverUuid,
             'Journal-Url' => $journal->getUrl(),
         );
-        $response = $client->get($this->sdIri, [ 'headers' => $headers ]);
+        $response = $client->get($this->sdIri, [ 'headers' => $headers]);
         $xml = new SimpleXMLElement($response->getBody());
         $this->namespaces->registerNamespaces($xml);
         $this->maxUpload = $xml->xpath('sword:maxUploadSize')[0];
@@ -85,24 +94,17 @@ class SwordClient {
         $xml = $this->templating->render('AppBundle:SwordClient:deposit.xml.twig', array(
             'title' => 'Deposit from OJS',
             'deposit' => $deposit,
-            'deposit_url' => $this->router->generate('fetch', array(
-                'depositId' => $deposit->getDepositUuid(),
-                'fileId' => $deposit->getFileUuid()
-            ), UrlGeneratorInterface::ABSOLUTE_URL),
-            'deposit_size' => filesize($deposit->getPackagePath()),
-            'deposit_checksum_type' => $this->uploadChecksum,
-            'deposit_checksum_value' => 1, //hash_file($this->uploadChecksum, $deposit->getPackagePath()),
+            'baseUri' => $this->baseUri,
         ));
-        try {
         $client = new Client();
-        $request = $client->post($this->colIri);
-        $request->setBody($xml);
-        $response = $request->send();
-        $this->log($response->getBody());
-        } catch(\Exception $e) {
-            $this->log("Error posting to {$this->colIri}.");
-            $this->log($e->getMessage());
-        }
+        $request = $client->createRequest('POST', $this->colIri);
+        $request->setBody(Stream::factory($xml));
+        $response = $client->send($request);
+        $deposit->setDepositReceipt($response->getHeader('Location'));
+        
+        $responseXml = new SimpleXMLElement($response->getBody());
+        $this->namespaces->registerNamespaces($responseXml);
+        return true;
     }
 
     public function statement(Deposit $deposit) {

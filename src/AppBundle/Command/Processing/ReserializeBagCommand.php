@@ -2,7 +2,7 @@
 
 namespace AppBundle\Command;
 
-use AppBundle\Entity\Deposit;
+use AppBundle\Entity\Deposit\Processing;
 use BagIt;
 
 class ReserializeBagCommand extends AbstractProcessingCmd {
@@ -30,6 +30,7 @@ class ReserializeBagCommand extends AbstractProcessingCmd {
         }
         $bag->setBagInfoData('External-Identifier', $deposit->getFileUuid());        
         $bag->setBagInfoData('PKP-PLN-Deposit-UUID', $deposit->getDepositUuid());
+        $bag->setBagInfoData('PKP-PLN-File-UUID', $deposit->getFileUuid());
         $bag->setBagInfoData('PKP-PLN-Deposit-Received', $deposit->getReceived()->format('c'));
         $bag->setBagInfoData('PKP-PLN-Deposit-Volume', $deposit->getVolume());
         $bag->setBagInfoData('PKP-PLN-Deposit-Issue', $deposit->getIssue());
@@ -44,8 +45,12 @@ class ReserializeBagCommand extends AbstractProcessingCmd {
         $bag->setBagInfoData('PKP-PLN-Publisher-URL', $journal->getPublisherUrl());
 
         $bag->update();        
-        $bag->package($this->getStagingDir($deposit->getJournal()) . '/' . $deposit->getFileUuid(), 'zip');
-        $deposit->setPackagePath($this->getStagingDir($deposit->getJournal()) . '/' . $deposit->getFileUuid() . '.zip');
+        $path = $this->getStagingDir($deposit->getJournal()) . '/' . $deposit->getFileUuid() . '.zip';
+        $bag->package($path, 'zip');
+        $deposit->setPackagePath($path);
+        $deposit->setPackageSize(filesize($path));
+        $deposit->setPackageChecksumType('sha1');
+        $deposit->setPackageChecksumValue(hash_file('sha1', $path));
         return true;
     }
 
