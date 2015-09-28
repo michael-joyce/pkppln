@@ -6,26 +6,26 @@
 {% endblock %}
     
 {% block body -%}
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('deposit') }}">
-            Back to the list
+        <div class="btn-toolbar">
+    <div class="btn-group pull-right">
+        <a href="{{ path('deposit') }}" class="btn btn-default">
+            <span class="glyphicon glyphicon-arrow-left"></span> Back
         </a>
-    </li>
-</ul>
+    </div>
+</div>
 
     <table class="record_properties table table-striped table-bordered table-hover">
         <tbody>
             <tr>
-                <th>Id</th>
-                <td>{{ entity.id }}</td>
-            </tr>
-            <tr>
-                <th>File uuid</th>
+                <th>File_uuid</th>
                 <td>{{ entity.fileuuid }}</td>
             </tr>
             <tr>
-                <th>Deposit uuid</th>
+                <th>File_type</th>
+                <td>{{ entity.filetype }}</td>
+            </tr>
+            <tr>
+                <th>Deposit_uuid</th>
                 <td>{{ entity.deposituuid }}</td>
             </tr>
             <tr>
@@ -37,10 +37,6 @@
                 <td>{{ entity.action }}</td>
             </tr>
             <tr>
-                <th>Journal</th>
-                <td><a href="{{ path('journal_show', { 'id' : entity.journal.id }) }}">{{ entity.journal.title }}</a>
-            </tr>
-            <tr>
                 <th>Volume</th>
                 <td>{{ entity.volume }}</td>
             </tr>
@@ -49,20 +45,20 @@
                 <td>{{ entity.issue }}</td>
             </tr>
             <tr>
-                <th>Publication date</th>
-                <td>{{ entity.pubDate|date('Y-m-d') }}</td>
+                <th>Pubdate</th>
+                <td>{{ entity.pubDate|date('Y-m-d H:i:s') }}</td>
             </tr>
             <tr>
-                <th>Checksum type</th>
+                <th>Checksumtype</th>
                 <td>{{ entity.checksumType }}</td>
             </tr>
             <tr>
-                <th>Checksum value</th>
+                <th>Checksumvalue</th>
                 <td>{{ entity.checksumValue }}</td>
             </tr>
             <tr>
                 <th>Url</th>
-                <td><a href="{{ entity.url }}">{{ entity.url }}</a></td>
+                <td>{{ entity.url }}</td>
             </tr>
             <tr>
                 <th>Size</th>
@@ -73,41 +69,36 @@
                 <td>{{ entity.state }}</td>
             </tr>
             <tr>
-                <th>Pln state</th>
+                <th>Plnstate</th>
                 <td>{{ entity.plnState }}</td>
             </tr>
             <tr>
-                <th>Packaged path</th>
-                <td>{{ entity.packagePath }}</td>
-            </tr>
-            <tr>
-                <th>Packaged size</th>
+                <th>Packagesize</th>
                 <td>{{ entity.packageSize }}</td>
             </tr>
             <tr>
-                <th>Packaged checksum type</th>
-                <td>{{ entity.packageChecksumType}}</td>
+                <th>Packagepath</th>
+                <td>{{ entity.packagePath }}</td>
             </tr>
             <tr>
-                <th>Packaged checksum value</th>
+                <th>Packagechecksumtype</th>
+                <td>{{ entity.packageChecksumType }}</td>
+            </tr>
+            <tr>
+                <th>Packagechecksumvalue</th>
                 <td>{{ entity.packageChecksumValue }}</td>
             </tr>
-            
             <tr>
-                <th>Deposit date</th>
+                <th>Depositdate</th>
                 <td>{{ entity.depositDate|date('Y-m-d H:i:s') }}</td>
             </tr>
             <tr>
-                <th>Deposit receipt</th>
-                <td>
-                    {% if entity.depositReceipt %}
-                        <a href="{{ entity.depositReceipt }}"</a>
-                    {% endif %}
-                </td>
+                <th>Depositreceipt</th>
+                <td>{{ entity.depositReceipt }}</td>
             </tr>
             <tr>
-                <th>Processing history</th>
-                <td>{{ entity.processingLog|nl2br }}</td>
+                <th>Processinglog</th>
+                <td>{{ entity.processingLog }}</td>
             </tr>
         </tbody>
     </table>

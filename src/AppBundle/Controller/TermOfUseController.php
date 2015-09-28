@@ -28,10 +28,11 @@ class TermOfUseController extends Controller
     public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-
+        $dql = 'SELECT e FROM AppBundle:TermOfUse e';
+        $query = $em->createQuery($dql);
         $paginator = $this->get('knp_paginator');
         $entities = $paginator->paginate(
-            $em->getRepository('AppBundle:TermOfUse')->getCurrentTerms(),
+            $query,
             $request->query->getInt('page', 1),
             25
         );
@@ -41,37 +42,6 @@ class TermOfUseController extends Controller
             'entities' => $entities,
         );
     }
-    
-    /**
-     * Sort the terms of use.
-     * 
-     * @Route("/sort", name="termofuse_sort")
-     * @Method({"GET", "POST"})
-     * @Template()
-     * 
-     * @param Request $request
-     */
-    public function sortAction(Request $request) {
-        $em = $this->getDoctrine()->getManager();
-        $repo = $em->getRepository('AppBundle:TermOfUse');
-        
-        if($request->getMethod() === "POST") {
-            $order = $request->request->get("order");
-            $list = explode(",", $order);
-            for($i = 0; $i < count($list); $i++) {
-                $terms = $repo->findBy(array('keyCode' => $list[$i]));
-                foreach($terms as $term) {
-                    $term->setWeight($i);
-                }
-            }
-            $em->flush();
-            $this->addFlash("success", "The terms have been sorted.");
-        }
-        
-        $entities = $em->getRepository("AppBundle:TermOfUse")->getCurrentTerms();
-        return array('entities' => $entities);
-    }
-    
     /**
      * Creates a new TermOfUse entity.
      *

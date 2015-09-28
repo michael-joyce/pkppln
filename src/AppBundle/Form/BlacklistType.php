@@ -17,7 +17,6 @@ class BlacklistType extends AbstractType
         $builder
             ->add('uuid')
             ->add('comment')
-            ->add('created')
         ;
     }
     

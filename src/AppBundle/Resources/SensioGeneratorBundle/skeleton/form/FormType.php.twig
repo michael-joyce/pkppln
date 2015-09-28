@@ -1,13 +1,19 @@
 <?php
 
-namespace AppBundle\Form;
+namespace {{ namespace }}\Form{{ entity_namespace ? '\\' ~ entity_namespace : '' }};
 
+{% block use_statements %}
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+{% endblock use_statements %}
 
-class MicroServiceType extends AbstractType
+{% block class_definition %}
+class {{ form_class }} extends AbstractType
+{% endblock class_definition %}
 {
+{% block class_body %}
+    {%- if fields|length > 0 %}
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -15,22 +21,22 @@ class MicroServiceType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('microservice')
-            ->add('started')
-            ->add('finished')
-            ->add('outcome')
-            ->add('error')
-            ->add('deposit')
+        {%- for field in fields if field != 'updated' and field != 'created' %}
+
+            ->add('{{ field }}')
+        {%- endfor %}
+
         ;
     }
-    
+    {% endif %}
+
     /**
      * @param OptionsResolverInterface $resolver
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\MicroService'
+            'data_class' => '{{ namespace }}\Entity{{ entity_namespace ? '\\' ~ entity_namespace : '' }}\{{ entity_class }}'
         ));
     }
 
@@ -39,6 +45,7 @@ class MicroServiceType extends AbstractType
      */
     public function getName()
     {
-        return 'appbundle_microservice';
+        return '{{ form_type_name }}';
     }
+{% endblock class_body %}
 }

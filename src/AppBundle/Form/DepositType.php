@@ -17,7 +17,6 @@ class DepositType extends AbstractType
         $builder
             ->add('file_uuid')
             ->add('deposit_uuid')
-            ->add('received', 'datetime', array('date_widget' => 'single_text', 'time_widget' => 'single_text'))
             ->add('action')
             ->add('volume')
             ->add('issue')
@@ -26,10 +25,6 @@ class DepositType extends AbstractType
             ->add('checksumValue')
             ->add('url')
             ->add('size')
-            ->add('state')
-            ->add('plnState')
-            ->add('depositDate')
-            ->add('depositReceipt')
             ->add('journal')
         ;
     }
