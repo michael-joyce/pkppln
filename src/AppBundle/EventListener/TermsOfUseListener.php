@@ -74,7 +74,6 @@ class TermsOfUseListener {
             $history->setUser('console');
         }
         $em->persist($history);
-        $em->flush($history);
     }
 
     public function postPersist(LifecycleEventArgs $args) {

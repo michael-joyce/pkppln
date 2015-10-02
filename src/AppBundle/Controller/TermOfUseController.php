@@ -128,11 +128,32 @@ class TermOfUseController extends Controller
             'form'   => $form->createView(),
         );
     }
+    
+    
+    /**
+     * Show the edit history of all terms.
+     *
+     * @Route("/history", name="termofuse_allhistory")
+     * @Method("GET")
+     * @Template()
+     */
+    public function allHistoryAction() {
+        $em = $this->getDoctrine()->getManager();
+        $repo = $em->getRepository('AppBundle:TermOfUseHistory');
+        $list = $repo->createQueryBuilder('h')
+                ->addSelect('count(h) as cnt, h.termId')
+                ->groupBy('h.termId')
+                ->getQuery()
+                ->getResult();
+        
+        return array(
+            'list' => $list
+        );
+    }
 
     /**
      * Show the edit history of a term.
      *
-     * @param Request $request
      * @Route("/{id}/history", name="termofuse_history")
      * @Method("GET")
      * @Template()
