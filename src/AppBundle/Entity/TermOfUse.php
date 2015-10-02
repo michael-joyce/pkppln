@@ -72,16 +72,6 @@ class TermOfUse {
     private $content;
 
     /**
-     * @ORM\OneToMany(targetEntity="TermOfUseHistory", mappedBy="termOfUse")
-     * @var ArrayCollection
-     */
-    private $history;
-
-    public function __construct() {
-        $this->history = new ArrayCollection();
-    }
-
-    /**
      * Get id
      *
      * @return integer 
@@ -201,42 +191,9 @@ class TermOfUse {
     public function setTimestamp() {
         $this->created = new DateTime();
     }
-
+    
     public function __toString() {
         return $this->content;
     }
 
-
-    /**
-     * Add history
-     *
-     * @param TermOfUseHistory $history
-     * @return TermOfUse
-     */
-    public function addHistory(TermOfUseHistory $history)
-    {
-        $this->history[] = $history;
-
-        return $this;
-    }
-
-    /**
-     * Remove history
-     *
-     * @param TermOfUseHistory $history
-     */
-    public function removeHistory(TermOfUseHistory $history)
-    {
-        $this->history->removeElement($history);
-    }
-
-    /**
-     * Get history
-     *
-     * @return TermOfUse[] 
-     */
-    public function getHistory()
-    {
-        return $this->history;
-    }
 }

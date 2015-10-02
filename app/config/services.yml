@@ -37,8 +37,9 @@ services:
     terms_of_use_listener:
         class: AppBundle\EventListener\TermsOfUseListener
         calls:
-            - [ setLogger, ["@monolog.logger"]]
+            - [ setLogger, ["@monolog.logger" ]]
+            - [ setTokenStorage, ["@security.token_storage" ]]
         tags:
             - { name: doctrine.event_listener, event: postPersist }
             - { name: doctrine.event_listener, event: postUpdate }
-            - { name: doctrine.event_listener, event: postRemove }
+            - { name: doctrine.event_listener, event: preRemove }

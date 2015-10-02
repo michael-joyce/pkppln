@@ -28,12 +28,9 @@ class TermOfUseHistory
     
     /**
      * @var TermOfUse
-     * @ORM\ManyToOne(targetEntity="TermOfUse", inversedBy="history")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="term_of_use_id", referencedColumnName="id", nullable=true)
-     * })
+     * @ORM\Column(type="integer")
      */
-    private $termOfUse;
+    private $termId;
     
     /**
      * @var string
@@ -184,12 +181,11 @@ class TermOfUseHistory
     /**
      * Set term
      *
-     * @param TermOfUse $term
      * @return TermOfUseHistory
      */
-    public function setTerm(TermOfUse $term = null)
+    public function setTermId($termId)
     {
-        $this->termOfUse = $term;
+        $this->termId = $termId;
 
         return $this;
     }
@@ -199,8 +195,8 @@ class TermOfUseHistory
      *
      * @return TermOfUse 
      */
-    public function getTerm()
+    public function getTermId()
     {
-        return $this->termOfUse;
+        return $this->termId;
     }
 }

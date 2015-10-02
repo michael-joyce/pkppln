@@ -25,8 +25,10 @@
                 <tr>
                     <td>{{ entity.weight }}</a></td>
                     <td>
-                        <p>{{ entity.content }}<br/>
-                            <a class="pull-right" href="{{ path('termofuse_show', { 'id': entity.id }) }}">{{ entity.keyCode }}</a>
+                        <p>{{ entity.content }}<br/>                            
+                            <a href="{{ path('termofuse_history', {'id': entity.id}) }}">History</a> |
+                            <a href="{{ path('termofuse_show', { 'id': entity.id }) }}">{{ entity.keyCode }}</a>
+                        </p>
                     </td>
                 </tr>
             {% endfor %}
