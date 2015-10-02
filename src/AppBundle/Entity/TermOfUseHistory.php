@@ -27,7 +27,7 @@ class TermOfUseHistory
     private $id;
     
     /**
-     * @var TermOfUse
+     * @var integer
      * @ORM\Column(type="integer")
      */
     private $termId;
@@ -179,7 +179,7 @@ class TermOfUseHistory
     }
 
     /**
-     * Set term
+     * Set term id
      *
      * @return TermOfUseHistory
      */
@@ -191,7 +191,7 @@ class TermOfUseHistory
     }
 
     /**
-     * Get term
+     * Get term id
      *
      * @return TermOfUse 
      */

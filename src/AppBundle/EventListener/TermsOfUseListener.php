@@ -57,7 +57,6 @@ class TermsOfUseListener {
         if (!$entity instanceof TermOfUse) {
             return;
         }
-        $this->logger->error("{$action}");
 
         $em = $args->getEntityManager();
         $unitOfWork = $em->getUnitOfWork();

@@ -191,7 +191,7 @@ class TermOfUse {
     public function setTimestamp() {
         $this->created = new DateTime();
     }
-    
+
     public function __toString() {
         return $this->content;
     }
