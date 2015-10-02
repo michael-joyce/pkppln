@@ -2,11 +2,14 @@
 
 namespace AppBundle\Services;
 
-use AppBundle\Entity\Journal;
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Persistence\ObjectManager;
 
 class BlackWhitelist {
 
+    /**
+     * @var ObjectManager
+     */
     private $em;
 
     public function __construct(Registry $doctrine) {

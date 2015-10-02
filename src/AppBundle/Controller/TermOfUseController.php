@@ -139,8 +139,14 @@ class TermOfUseController extends Controller
      */
     public function historyAction(Request $request, $id) {
         $em = $this->getDoctrine()->getManager();
-        $repo = $em->getRepository('AppBundle:TermOfUse');
-        $entities = $repo->getTermHistory($id);
+        $entity = $em->getRepository('AppBundle:TermOfUse')->find($id);
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find TermOfUse entity.');
+        }
+        $repo = $em->getRepository('AppBundle:TermOfUseHistory');
+        $entities = $repo->findBy(array(
+            'termOfUse' => $id
+        ));
         return array(
             'entities' => $entities,
         );

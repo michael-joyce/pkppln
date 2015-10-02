@@ -36,3 +36,14 @@ a[href ^= 'https://']::after {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;        
 }
+
+/* display changes */
+
+td.td-changeset {
+    padding: 0;
+    border-collapse: collapse;
+}
+
+table.changeset {
+    margin-bottom: 0;
+}
