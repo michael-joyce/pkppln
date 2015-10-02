@@ -20,7 +20,6 @@ class DepositType extends AbstractType
             ->add('action')
             ->add('volume')
             ->add('issue')
-            ->add('pubDate', 'date', array('widget' => 'single_text'))
             ->add('checksumType')
             ->add('checksumValue')
             ->add('url')

@@ -27,7 +27,7 @@
                     <td><a href="{{ path('deposit_show', { 'id': entity.id }) }}">{{ entity.fileuuid }}</a></td>
                     <td>{% if entity.received %}{{ entity.received|date('Y-m-d') }}{% endif %}</td>
                     <td>{{ entity.action }}</td>
-                    <td>{{ entity.journal.title }}</td>
+                    <td><a href="{{ path('journal_show', {'id': entity.journal.id}) }}">{{ entity.journal.title }}</a></td>
                     <td>{{ entity.volume }}</td>
                     <td>{{ entity.issue }}</td>
                     <td>{{ entity.pubDate|date('Y-m-d') }}</td>

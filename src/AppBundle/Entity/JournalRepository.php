@@ -27,5 +27,5 @@ class JournalRepository extends EntityRepository {
         $journals = $query->getResult();
         return $journals;
     }
-
+    
 }

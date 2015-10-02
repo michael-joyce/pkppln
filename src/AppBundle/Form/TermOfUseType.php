@@ -16,7 +16,6 @@ class TermOfUseType extends AbstractType
     {
         $builder
             ->add('weight')
-            ->add('created')
             ->add('keyCode')
             ->add('langCode')
             ->add('content')

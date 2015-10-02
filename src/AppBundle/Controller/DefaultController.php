@@ -20,6 +20,8 @@ class DefaultController extends Controller
     }
 
     /**
+     * Return the permission statement for LOCKSS.
+     * 
      * @Route("/permission", name="lockss_permission")
      */
     public function permissionAction() {
@@ -30,6 +32,8 @@ class DefaultController extends Controller
     }
 
     /**
+     * Fetch a processed and packaged deposit.
+     * 
      * @Route("/fetch/{depositId}/{fileId}.zip", name="fetch")
      * @param Request $request
      */

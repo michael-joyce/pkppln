@@ -7,14 +7,20 @@
 
 {% block body -%}
 
-    <p>Drag and drop the terms below to set their order. This form will only
-        show the current English-language terms, but will apply the sorting to all
-        terms, based on the key.</p>
+    <p>Drag and drop the terms below to set their order.</p>
 
     <form action='{{ url('termofuse_sort') }}' method='post' name='order'>
 
         <input type='hidden' name='order' id='order' value=''/>
 
+        <div class="btn-toolbar">
+            <div class="btn-group pull-right">
+                <a href="{{ path('termofuse') }}" class="btn btn-default">
+                    <span class="glyphicon glyphicon-arrow-left"></span> Back
+                </a>
+            </div>
+        </div>
+                    
         <ul class='list-group' id='list-order'>
 
             {% for entity in entities %}
@@ -37,7 +43,7 @@
 {% endblock %}
 
 {% block javascripts %}
-        <script>
+    <script>
         $(document).ready(function () {
             $('#list-order').sortable({
                 containment: 'parent',

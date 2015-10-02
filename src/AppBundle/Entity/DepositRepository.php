@@ -24,4 +24,5 @@ class DepositRepository extends EntityRepository
             'state' => $state,
         ));
     }
+    
 }

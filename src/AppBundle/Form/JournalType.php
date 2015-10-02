@@ -16,8 +16,6 @@ class JournalType extends AbstractType
     {
         $builder
             ->add('uuid')
-            ->add('contacted')
-            ->add('notified')
             ->add('title')
             ->add('issn')
             ->add('url')

@@ -1,18 +1,18 @@
 {% extends '::base.html.twig' %}
 
-    
+
 {% block pageheader %}
     <h1>Journal</h1>
 {% endblock %}
-    
+
 {% block body -%}
-        <div class="btn-toolbar">
-    <div class="btn-group pull-right">
-        <a href="{{ path('journal') }}" class="btn btn-default">
-            <span class="glyphicon glyphicon-arrow-left"></span> Back
-        </a>
+    <div class="btn-toolbar">
+        <div class="btn-group pull-right">
+            <a href="{{ path('journal') }}" class="btn btn-default">
+                <span class="glyphicon glyphicon-arrow-left"></span> Back
+            </a>
+        </div>
     </div>
-</div>
 
     <table class="record_properties table table-striped table-bordered table-hover">
         <tbody>
@@ -38,7 +38,7 @@
             </tr>
             <tr>
                 <th>Url</th>
-                <td>{{ entity.url }}</td>
+                <td><a href="{{ entity.url }}">{{ entity.url }}</a></td>
             </tr>
             <tr>
                 <th>Status</th>
@@ -46,7 +46,7 @@
             </tr>
             <tr>
                 <th>Email</th>
-                <td>{{ entity.email }}</td>
+                <td><a href="mailto:{{ entity.email }}">{{ entity.email }}</a></td>
             </tr>
             <tr>
                 <th>Publishername</th>
@@ -54,8 +54,16 @@
             </tr>
             <tr>
                 <th>Publisherurl</th>
-                <td>{{ entity.publisherUrl }}</td>
+                <td><a href="{{ entity.publisherUrl }}">{{ entity.publisherUrl }}</a></td>
             </tr>
+            <tr>
+                <th>Deposits</th>
+                <td>
+                    <a href="{{ path('journal_deposits', {'id': entity.id}) }}">
+                        {{ entity.countDeposits() }}
+                    </a>
+                </td>
+            </tr>    
         </tbody>
     </table>
 {% endblock %}

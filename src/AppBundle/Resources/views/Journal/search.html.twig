@@ -53,7 +53,7 @@
                         <td>{{ entity.issn }}</td>
                         <td><a href="{{ entity.url }}">{{ entity.url }}</a></td>
                         <td>{{ entity.status }}</td>
-                        <td>{{ entity.email }}</td>
+                        <td><a href='mailto:{{ entity.email }}'>{{ entity.email }}</a></td>
                         <td> 
                             {% if entity.publisherUrl and entity.publisherName %}
                                 <a href="{{ entity.publisherUrl }}">

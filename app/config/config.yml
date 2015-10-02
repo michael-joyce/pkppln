@@ -77,6 +77,10 @@ assetic:
             inputs:
                 - %kernel.root_dir%/../vendor/twitter/bootstrap/dist/fonts/glyphicons-halflings-regular.woff
             output: "fonts/glyphicons-halflings-regular.woff"
+        bootstrap_glyphicons_woff2:
+            inputs:
+                - %kernel.root_dir%/../vendor/twitter/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2
+            output: "fonts/glyphicons-halflings-regular.woff2"
 
         jquery:
             inputs:

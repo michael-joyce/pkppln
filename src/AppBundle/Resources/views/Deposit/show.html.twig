@@ -17,15 +17,15 @@
     <table class="record_properties table table-striped table-bordered table-hover">
         <tbody>
             <tr>
-                <th>File_uuid</th>
+                <th>File uuid</th>
                 <td>{{ entity.fileuuid }}</td>
             </tr>
             <tr>
-                <th>File_type</th>
+                <th>File type</th>
                 <td>{{ entity.filetype }}</td>
             </tr>
             <tr>
-                <th>Deposit_uuid</th>
+                <th>Deposit uuid</th>
                 <td>{{ entity.deposituuid }}</td>
             </tr>
             <tr>
@@ -45,60 +45,64 @@
                 <td>{{ entity.issue }}</td>
             </tr>
             <tr>
-                <th>Pubdate</th>
+                <th>Publication date</th>
                 <td>{{ entity.pubDate|date('Y-m-d H:i:s') }}</td>
             </tr>
             <tr>
-                <th>Checksumtype</th>
+                <th>Checksum type</th>
                 <td>{{ entity.checksumType }}</td>
             </tr>
             <tr>
-                <th>Checksumvalue</th>
+                <th>Checksum value</th>
                 <td>{{ entity.checksumValue }}</td>
             </tr>
             <tr>
                 <th>Url</th>
-                <td>{{ entity.url }}</td>
+                <td><a href="{{ entity.url }}">{{ entity.url }}</a></td>
             </tr>
             <tr>
-                <th>Size</th>
+                <th>Size (kb)</th>
                 <td>{{ entity.size }}</td>
             </tr>
             <tr>
-                <th>State</th>
+                <th>Processing State</th>
                 <td>{{ entity.state }}</td>
             </tr>
             <tr>
-                <th>Plnstate</th>
+                <th>LOCKSS PLN state</th>
                 <td>{{ entity.plnState }}</td>
             </tr>
             <tr>
-                <th>Packagesize</th>
+                <th>Packaged size</th>
                 <td>{{ entity.packageSize }}</td>
             </tr>
             <tr>
-                <th>Packagepath</th>
+                <th>Package path</th>
                 <td>{{ entity.packagePath }}</td>
             </tr>
             <tr>
-                <th>Packagechecksumtype</th>
+                <th>Package checksum type</th>
                 <td>{{ entity.packageChecksumType }}</td>
             </tr>
             <tr>
-                <th>Packagechecksumvalue</th>
+                <th>Package checksum value</th>
                 <td>{{ entity.packageChecksumValue }}</td>
             </tr>
             <tr>
-                <th>Depositdate</th>
+                <th>Deposit date</th>
                 <td>{{ entity.depositDate|date('Y-m-d H:i:s') }}</td>
             </tr>
             <tr>
-                <th>Depositreceipt</th>
-                <td>{{ entity.depositReceipt }}</td>
+                <th>Deposit receipt</th>
+                <td><a href="{{ entity.depositReceipt }}">{{ entity.depositReceipt }}</a></td>
             </tr>
             <tr>
-                <th>Processinglog</th>
-                <td>{{ entity.processingLog }}</td>
+                <th>Processing log</th>
+                <td>
+                    <pre>
+                    {{- entity.processingLog -}}
+                    </pre>
+                </td>
             </tr>
         </tbody>
     </table>

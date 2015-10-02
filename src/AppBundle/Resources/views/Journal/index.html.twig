@@ -12,14 +12,9 @@
             <tr>
                 <th>Uuid</th>
                 <th>Contacted</th>
-                <th>Notified</th>
                 <th>Title</th>
-                <th>Issn</th>
                 <th>Url</th>
                 <th>Status</th>
-                <th>Email</th>
-                <th>Publishername</th>
-                <th>Publisherurl</th>
             </tr>
         </thead>
         <tbody>
@@ -27,14 +22,9 @@
                 <tr>
                     <td><a href="{{ path('journal_show', { 'id': entity.id }) }}">{{ entity.uuid }}</a></td>
                     <td>{% if entity.contacted %}{{ entity.contacted|date('Y-m-d H:i:s') }}{% endif %}</td>
-                    <td>{% if entity.notified %}{{ entity.notified|date('Y-m-d H:i:s') }}{% endif %}</td>
                     <td>{{ entity.title }}</td>
-                    <td>{{ entity.issn }}</td>
-                    <td>{{ entity.url }}</td>
+                    <td><a href="{{ entity.url }}">{{ entity.url }}</a></td>
                     <td>{{ entity.status }}</td>
-                    <td>{{ entity.email }}</td>
-                    <td>{{ entity.publisherName }}</td>
-                    <td>{{ entity.publisherUrl }}</td>
                 </tr>
             {% endfor %}
         </tbody>
