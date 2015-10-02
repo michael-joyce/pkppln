@@ -3,8 +3,8 @@
 namespace AppBundle\Entity;
 
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * TermOfUse
@@ -13,8 +13,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\HasLifecycleCallbacks
  * @ORM\Entity(repositoryClass="TermOfUseRepository")
  */
-class TermOfUse
-{
+class TermOfUse {
+
     /**
      * @var integer
      *
@@ -32,7 +32,7 @@ class TermOfUse
      * @ORM\Column(type="integer")
      */
     private $weight;
-    
+
     /**
      * The date the term was created. Terms are never updated - new ones 
      * are created as needed.
@@ -61,23 +61,32 @@ class TermOfUse
      * @ORM\Column(type="string")
      */
     private $langCode = "en-US";
-    
+
     /**
      * The content of the term, in the language in $langCode.
      *
      * @var string
      * 
      * @ORM\Column(type="string")
-     */    
+     */
     private $content;
+
+    /**
+     * @ORM\OneToMany(targetEntity="TermOfUseHistory", mappedBy="termOfUse")
+     * @var ArrayCollection
+     */
+    private $history;
+
+    public function __construct() {
+        $this->history = new ArrayCollection();
+    }
 
     /**
      * Get id
      *
      * @return integer 
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -87,8 +96,7 @@ class TermOfUse
      * @param integer $weight
      * @return TermOfUse
      */
-    public function setWeight($weight)
-    {
+    public function setWeight($weight) {
         $this->weight = $weight;
 
         return $this;
@@ -99,8 +107,7 @@ class TermOfUse
      *
      * @return integer 
      */
-    public function getWeight()
-    {
+    public function getWeight() {
         return $this->weight;
     }
 
@@ -110,8 +117,7 @@ class TermOfUse
      * @param DateTime $created
      * @return TermOfUse
      */
-    public function setCreated(DateTime $created)
-    {
+    public function setCreated(DateTime $created) {
         $this->created = $created;
 
         return $this;
@@ -122,8 +128,7 @@ class TermOfUse
      *
      * @return DateTime
      */
-    public function getCreated()
-    {
+    public function getCreated() {
         return $this->created;
     }
 
@@ -133,8 +138,7 @@ class TermOfUse
      * @param string $keyCode
      * @return TermOfUse
      */
-    public function setKeyCode($keyCode)
-    {
+    public function setKeyCode($keyCode) {
         $this->keyCode = $keyCode;
 
         return $this;
@@ -145,8 +149,7 @@ class TermOfUse
      *
      * @return string 
      */
-    public function getKeyCode()
-    {
+    public function getKeyCode() {
         return $this->keyCode;
     }
 
@@ -156,8 +159,7 @@ class TermOfUse
      * @param string $langCode
      * @return TermOfUse
      */
-    public function setLangCode($langCode)
-    {
+    public function setLangCode($langCode) {
         $this->langCode = $langCode;
 
         return $this;
@@ -168,8 +170,7 @@ class TermOfUse
      *
      * @return string 
      */
-    public function getLangCode()
-    {
+    public function getLangCode() {
         return $this->langCode;
     }
 
@@ -179,8 +180,7 @@ class TermOfUse
      * @param string $content
      * @return TermOfUse
      */
-    public function setContent($content)
-    {
+    public function setContent($content) {
         $this->content = $content;
 
         return $this;
@@ -191,8 +191,7 @@ class TermOfUse
      *
      * @return string 
      */
-    public function getContent()
-    {
+    public function getContent() {
         return $this->content;
     }
 
@@ -202,8 +201,42 @@ class TermOfUse
     public function setTimestamp() {
         $this->created = new DateTime();
     }
-    
+
     public function __toString() {
         return $this->content;
+    }
+
+
+    /**
+     * Add history
+     *
+     * @param TermOfUseHistory $history
+     * @return TermOfUse
+     */
+    public function addHistory(TermOfUseHistory $history)
+    {
+        $this->history[] = $history;
+
+        return $this;
+    }
+
+    /**
+     * Remove history
+     *
+     * @param TermOfUseHistory $history
+     */
+    public function removeHistory(TermOfUseHistory $history)
+    {
+        $this->history->removeElement($history);
+    }
+
+    /**
+     * Get history
+     *
+     * @return TermOfUse[] 
+     */
+    public function getHistory()
+    {
+        return $this->history;
     }
 }
