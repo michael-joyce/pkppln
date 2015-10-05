@@ -12679,15 +12679,5 @@ $(document).ready(function () {
         });
     });
 
-    var hostname = window.location.hostname.replace('www.', '');
-    $('a').each(function () {
-        var link_host = $(this).prop('href', url).prop('hostname');
-        
-        console.log([link_host, hostname]);
-        
-        if (link_host !== hostname) {
-            $(this).attr('target', '_blank');
-        }
-    });
-
+    $("a[href^='http://']").attr("target","_blank");
 });
