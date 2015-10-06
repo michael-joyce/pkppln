@@ -29,7 +29,7 @@ class Whitelist {
      * a record of it.
      *
      * @var string
-     * 
+     * @Assert\Uuid
      * @ORM\Column(type="string", length=36, nullable=false)
      */
     private $uuid;

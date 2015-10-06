@@ -27,5 +27,10 @@ class JournalRepository extends EntityRepository {
         $journals = $query->getResult();
         return $journals;
     }
-    
+
+    public function findByStatus($status) {
+        return $this->findBy(array(
+            'status' => $status,
+        ));
+    }
 }

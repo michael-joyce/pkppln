@@ -1,12 +1,12 @@
 <?php
 
-namespace AppBundle\DataFixtures\ORM;
+namespace AppBundle\DataFixtures\ORM\test;
 
 use AppBundle\Entity\TermOfUse;
-use Doctrine\Common\DataFixtures\FixtureInterface;
+use AppBundle\Utility\AbstractDataFixture;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class LoadTermsOfUse implements FixtureInterface {
+class LoadTermsOfUse extends AbstractDataFixture {
 
     /**
      * @var ObjectManager
@@ -34,12 +34,16 @@ class LoadTermsOfUse implements FixtureInterface {
     /**
      * {@inheritDoc}
      */
-    public function load(ObjectManager $manager) {
+    public function doLoad(ObjectManager $manager) {
         $this->manager = $manager;
         foreach($this->terms as $data) {
             $this->createTerm($data[0], $data[1], $data[2], $data[3]);
         }
         $manager->flush();
+    }
+    
+    protected function getEnvironments() {
+        return array('test');
     }
 
 }
