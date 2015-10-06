@@ -73,6 +73,7 @@ class TermsOfUseListener {
             $history->setUser('console');
         }
         $em->persist($history);
+        $em->flush($history); // these are post-whatever events, after a flush.
     }
 
     public function postPersist(LifecycleEventArgs $args) {
