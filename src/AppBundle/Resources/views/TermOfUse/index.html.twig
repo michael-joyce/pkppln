@@ -11,6 +11,7 @@
         <div class="btn-group">
             <a href="{{ path('termofuse_new') }}" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> New</a>
             <a href="{{ path('termofuse_sort') }}" class="btn btn-default"><span class="glyphicon glyphicon-sort"></span> Sort</a>
+            <a href="{{ path('termhistory') }}" class="btn btn-default"><span class="glyphicon glyphicon-time"></span> History</a>
         </div>
     </div>
     <table class="table table-striped table-condensed table-bordered table-hover">
@@ -26,7 +27,7 @@
                     <td>{{ entity.weight }}</a></td>
                     <td>
                         <p>{{ entity.content }}<br/>                            
-                            <a href="{{ path('termofuse_history', {'id': entity.id}) }}">History</a> |
+                            <a href="{{ path('termhistory_show', {'id': entity.id}) }}">History</a> |
                             <a href="{{ path('termofuse_show', { 'id': entity.id }) }}">{{ entity.keyCode }}</a>
                         </p>
                     </td>
