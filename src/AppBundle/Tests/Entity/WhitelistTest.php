@@ -2,13 +2,13 @@
 
 namespace AppBundle\Tests\Entity;
 
-use AppBundle\Entity\Blacklist;
+use AppBundle\Entity\Whitelist;
 use AppBundle\Utility\AbstractTestCase;
 
 class WhitelistTest extends AbstractTestCase {
 
     /**
-     * @var Blacklist
+     * @var Whitelist
      */
     protected $whitelist;
 

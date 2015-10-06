@@ -653,7 +653,7 @@ class Deposit
     }
 
     public function addToProcessingLog($content) {
-        $date = date('c');
+        $date = date(DateTime::ATOM);
         $this->processingLog .= "{$date}\n{$content}\n\n";
     }
 
@@ -749,16 +749,4 @@ class Deposit
         return $this->packageChecksumValue;
     }
 
-    /**
-     * Set processingLog
-     *
-     * @param string $processingLog
-     * @return Deposit
-     */
-    public function setProcessingLog($processingLog)
-    {
-        $this->processingLog = $processingLog;
-
-        return $this;
-    }
 }
