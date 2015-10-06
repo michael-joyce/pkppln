@@ -54,8 +54,8 @@ class TermOfUseController extends Controller
             for($i = 0; $i < count($list); $i++) {
                 $term = $repo->find($list[$i]);
                 $term->setWeight($i);
+                $em->flush(); // flush the terms individually - the postUpdate event causes problems here.
             }
-            $em->flush();
             $this->addFlash("success", "The terms have been sorted.");
         }
         
