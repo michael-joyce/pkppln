@@ -12,55 +12,10 @@ use Doctrine\ORM\EntityRepository;
  */
 class TermOfUseRepository extends EntityRepository
 {
-    
-    public function getCurrentTerm($key, $lang) {
+    public function getTerms() {
         $qb = $this->createQueryBuilder('t')
-                ->select('t')
-                ->where('t.langCode = :lang')
-                ->setParameter('lang', $lang)
-                ->andWhere('t.keyCode = :key')
-                ->setParameter('key', $key)
-                ->orderBy('t.id', 'ASC')
-                ->setMaxResults(1)
-                ->getQuery();
-        $result = $qb->getResult();
-        if(count($result) === 1) {
-            return $result[0];
-        } else {
-            return null;
-        }
-    }
-    
-    public function getCurrentTerms($lang = 'en-us') {
-        $qb = $this->createQueryBuilder('t')
-                ->select('t.keyCode')
-                ->distinct()
                 ->orderBy('t.weight', 'ASC')
-                ->getQuery();
-        $keys = $qb->getArrayResult();
-        $terms = array();
-        foreach($keys as $key) {
-            $term = $this->getCurrentTerm($key['keyCode'], $lang);
-            if($term === null) {
-                $term = $this->getCurrentTerm($key, 'en-US');
-            }
-            $terms[] = $term;
-        }
-        return $terms;
-    }
-
-    public function getTermHistory($id) {
-        $term = $this->findOneBy(array('id' => $id));
-        if($term === null) {
-            return null;
-        }
-        $qb = $this->createQueryBuilder('t')
-                ->select('t')
-                ->Where('t.keyCode = :key')
-                ->setParameter('key', $term->getKeyCode())
-                ->orderBy('t.id', 'ASC')
                 ->getQuery();
         return $qb->getResult();
     }
-
 }

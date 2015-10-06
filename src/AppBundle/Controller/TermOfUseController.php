@@ -28,7 +28,7 @@ class TermOfUseController extends Controller
     public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $entities = $em->getRepository('AppBundle:TermOfUse')->getCurrentTerms();
+        $entities = $em->getRepository('AppBundle:TermOfUse')->getTerms();
         
         return array(
             'entities' => $entities,
@@ -52,16 +52,14 @@ class TermOfUseController extends Controller
             $order = $request->request->get("order");
             $list = explode(",", $order);
             for($i = 0; $i < count($list); $i++) {
-                $terms = $repo->findBy(array('keyCode' => $list[$i]));
-                foreach($terms as $term) {
-                    $term->setWeight($i);
-                }
+                $term = $repo->find($list[$i]);
+                $term->setWeight($i);
             }
             $em->flush();
             $this->addFlash("success", "The terms have been sorted.");
         }
         
-        $entities = $em->getRepository("AppBundle:TermOfUse")->getCurrentTerms();
+        $entities = $em->getRepository("AppBundle:TermOfUse")->getTerms();
         return array('entities' => $entities);
     }
     
@@ -101,7 +99,8 @@ class TermOfUseController extends Controller
      */
     private function createCreateForm(TermOfUse $entity)
     {
-        $form = $this->createForm(new TermOfUseType(), $entity, array(
+        $defaultLocale = $this->container->getParameter('terms_of_use_default_locale');
+        $form = $this->createForm(new TermOfUseType($defaultLocale), $entity, array(
             'action' => $this->generateUrl('termofuse_create'),
             'method' => 'POST',
         ));
@@ -230,7 +229,8 @@ class TermOfUseController extends Controller
     */
     private function createEditForm(TermOfUse $entity)
     {
-        $form = $this->createForm(new TermOfUseType(), $entity, array(
+        $defaultLocale = $this->container->getParameter('terms_of_use_default_locale');
+        $form = $this->createForm(new TermOfUseType($defaultLocale), $entity, array(
             'action' => $this->generateUrl('termofuse_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));

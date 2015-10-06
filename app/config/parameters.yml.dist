@@ -40,3 +40,6 @@ parameters:
 
     # Staging Server's UUID for LOCKSSOMatic
     staging_server_uuid: ~
+
+    # Default locale for terms of use
+    terms_of_use_default_locale: 'en-US'

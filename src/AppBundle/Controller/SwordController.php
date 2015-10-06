@@ -71,15 +71,6 @@ class SwordController extends Controller {
         return null;
     }
 
-    private function getLocale(Request $request) {
-        $languageHeader = $this->fetchHeader($request, "Accept-Language");
-        $locale = locale_accept_from_http($languageHeader);
-        if ($locale !== null) {
-            return $locale;
-        }
-        return $this->container->getParameter("pln_defaultLocale");
-    }
-
     private function getXmlValue(SimpleXMLElement $xml, $xpath) {
         $data = $xml->xpath($xpath);
         if (count($data) === 1) {
@@ -117,14 +108,13 @@ class SwordController extends Controller {
         $obh = $this->fetchHeader($request, "On-Behalf-Of");
         $journalUrl = $this->fetchHeader($request, "Journal-Url");
 
-        $locale = $this->getLocale($request);
         $accepting = $this->checkAccess($obh);
         $acceptingLog = 'not accepting';
         if ($accepting) {
             $acceptingLog = 'accepting';
         }
 
-        $logger->notice("service document - {$request->getClientIp()} - {$locale} - {$obh} - {$journalUrl} - {$acceptingLog}");
+        $logger->notice("service document - {$request->getClientIp()} - {$obh} - {$journalUrl} - {$acceptingLog}");
         if ($obh === null) {
             throw new SwordException(400, "Missing On-Behalf-Of header");
         }
@@ -134,7 +124,7 @@ class SwordController extends Controller {
         $em = $this->getDoctrine()->getManager();
         /** @var TermOfUseRepository */
         $repo = $em->getRepository("AppBundle:TermOfUse");
-        $terms = $repo->getCurrentTerms($locale);
+        $terms = $repo->getTerms();
 
         /** @var Response */
         $response = $this->render("AppBundle:Sword:serviceDocument.xml.twig", array(

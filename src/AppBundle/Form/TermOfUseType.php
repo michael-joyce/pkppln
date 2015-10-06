@@ -8,6 +8,12 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class TermOfUseType extends AbstractType
 {
+    protected $defaultLocale;
+
+    public function __construct($defaultLocale) {
+        $this->defaultLocale = $defaultLocale;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -17,7 +23,7 @@ class TermOfUseType extends AbstractType
         $builder
             ->add('weight')
             ->add('keyCode')
-            ->add('langCode')
+            ->add('langCode', 'text', array('data' => $this->defaultLocale))
             ->add('content')
         ;
     }
