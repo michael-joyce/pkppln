@@ -134,6 +134,12 @@ fos_user:
     db_driver: orm
     firewall_name: main
     user_class: AppUserBundle\Entity\User
+    profile:
+        form:
+            type: appbundle_user_profile
+    change_password:
+        form:
+            type: appbundle_user_password
 
 cl_tissue:
     adapter: clamav

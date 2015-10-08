@@ -7,7 +7,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use FOS\UserBundle\Form\BaseType;
 
-class AdminUserType extends AbstractType {
+class ProfileType extends AbstractType {
 
     /**
      * @param FormBuilderInterface $builder
@@ -31,7 +31,7 @@ class AdminUserType extends AbstractType {
                     'expanded' => true,
                     'required' => false,
                 ))
-        ;
+                ->add('submit', 'submit', array('label' => 'Update'));
     }
 
     /**
@@ -43,11 +43,15 @@ class AdminUserType extends AbstractType {
         ));
     }
     
+    public function getParent() {
+        return 'fos_user_profile';
+    }
+    
     /**
      * @return string
      */
     public function getName() {
-        return 'appbundle_user';
+        return 'appbundle_user_password';
     }
 
 }

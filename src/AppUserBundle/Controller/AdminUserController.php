@@ -2,13 +2,14 @@
 
 namespace AppUserBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use AppUserBundle\Entity\User;
+use AppUserBundle\Form\AdminUserType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use AppUserBundle\Entity\User;
-use AppUserBundle\Form\AdminUserType;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * User controller.
@@ -67,11 +68,11 @@ class AdminUserController extends Controller
      *
      * @param User $entity The entity
      *
-     * @return \Symfony\Component\Form\Form The form
+     * @return Form The form
      */
     private function createCreateForm(User $entity)
     {
-        $form = $this->createForm(new UserType(), $entity, array(
+        $form = $this->createForm(new AdminUserType(), $entity, array(
             'action' => $this->generateUrl('user_create'),
             'method' => 'POST',
         ));
@@ -156,7 +157,7 @@ class AdminUserController extends Controller
     *
     * @param User $entity The entity
     *
-    * @return \Symfony\Component\Form\Form The form
+    * @return Form The form
     */
     private function createEditForm(User $entity)
     {
@@ -227,7 +228,7 @@ class AdminUserController extends Controller
      *
      * @param mixed $id The entity id
      *
-     * @return \Symfony\Component\Form\Form The form
+     * @return Form The form
      */
     private function createDeleteForm($id)
     {
