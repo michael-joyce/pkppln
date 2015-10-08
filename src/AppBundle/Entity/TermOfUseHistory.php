@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table()
  * @ORM\HasLifecycleCallbacks
- * @ORM\Entity(repositoryClass="TermOfUseRepository")
+ * @ORM\Entity(repositoryClass="TermOfUseHistoryRepository")
  */
 class TermOfUseHistory
 {
