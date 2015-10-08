@@ -39,9 +39,7 @@ class DtdValidator {
         }
         $oldHandler = set_error_handler(array($this, 'validationError'));
         $dom->validate();
-        if ($oldHandler) {
-            set_error_handler($oldHandler);
-        }
+        set_error_handler($oldHandler);
     }
 
     public function hasErrors() {

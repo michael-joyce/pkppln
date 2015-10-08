@@ -59,6 +59,7 @@ class AbstractTestCase extends BaseTestCase {
             'AppBundle\DataFixtures\ORM\test\LoadJournals',
             'AppBundle\DataFixtures\ORM\test\LoadTermsOfUse',
             'AppBundle\DataFixtures\ORM\test\LoadWhitelist',
+            'AppUserBundle\DataFixtures\ORM\test\LoadUsers',
         );
         $this->references = $this->loadFixtures($fixtures)->getReferenceRepository();
         $this->em = $this->getContainer()->get('doctrine')->getManager();

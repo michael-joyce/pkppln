@@ -18,12 +18,16 @@ class BlackWhitelist {
 
     public function isWhitelisted($uuid) {
         $repo = $this->em->getRepository('AppBundle:Whitelist');
-        return $repo->findOneBy(array('uuid' => $uuid)) !== null;
+        return $repo->findOneBy(array(
+            'uuid' => strtoupper($uuid))
+        ) !== null;
     }
 
     public function isBlacklisted($uuid) {
         $repo = $this->em->getRepository('AppBundle:Blacklist');
-        return $repo->findOneBy(array('uuid' => $uuid)) !== null;
+        return $repo->findOneBy(array(
+            'uuid' => strtoupper($uuid))
+        ) !== null;
     }
 
 }

@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Whitelist
  *
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="WhitelistRepository")
+ * @ORM\Entity()
  */
 class Whitelist {
 
