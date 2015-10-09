@@ -10,9 +10,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
- * User controller.
+ * Admin-only user controller.
  *
  * @Route("/admin/user")
  */
@@ -28,8 +29,8 @@ class AdminUserController extends Controller
      */
     public function indexAction()
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $em = $this->getDoctrine()->getManager();
-
         $entities = $em->getRepository('AppUserBundle:User')->findAll();
 
         return array(
@@ -45,6 +46,7 @@ class AdminUserController extends Controller
      */
     public function createAction(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $entity = new User();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
@@ -91,6 +93,7 @@ class AdminUserController extends Controller
      */
     public function newAction()
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $entity = new User();
         $form   = $this->createCreateForm($entity);
 
@@ -109,8 +112,8 @@ class AdminUserController extends Controller
      */
     public function showAction($id)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $em = $this->getDoctrine()->getManager();
-
         $entity = $em->getRepository('AppUserBundle:User')->find($id);
 
         if (!$entity) {
@@ -134,6 +137,7 @@ class AdminUserController extends Controller
      */
     public function editAction($id)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AppUserBundle:User')->find($id);
@@ -179,8 +183,8 @@ class AdminUserController extends Controller
      */
     public function updateAction(Request $request, $id)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $em = $this->getDoctrine()->getManager();
-
         $entity = $em->getRepository('AppUserBundle:User')->find($id);
 
         if (!$entity) {
@@ -210,6 +214,7 @@ class AdminUserController extends Controller
      */
     public function deleteAction(Request $request, $id)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('AppUserBundle:User')->find($id);
 
