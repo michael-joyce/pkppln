@@ -9,6 +9,10 @@ use Doctrine\ORM\UnitOfWork;
 use Monolog\Logger;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
+/**
+ * Doctrine event listener to record term history. Configured as a service in
+ * services.yml.
+ */
 class TermsOfUseListener {
 
     /**
@@ -21,14 +25,32 @@ class TermsOfUseListener {
      */
     private $tokenStorage;
 
+    /**
+     * Set the logger for the event listener.
+     *
+     * @param Logger $logger
+     */
     public function setLogger(Logger $logger) {
         $this->logger = $logger;
     }
-    
+
+    /**
+     * Set the token storage for the listener.
+     *
+     * @param TokenStorage $tokenStorage
+     */
     public function setTokenStorage(TokenStorage $tokenStorage) {
         $this->tokenStorage = $tokenStorage;
     }
-    
+
+    /**
+     * Get an array describing the changes.
+     *
+     * @param UnitOfWork $unitOfWork
+     * @param TermOfUse $entity
+     * @param string $action
+     * @return array
+     */
     protected function getChangeSet(UnitOfWork $unitOfWork, TermOfUse $entity, $action) {
         switch ($action) {
             case 'create':
@@ -52,6 +74,12 @@ class TermsOfUseListener {
         }
     }
 
+    /**
+     * Save a history event for a term of use.
+     *
+     * @param LifecycleEventArgs $args
+     * @param string $action
+     */
     protected function saveHistory(LifecycleEventArgs $args, $action) {
         $entity = $args->getEntity();
         if (!$entity instanceof TermOfUse) {
@@ -76,14 +104,29 @@ class TermsOfUseListener {
         $em->flush($history); // these are post-whatever events, after a flush.
     }
 
+    /**
+     * Called automatically after a term entity is persisted.
+     *
+     * @param LifecycleEventArgs $args
+     */
     public function postPersist(LifecycleEventArgs $args) {
         $this->saveHistory($args, 'create');
     }
 
+    /**
+     * Called automatically after a term entity is updated.
+     *
+     * @param LifecycleEventArgs $args
+     */
     public function postUpdate(LifecycleEventArgs $args) {
         $this->saveHistory($args, 'update');
     }
 
+    /**
+     * Called automatically before a term entity is removed.
+     *
+     * @param LifecycleEventArgs $args
+     */
     public function preRemove(LifecycleEventArgs $args) {
         $this->saveHistory($args, 'delete');
     }

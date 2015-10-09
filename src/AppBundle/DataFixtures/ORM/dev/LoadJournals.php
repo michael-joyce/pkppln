@@ -7,12 +7,21 @@ use AppBundle\Utility\AbstractDataFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
+/**
+ * Load a journal for development.
+ */
 class LoadJournals extends AbstractDataFixture implements OrderedFixtureInterface {
 
+    /**
+     * {@inheritDocs}
+     */
     public function getOrder() {
         return 1;
     }
 
+    /**
+     * {@inheritDocs}
+     */
     protected function doLoad(ObjectManager $manager) {
         $journal = new Journal();
         $journal->setEmail('test@example.com');
@@ -28,6 +37,9 @@ class LoadJournals extends AbstractDataFixture implements OrderedFixtureInterfac
         $this->setReference('journal', $journal);
     }
 
+    /**
+     * {@inheritDocs}
+     */
     protected function getEnvironments() {
         return array('dev');
     }

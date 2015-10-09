@@ -5,27 +5,34 @@ namespace AppBundle\Command\Processing;
 use AppBundle\Entity\Deposit;
 use BagIt;
 use CL\Tissue\Adapter\ClamAv\ClamAvAdapter;
+use CL\Tissue\Model\ScanResult;
 use DOMDocument;
 use DOMNamedNodeMap;
 use DOMXPath;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * Run a clamAV virus check on a deposit.
+ */
 class VirusCheckCommand extends AbstractProcessingCmd {
 
+    /**
+     * @var ClamAvAdapter
+     */
     protected $scanner;
-    protected $scannerPath;
-    protected $scanned;
-    protected $report;
 
+    /**
+     * {@inheritDoc}
+     */
     public function setContainer(ContainerInterface $container = null) {
         parent::setContainer($container);
-        $this->scannerPath = $container->getParameter('clamdscan_path');
-        $this->scanner = new ClamAvAdapter($this->scannerPath);
+        $scannerPath = $container->getParameter('clamdscan_path');
+        $this->scanner = new ClamAvAdapter($scannerPath);
     }
 
     /**
-     * Configure the command.
+     * {@inheritDoc}
      */
     protected function configure() {
         $this->setName('pln:virus-scan');
@@ -33,6 +40,11 @@ class VirusCheckCommand extends AbstractProcessingCmd {
         parent::configure();
     }
 
+    /**
+     * Log a virus detection.
+     *
+     * @param ScanResult $result
+     */
     private function logInfections($result) {
         foreach ($result->getDetections() as $d) {
             $this->logger->error("VIRUS DETECTED: {$d->getPath()} - {$d->getDescription()}");
@@ -40,6 +52,8 @@ class VirusCheckCommand extends AbstractProcessingCmd {
     }
 
     /**
+     * Scan a file path for viruses. Logs any that are found.
+     * 
      * @param type $path
      * @return true if the scan was clean.
      */
@@ -52,6 +66,15 @@ class VirusCheckCommand extends AbstractProcessingCmd {
         return true;
     }
 
+    /**
+     * OJS export XML files may contain embedded media (images, PDFs, other
+     * files) which need to be extracted and scanned. Scan results will be
+     * appended to $report.
+     *
+     * @param string $path
+     * @param string $report
+     * @return boolean
+     */
     protected function scanEmbeddedData($path, &$report) {
         $dom = new DOMDocument();
         $dom->load($path);
@@ -80,11 +103,7 @@ class VirusCheckCommand extends AbstractProcessingCmd {
     }
 
     /**
-     * Process one deposit. Fetch the data and write it to the file system.
-     * Updates the deposit status.
-     *
-     * @param Deposit $deposit
-     * @return type
+     * {@inheritDoc}
      */
     protected function processDeposit(Deposit $deposit) {
         $extractedPath = $this->getBagPath($deposit);
@@ -116,18 +135,30 @@ class VirusCheckCommand extends AbstractProcessingCmd {
         return $clean;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function nextState() {
         return "virus-checked";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function processingState() {
         return "bag-validated";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function failureLogMessage() {
         return "Virus check failed.";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function successLogMessage() {
         return "Virus check passed. No infections found.";
     }

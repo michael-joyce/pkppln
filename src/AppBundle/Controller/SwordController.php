@@ -1,11 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Deposit;
@@ -13,6 +7,7 @@ use AppBundle\Entity\Journal;
 use AppBundle\Entity\TermOfUseRepository;
 use AppBundle\Exception\SwordException;
 use AppBundle\Services\BlackWhitelist;
+use AppBundle\Utility\Namespaces;
 use DateTime;
 use Exception;
 use J20\Uuid\Uuid;
@@ -50,14 +45,27 @@ class SwordController extends Controller {
         'unknown' => 'The deposit is in an unknown state.'
     );
 
+    /**
+     * Parse an XML string, register the namespaces it uses, and return the
+     * result.
+     *
+     * @param string $content
+     * @return SimpleXMLElement
+     */
     private function parseXml($content) {
         $xml = new SimpleXMLElement($content);
-        foreach (self::$namespaces as $key => $value) {
-            $xml->registerXPathNamespace($key, $value);
-        }
+        $ns = new Namespaces();
+        $ns->registerNamespaces($xml);
         return $xml;
     }
 
+    /**
+     * Fetch an HTTP header.
+     *
+     * @param Request $request
+     * @param type $name
+     * @return type
+     */
     private function fetchHeader(Request $request, $name) {
         if ($request->headers->has($name)) {
             return $request->headers->get($name);
@@ -71,6 +79,15 @@ class SwordController extends Controller {
         return null;
     }
 
+    /**
+     * Run the XPath query on some xml. If a single element is found by the
+     * xpath, return the string value of the element.
+     *
+     * @param SimpleXMLElement $xml
+     * @param string $xpath
+     * @return string|null
+     * @throws Exception if there are too many elements.
+     */
     private function getXmlValue(SimpleXMLElement $xml, $xpath) {
         $data = $xml->xpath($xpath);
         if (count($data) === 1) {
@@ -82,6 +99,16 @@ class SwordController extends Controller {
         throw new Exception("Too many elements for '{$xpath}'");
     }
 
+    /**
+     * Check if a journal's uuid is whitelised or blacklisted. The rules are:
+     *
+     * If the journal uuid is whitelisted, return true
+     * If the journal uuid is blacklisted, return false
+     * Return the pln_accepting parameter from parameters.yml
+     *
+     * @param string $journal_uuid
+     * @return boolean
+     */
     private function checkAccess($journal_uuid) {
         /** @var BlackWhitelist */
         $bw = $this->get('blackwhitelist');
@@ -98,6 +125,9 @@ class SwordController extends Controller {
     }
 
     /**
+     * Return a SWORD service document for a journal. Requires On-Behalf-Of
+     * and Journal-Url HTTP headers.
+     *
      * @Route("/sd-iri", name="service_document")
      * @Method("GET")
      */
@@ -143,6 +173,8 @@ class SwordController extends Controller {
     }
 
     /**
+     * Create a deposit.
+     *
      * @Route("/col-iri/{journal_uuid}", name="create_deposit")
      * @Method("POST")
      */
@@ -178,6 +210,8 @@ class SwordController extends Controller {
     }
 
     /**
+     * Check that status of a deposit by fetching the sword statemt.
+     *
      * @Route("/cont-iri/{journal_uuid}/{deposit_uuid}/state", name="statement")
      * @Method("GET")
      */
@@ -230,6 +264,8 @@ class SwordController extends Controller {
     }
 
     /**
+     * Edit a deposit with an HTTP PUT.
+     *
      * @Route("/cont-iri/{journal_uuid}/{deposit_uuid}/edit")
      * @Method("PUT")
      */

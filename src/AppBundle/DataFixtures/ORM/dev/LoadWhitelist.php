@@ -6,8 +6,14 @@ use AppBundle\Entity\Whitelist;
 use AppBundle\Utility\AbstractDataFixture;
 use Doctrine\Common\Persistence\ObjectManager;
 
+/**
+ * Load a white list entry for development.
+ */
 class LoadWhitelist extends AbstractDataFixture {
 
+    /**
+     * {@inheritDoc}
+     */
     protected function doLoad(ObjectManager $manager) {
         $entry = new Whitelist();
         $entry->setComment('Test entry');
@@ -17,6 +23,9 @@ class LoadWhitelist extends AbstractDataFixture {
         $this->setReference('wl', $entry);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected function getEnvironments() {
         return array('dev');
     }

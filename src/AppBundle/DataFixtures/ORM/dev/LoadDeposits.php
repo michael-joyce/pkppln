@@ -8,12 +8,21 @@ use DateTime;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
+/**
+ * Load a deposit for development purposes.
+ */
 class LoadDeposits extends AbstractDataFixture implements OrderedFixtureInterface {
 
+    /**
+     * {@inheritDocs}
+     */
     public function getOrder() {
         return 2; // must be after LoadJournals.
     }
 
+    /**
+     * {@inheritDocs}
+     */
     protected function doLoad(ObjectManager $manager) {
         $deposit = new Deposit();
         $deposit->setAction('add');
@@ -35,6 +44,9 @@ class LoadDeposits extends AbstractDataFixture implements OrderedFixtureInterfac
         $this->setReference('deposit', $deposit);
     }
 
+    /**
+     * {@inheritDocs}
+     */
     protected function getEnvironments() {
         return array('dev');
     }

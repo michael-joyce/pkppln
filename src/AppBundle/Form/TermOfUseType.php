@@ -6,17 +6,27 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * Build a form to edit a term of use.
+ */
 class TermOfUseType extends AbstractType
 {
+    /**
+     * @var string
+     */
     protected $defaultLocale;
 
+    /**
+     * Default locale for the terms of use.
+     *
+     * @param string $defaultLocale
+     */
     public function __construct($defaultLocale) {
         $this->defaultLocale = $defaultLocale;
     }
 
     /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
+     * {@inheritDoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -29,7 +39,7 @@ class TermOfUseType extends AbstractType
     }
     
     /**
-     * @param OptionsResolverInterface $resolver
+     * {@inheritDoc}
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
@@ -39,7 +49,7 @@ class TermOfUseType extends AbstractType
     }
 
     /**
-     * @return string
+     * {@inheritDoc}
      */
     public function getName()
     {

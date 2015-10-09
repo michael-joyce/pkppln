@@ -208,6 +208,11 @@ class TermOfUse {
         $this->updated = new DateTime();
     }
 
+    /**
+     * The term's content is a stringified representation.
+     *
+     * @return string
+     */
     public function __toString() {
         return $this->content;
     }

@@ -635,6 +635,11 @@ class Deposit
         return $this->fileType;
     }
 
+    /**
+     * Get the file name of the packaged up bag, based on its file type.
+     *
+     * @return string
+     */
     public function getFileName() {
         $extension = '';
         switch($this->getFileType()) {
@@ -648,10 +653,20 @@ class Deposit
         return $this->getFileUuid() . $extension;
     }
 
+    /**
+     * Get the processing history for the deposit.
+     *
+     * @return string
+     */
     public function getProcessingLog() {
         return $this->processingLog;
     }
 
+    /**
+     * Append to the processing history.
+     *
+     * @param string $content
+     */
     public function addToProcessingLog($content) {
         $date = date(DateTime::ATOM);
         $this->processingLog .= "{$date}\n{$content}\n\n";

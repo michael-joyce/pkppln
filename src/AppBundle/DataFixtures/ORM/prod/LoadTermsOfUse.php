@@ -6,12 +6,16 @@ use AppBundle\Entity\TermOfUse;
 use AppBundle\Utility\AbstractDataFixture;
 use Doctrine\Common\Persistence\ObjectManager;
 
+/**
+ * Load the terms of use for a production environment.
+ */
 class LoadTermsOfUse extends AbstractDataFixture {
 
     /**
      * @var ObjectManager
      */
     private $manager;
+
     private $terms = array(
         [6, 'en-US', 'plugins.generic.pln.terms_of_use.jm_has_authority', 'I have the legal and contractual authority to include this journal\'s content in a secure preservation network and, if and when necessary, to make the content available in the PKP PLN.'],
         [3, 'en-US', 'plugins.generic.pln.terms_of_use.pkp_can_use_cc_by', 'I agree to allow the PKP-PLN to make post-trigger event content available under the CC-BY (or current equivalent) license.'],
@@ -22,6 +26,14 @@ class LoadTermsOfUse extends AbstractDataFixture {
         [1, 'en-US', 'plugins.generic.pln.terms_of_use.pkp_may_not_preserve', 'I agree that the PKP-PLN reserves the right, for whatever reason, not to preserve or make content available.'],
     );
 
+    /**
+     * Create and persist a term.
+     *
+     * @param string $weight
+     * @param string $langCode
+     * @param string $key
+     * @param string $content
+     */
     private function createTerm($weight, $langCode, $key, $content) {
         $term = new TermOfUse();
         $term->setWeight($weight);
@@ -42,6 +54,9 @@ class LoadTermsOfUse extends AbstractDataFixture {
         $manager->flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected function getEnvironments() {
         return array('prod');
     }

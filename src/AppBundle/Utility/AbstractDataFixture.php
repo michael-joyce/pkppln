@@ -18,6 +18,9 @@ use Symfony\Component\HttpKernel\KernelInterface;
  */
 abstract class AbstractDataFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface {
 
+    /**
+     * @var ContainerInterface
+     */
     protected $container;
 
     /**
@@ -53,6 +56,7 @@ abstract class AbstractDataFixture extends AbstractFixture implements ContainerA
 
     /**
      * Load the data into the database.
+     *
      * @param ObjectManager $manager
      */
     abstract protected function doLoad(ObjectManager $manager);
