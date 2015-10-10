@@ -6,13 +6,29 @@ parameters:
 services:
     sword_exception_listener:
         class: AppBundle\EventListener\SwordExceptionListener
-        arguments: ["@templating"]
+        calls: 
+            - [ setLogger, ["@monolog.logger.sword"]]
+            - [ setTemplating, ["@templating"]]
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException } 
 
     blackwhitelist:
         class: AppBundle\Services\BlackWhitelist
         arguments: ["@doctrine"]
+
+    depositbuilder:
+        class: AppBundle\Services\DepositBuilder
+        calls:
+            - [ setManager, ["@doctrine"]]
+            - [ setLogger, ["@monolog.logger"]]
+            - [ setRouter, ["@router"]]
+
+    journalbuilder:
+        class: AppBundle\Services\JournalBuilder
+        calls:
+            - [ setManager, ["@doctrine"]]
+            - [ setLogger, ["@monolog.logger"]]
+            - [ setRouter, ["@router"]]
 
     dtdvalidator:
         class: AppBundle\Services\DtdValidator

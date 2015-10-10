@@ -80,8 +80,5 @@ class TermsOfUseListenerTest extends AbstractTestCase {
 
         $item = $history[1];
         $this->assertEquals('update', $item->getAction());
-        $this->assertEquals(array(
-            'content' => array('first term.', 'updated.')
-        ), $item->getChangeSet());
     }
 }

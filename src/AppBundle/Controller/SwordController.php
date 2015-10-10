@@ -161,47 +161,13 @@ class SwordController extends Controller {
         $journal = $journalRepo->findOneBy(array('uuid' => $journal_uuid));
         $xml = $this->parseXml($request->getContent());
         if ($journal === null) {
-            $journal = new Journal();
-            $journal->setUuid($journal_uuid);
-            $journal->setTitle($this->getXmlValue($xml, '//atom:title'));
-            $journal->setUrl($this->getXmlValue($xml, '//pkp:journal_url'));
-            $journal->setEmail($this->getXmlValue($xml, '//atom:email'));
-            $journal->setIssn($this->getXmlValue($xml, '//pkp:issn'));
-            $journal->setPublisherName($this->getXmlValue($xml, '//pkp:publisherName'));
-            $journal->setPublisherUrl($this->getXmlValue($xml, '//pkp:publisherUrl'));
-            $em->persist($journal);
+            $journal = $this->getContainer()->get('journalbuilder')->fromXml($xml);
         }
-
-        $id = $this->getXmlValue($xml, '//atom:id');
-        $deposit_uuid = substr($id, 9, 36);
-
-        $deposit = new Deposit();
-        $deposit->setAction('add');
-        $deposit->setChecksumType($this->getXmlValue($xml, 'pkp:content/@checksumType'));
-        $deposit->setChecksumValue($this->getXmlValue($xml, 'pkp:content/@checksumValue'));
-        $deposit->setDepositUuid($deposit_uuid);
-        $deposit->setFileUuid(Uuid::v4(true));
-        $deposit->setFileType('');
-        $deposit->setIssue($this->getXmlValue($xml, 'pkp:content/@issue'));
-        $deposit->setVolume($this->getXmlValue($xml, 'pkp:content/@volume'));
-        $deposit->setPubDate(new DateTime($this->getXmlValue($xml, 'pkp:content/@pubdate')));
-        $deposit->setJournal($journal);
-        $deposit->setSize($this->getXmlValue($xml, 'pkp:content/@size'));
-        $deposit->setUrl($this->getXmlValue($xml, 'pkp:content'));
-        $deposit->setDepositReceipt($this->generateUrl(
-                "statement", array(
-                    'journal_uuid' => $journal_uuid,
-                    'deposit_uuid' => $deposit->getDepositUuid(),
-                ), UrlGeneratorInterface::ABSOLUTE_URL
-                )
-        );
-        $deposit->addToProcessingLog("Deposit received.");
-
-        $em->persist($deposit);
-        $em->flush();
-
+        
+        $deposit = $this->getContainer()->get('depositbuilder')->fromXml($xml);
+        
         /** @var Response */
-        $response = $this->statementAction($request, $journal_uuid, $deposit_uuid);
+        $response = $this->statementAction($request, $journal->getUuid(), $deposit->getDepositUuid());
         $response->headers->set(
                 'Location',
                 $deposit->getDepositReceipt(),
@@ -232,7 +198,7 @@ class SwordController extends Controller {
         $journal = $em->getRepository('AppBundle:Journal')->findOneBy(array('uuid' => $journal_uuid));
 
         /** @var Deposit */
-        $deposit = $em->getRepository('AppBundle:Deposit')->findOneBy(array('deposit_uuid' => $deposit_uuid));
+        $deposit = $em->getRepository('AppBundle:Deposit')->findOneBy(array('depositUuid' => $deposit_uuid));
 
         if($journal === null) {
             throw new SwordException(400, "Journal UUID not found.");
@@ -300,29 +266,7 @@ class SwordController extends Controller {
 
         $journal->setContacted(new DateTime());
         $xml = $this->parseXml($request->getContent());
-        $newDeposit = new Deposit();
-        $newDeposit->setAction('edit');
-        $newDeposit->setChecksumType($this->getXmlValue($xml, 'pkp:content/@checksumType'));
-        $newDeposit->setChecksumValue($this->getXmlValue($xml, 'pkp:content/@checksumValue'));
-        $newDeposit->setDepositUuid($deposit_uuid);
-        $newDeposit->setFileUuid(Uuid::v4(true));
-        $newDeposit->setIssue($this->getXmlValue($xml, 'pkp:content/@issue'));
-        $newDeposit->setVolume($this->getXmlValue($xml, 'pkp:content/@volume'));
-        $newDeposit->setPubDate(new DateTime($this->getXmlValue($xml, 'pkp:content/@pubdate')));
-        $newDeposit->setJournal($journal);
-        $newDeposit->setSize($this->getXmlValue($xml, 'pkp:content/@size'));
-        $newDeposit->setUrl($this->getXmlValue($xml, 'pkp:content'));
-        $newDeposit->setDepositReceipt($this->generateUrl(
-                "statement", array(
-                    'journal_uuid' => $journal_uuid,
-                    'deposit_uuid' => $newDeposit->getDepositUuid(),
-                ), UrlGeneratorInterface::ABSOLUTE_URL
-                )
-        );
-        $newDeposit->addToProcessingLog("Deposit edited.");
-
-        $em->persist($deposit);
-        $em->flush();
+        $newDeposit = $this->getContainer()->get('depositbuilder')->fromXml($xml, 'edit');
 
         /** @var Response */
         $response = $this->statementAction($request, $journal_uuid, $deposit_uuid);
