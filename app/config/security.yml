@@ -30,6 +30,8 @@ security:
     access_control:
         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/feeds, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/fetch, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, role: ROLE_ADMIN }
         - { path: ^/, role: ROLE_USER }        

@@ -33,14 +33,22 @@ class TermOfUse {
     private $weight;
 
     /**
-     * The date the term was created. Terms are never updated - new ones 
-     * are created as needed.
-     *
+     * The date the term was created. 
+     * 
      * @var string
      * 
      * @ORM\Column(type="datetime")
      */
     private $created;
+
+    /**
+     * The date the term was updated. 
+     *
+     * @var string
+     * 
+     * @ORM\Column(type="datetime")
+     */
+    private $updated;
 
     /**
      * A term key code, something unique to all versions and translations
@@ -187,12 +195,44 @@ class TermOfUse {
     /**
      * @ORM\PrePersist
      */
-    public function setTimestamp() {
+    public function setCreatedTimestamp() {
         $this->created = new DateTime();
+        $this->updated = new DateTime();
+    }
+    
+    /**
+     * @ORM\PreUpdate
+     * @return type
+     */
+    public function setUpdatedTimestamp() {
+        $this->updated = new DateTime();
     }
 
     public function __toString() {
         return $this->content;
     }
 
+
+    /**
+     * Set updated
+     *
+     * @param \DateTime $updated
+     * @return TermOfUse
+     */
+    public function setUpdated($updated)
+    {
+        $this->updated = $updated;
+
+        return $this;
+    }
+
+    /**
+     * Get updated
+     *
+     * @return \DateTime 
+     */
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
 }

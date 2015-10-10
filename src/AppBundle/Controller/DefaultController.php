@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,5 +40,21 @@ class DefaultController extends Controller
      */
     public function fetchAction(Request $request, $depositId, $fileId) {
         
+    }
+    
+    /**
+     * @Route("/feeds/terms.{_format}", 
+     *      defaults={"_format"="atom"}, 
+     *      name="feed_terms", 
+     *      requirements={"_format"="json|rss|atom"}
+     * )
+     * @Template()
+     * @param Request $request
+     */
+    public function termsFeedAction(Request $request) {
+        $em = $this->get('doctrine')->getManager();
+        $repo = $em->getRepository('AppBundle:TermOfUse');
+        $terms = $repo->getTerms();
+        return array('terms' => $terms);
     }
 }
