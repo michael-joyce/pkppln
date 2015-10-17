@@ -132,7 +132,12 @@ class Whitelist {
     {
         return $this->comment;
     }
-    
+
+    /**
+     * Use the white list entry's uuid as a string representation.
+     *
+     * @return string
+     */
     public function __toString() {
         return $this->uuid;
     }

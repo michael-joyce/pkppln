@@ -403,10 +403,20 @@ class Journal {
         return $this->deposits;
     }
 
+    /**
+     * Count the deposits for a journal.
+     *
+     * @return int
+     */
     public function countDeposits() {
         return $this->deposits->count();
     }
-        
+
+    /**
+     * The title of the journal is it's stringified representation.
+     *
+     * @return string
+     */
     public function __toString() {
         return $this->title;
     }

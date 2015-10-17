@@ -7,10 +7,15 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Symfony\Component\Filesystem\Exception\IOException;
 
+/**
+ * Harvest a deposit from a journal.
+ *
+ * @todo Check file sizes before downloading with a HTTP HEAD request.
+ */
 class HarvestCommand extends AbstractProcessingCmd {
 
     /**
-     * Configure the command.
+     * {@inheritDoc}
      */
     protected function configure() {
         $this->setName('pln:harvest');
@@ -87,18 +92,30 @@ class HarvestCommand extends AbstractProcessingCmd {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function nextState() {
         return "harvested";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function processingState() {
         return "deposited";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function failureLogMessage() {
         return "Deposit harvest failed.";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function successLogMessage() {
         return "Deposit harvest succeeded.";
     }

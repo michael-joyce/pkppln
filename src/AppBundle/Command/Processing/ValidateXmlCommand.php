@@ -8,20 +8,15 @@ use BagIt;
 use DOMDocument;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * Validate the OJS XML export.
+ */
 class ValidateXmlCommand extends AbstractProcessingCmd {
-
-    protected $scanner;
-    protected $scannerPath;
 
     const PKP_PUBLIC_ID = '-//PKP//OJS Articles and Issues XML//EN';
 
-    public function setContainer(ContainerInterface $container = null) {
-        parent::setContainer($container);
-        $this->scannerPath = $container->getParameter('clamdscan_path');
-    }
-
     /**
-     * Configure the command.
+     * {@inheritDoc}
      */
     protected function configure() {
         $this->setName('pln:validate-xml');
@@ -29,6 +24,9 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
         parent::configure();
     }
 
+    /**
+     * Log errors generated during the validation.
+     */
     private function logErrors(DtdValidator $validator) {
         foreach ($validator->getErrors() as $error) {
             $this->logger->error(implode(':', array($error['file'], $error['line'], $error['message'])));
@@ -36,8 +34,7 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
     }
 
     /**
-     * @param Deposit $deposit
-     * @return type
+     * {@inheritDoc}
      */
     protected function processDeposit(Deposit $deposit) {
         $extractedPath = $this->getBagPath($deposit);
@@ -69,18 +66,30 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
         return $valid;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function nextState() {
         return "xml-validated";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function processingState() {
         return "virus-checked";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function failureLogMessage() {
         return "XML Validation failed.";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function successLogMessage() {
         return "XML validation succeeded.";
     }

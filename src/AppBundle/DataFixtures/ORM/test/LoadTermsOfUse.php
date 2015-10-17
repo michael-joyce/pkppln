@@ -6,18 +6,25 @@ use AppBundle\Entity\TermOfUse;
 use AppBundle\Utility\AbstractDataFixture;
 use Doctrine\Common\Persistence\ObjectManager;
 
+/**
+ * Load terms of use for testing.
+ */
 class LoadTermsOfUse extends AbstractDataFixture {
 
     /**
      * @var ObjectManager
      */
     private $manager;
+
     private $terms = array(
         [0, 'en-US', 'test.a', 'first term.'],
         [1, 'en-US', 'test.b', 'second term.'],
         [2, 'en-US', 'test.c', 'third term.'],
     );
 
+    /**
+     * {@inheritDoc}
+     */
     private function createTerm($weight, $langCode, $key, $content) {
         $term = new TermOfUse();
         $term->setWeight($weight);
@@ -38,6 +45,9 @@ class LoadTermsOfUse extends AbstractDataFixture {
         $manager->flush();
     }
     
+    /**
+     * {@inheritDoc}
+     */
     protected function getEnvironments() {
         return array('test');
     }

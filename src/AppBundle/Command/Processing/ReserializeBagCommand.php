@@ -5,14 +5,23 @@ namespace AppBundle\Command\Processing;
 use AppBundle\Entity\Deposit;
 use BagIt;
 
+/**
+ * Take a processed bag and reserialize it.
+ */
 class ReserializeBagCommand extends AbstractProcessingCmd {
 
+    /**
+     * {@inheritDoc}
+     */
     protected function configure() {
         $this->setName('pln:reserialize');
         $this->setDescription('Reserialize the deposit bag.');
         parent::configure();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected function processDeposit(Deposit $deposit) {
         $extractedPath = $this->getBagPath($deposit);
         $this->logger->info("Reserializing {$extractedPath}");
@@ -54,18 +63,30 @@ class ReserializeBagCommand extends AbstractProcessingCmd {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function failureLogMessage() {
         return "Bag Reserialize failed.";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function nextState() {
         return "reserialized";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function processingState() {
         return "xml-validated";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function successLogMessage() {
         return "Bag Reserialize succeeded.";
     }

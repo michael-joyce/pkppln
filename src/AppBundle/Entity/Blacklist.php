@@ -138,7 +138,11 @@ class Blacklist {
         return $this->comment;
     }
     
-        
+    /**
+     * The deposit's uuid is the string representation.
+     *
+     * @return string
+     */
     public function __toString() {
         return $this->uuid;
     }

@@ -5,9 +5,11 @@ namespace AppBundle\EventListener;
 use AppBundle\Exception\SwordException;
 use Monolog\Logger;
 use Symfony\Bundle\TwigBundle\TwigEngine;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
+/**
+ * Listen for exceptions in the SWORD controller, and produce an error document.
+ */
 class SwordExceptionListener {
     
     /**
@@ -27,7 +29,12 @@ class SwordExceptionListener {
     public function setTemplating(TwigEngine $templating) {
         $this->templating = $templating;
     }
-    
+
+    /**
+     * Respond to an exception with an error document wrapped in a Response.
+     *
+     * @param GetResponseForExceptionEvent $event
+     */
     public function onKernelException(GetResponseForExceptionEvent $event) {
         $exception = $event->getException();
         

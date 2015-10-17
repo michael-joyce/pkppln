@@ -8,10 +8,13 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Symfony\Component\Filesystem\Exception\IOException;
 
+/**
+ * Send a fully processed deposit to LOCKSSOMatic.
+ */
 class DepositCommand extends AbstractProcessingCmd {
 
     /**
-     * Configure the command.
+     * {@inheritDoc}
      */
     protected function configure() {
         $this->setName('pln:deposit');
@@ -35,18 +38,30 @@ class DepositCommand extends AbstractProcessingCmd {
         return $client->createDeposit($deposit);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function nextState() {
         return "deposited";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function processingState() {
         return "reserialized";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function failureLogMessage() {
         return "Deposit to Lockssomatic failed.";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function successLogMessage() {
         return "Deposit to Lockssomatic succeeded.";
     }

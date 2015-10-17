@@ -15,6 +15,9 @@ use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Router;
 
+/**
+ * Experimental sword client.
+ */
 class SwordClient {
 
     private $sdIri;

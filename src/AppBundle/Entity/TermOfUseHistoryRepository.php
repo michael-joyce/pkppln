@@ -13,12 +13,18 @@ use Doctrine\ORM\EntityRepository;
 class TermOfUseHistoryRepository extends EntityRepository
 {
     /**
-     * @param \AppBundle\Entity\TermOfUse $term
-     * @return TermOfUse[]
+     * Get the complete history for a term.
+     * 
+     * @param int $termId
+     * @return TermOfUseHistory[]
      */
     public function getTermHistory($termId) {
         return $this->findBy(array(
             'termId' => $termId,
         ));
     }
+
+    /**
+     * @todo add a function to list the term ids with a count of history entries.
+     */
 }

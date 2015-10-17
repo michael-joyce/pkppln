@@ -17,6 +17,11 @@ use Symfony\Component\DependencyInjection\Dump\Container;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * Commands that process the deposits should extend this class, which
+ * provides common functions for updating status, and will automatically
+ * fetch the deposits needing to be processed.
+ */
 abstract class AbstractProcessingCmd extends ContainerAwareCommand {
 
     /**
@@ -61,41 +66,75 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
         }
     }
 
+    /**
+     * Get named file path from the parameters.yml file. If it is a relative
+     * path, it will be made absolute relative to the kernel's root dir.
+     *
+     * @see AppKernel#getRootDir
+     * @param string $parameterName
+     * @param Journal $journal
+     * @return string
+     */
+    private function absolutePath($parameterName, Journal $journal) {
+        $path = $this->container->getParameter($parameterName);
+        if( ! substr($path, -1) !== '/') {
+            $path .= '/';
+        }
+        if ( ! $this->fs->isAbsolutePath($path)) {
+            $root = dirname($this->container->get('kernel')->getRootDir());
+            $path =  $root . '/' . $path;
+        }
+        return  $path . $journal->getUuid();
+    }
+
+    /**
+     * Get the harvest directory.
+     *
+     * @see AppKernel#getRootDir
+     * @param Journal $journal
+     * @return string
+     */
     public final function getHarvestDir(Journal $journal) {
-        $path = $this->container->getParameter('pln_harvest_directory') . '/' . $journal->getUuid();
-        if ($this->fs->isAbsolutePath($path)) {
-            return $path;
-        }
-        $root = dirname($this->container->get('kernel')->getRootDir());
-        return $root . '/' . $path;
+        return $this->absolutePath('pln_harvest_directory', $journal);
     }
 
+    /**
+     * Get the processing directory.
+     *
+     * @param Journal $journal
+     * @return string
+     */
     public final function getProcessingDir(Journal $journal) {
-        $path = $this->container->getParameter('pln_processing_directory') . '/' . $journal->getUuid();
-        if ($this->fs->isAbsolutePath($path)) {
-            return $path;
-        }
-        $root = dirname($this->container->get('kernel')->getRootDir());
-        return $root . '/' . $path;
+        return $this->absolutePath('pln_processing_directory', $journal);
     }
 
+    /**
+     * Get the staging directory for processed deposits.
+     *
+     * @param Journal $journal
+     * @return string
+     */
     public final function getStagingDir(Journal $journal) {
-        $path = $this->container->getParameter('pln_staging_directory') . '/' . $journal->getUuid();
-        if ($this->fs->isAbsolutePath($path)) {
-            return $path;
-        }
-        $root = dirname($this->container->get('kernel')->getRootDir());
-        return $root . '/' . $path;
+        return $this->absolutePath('pln_staging_directory', $journal);
     }
 
+    /**
+     * Get the path to a deposit bag being processed.
+     *
+     * @param Deposit $deposit
+     * @return string
+     */
     public final function getBagPath(Deposit $deposit) {
-        return $this->getProcessingDir($deposit->getJournal()) 
-                . '/' 
-                . $deposit->getDepositUuid() 
+        return $this->getProcessingDir($deposit->getJournal())
+                . '/'
+                . $deposit->getDepositUuid()
                 . '/'
                 . $deposit->getFileUuid();
     }
 
+    /**
+     * Set the command-line options for the processing commands.
+     */
     protected function configure() {
         $this->addOption(
                 'dry-run', 'd', InputOption::VALUE_NONE, 'Do not update processing status'
@@ -134,12 +173,24 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      */
     abstract protected function processDeposit(Deposit $deposit);
 
+    /**
+     * Deposits in this state will be processed by the commands.
+     */
     abstract function processingState();
 
+    /**
+     * Successfully processed deposits will be given this state.
+     */
     abstract function nextState();
 
+    /**
+     * Successfully processed deposits will be given this log message.
+     */
     abstract function successLogMessage();
 
+    /**
+     * Failed deposits will be given this log message.
+     */
     abstract function failureLogMessage();
 
     /**
@@ -150,12 +201,13 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
     }
 
     /**
-     * Execute the command. Get all the deposits needing to be harvested.
+     * Execute the command. Get all the deposits needing to be harvested. Each
+     * deposit will be passed to the commands processDeposit() function.
      *
      * @param InputInterface $input
      * @param OutputInterface $output
      */
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected final function execute(InputInterface $input, OutputInterface $output) {
         $this->preExecute();
 
         /** @var DepositRepository */
@@ -180,7 +232,7 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
                 continue;
             }
             $deposit->addToProcessingLog($this->failureLogMessage());
-            if($input->getOption('force')) {
+            if ($input->getOption('force')) {
                 $deposit->setState($this->nextState());
                 $deposit->addToProcessingLog("Ignoring error.");
                 continue;

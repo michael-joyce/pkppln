@@ -4,10 +4,13 @@ namespace AppBundle\Command\Processing;
 
 use AppBundle\Entity\Deposit;
 
+/**
+ * Validate the size and checksum of a downloaded deposit.
+ */
 class ValidatePayloadCommand extends AbstractProcessingCmd {
 
     /**
-     * Configure the command.
+     * {@inheritDoc}
      */
     protected function configure() {
         $this->setName('pln:validate-payload');
@@ -16,11 +19,7 @@ class ValidatePayloadCommand extends AbstractProcessingCmd {
     }
 
     /**
-     * Process one deposit. Fetch the data and write it to the file system.
-     * Updates the deposit status.
-     *
-     * @param Deposit $deposit
-     * @return type
+     * {@inheritDoc}
      */
     protected function processDeposit(Deposit $deposit) {
         $journal = $deposit->getJournal();
@@ -55,18 +54,30 @@ class ValidatePayloadCommand extends AbstractProcessingCmd {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function nextState() {
         return "payload-validated";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function processingState() {
         return "harvested";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function failureLogMessage() {
         return "Payload checksum validation failed.";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function successLogMessage() {
         return "Payload checksum validation succeeded.";
     }

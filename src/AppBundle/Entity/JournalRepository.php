@@ -13,6 +13,12 @@ use Doctrine\ORM\Query\Expr\Func;
  */
 class JournalRepository extends EntityRepository {
 
+    /**
+     * Search for a journal.
+     *
+     * @param string $q
+     * @return Journal[]
+     */
     public function search($q) {
         $qb = $this->createQueryBuilder('j');
         $qb->where(
@@ -28,6 +34,12 @@ class JournalRepository extends EntityRepository {
         return $journals;
     }
 
+    /**
+     * Find journals by status.
+     *
+     * @param string $status
+     * @return Journal[]
+     */
     public function findByStatus($status) {
         return $this->findBy(array(
             'status' => $status,

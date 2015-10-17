@@ -1,19 +1,20 @@
 <?php
 
-namespace AppBundle\Command\Processing;
+namespace AppBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * Run all the commands in order.
+ */
 class RunAllCommand extends ContainerAwareCommand {
 
-    protected $container;
-
     /**
-     * Configure the command.
+     * {@inheritDoc}
      */
     protected function configure() {
         $this->setName('pln:run-all');
@@ -24,6 +25,11 @@ class RunAllCommand extends ContainerAwareCommand {
         parent::configure();
     }
 
+    /**
+     * List of commands to run.
+     *
+     * @return string[]
+     */
     private static function commandList() {
         return array(
             'pln:harvest',
@@ -36,6 +42,12 @@ class RunAllCommand extends ContainerAwareCommand {
         );
     }
 
+    /**
+     * Execute the runall command, which executes all the commands.
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
     protected function execute(InputInterface $input, OutputInterface $output) {
         foreach(self::commandList() as $cmd) {
             $output->writeln("Running {$cmd}");

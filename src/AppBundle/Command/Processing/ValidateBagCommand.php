@@ -7,10 +7,13 @@ use BagIt;
 use Exception;
 use ZipArchive;
 
+/**
+ * Validate a bag, according to the bagit spec.
+ */
 class ValidateBagCommand extends AbstractProcessingCmd {
 
     /**
-     * Configure the command.
+     * {@inheritDoc}
      */
     protected function configure() {
         $this->setName('pln:validate-bag');
@@ -19,11 +22,7 @@ class ValidateBagCommand extends AbstractProcessingCmd {
     }
 
     /**
-     * Process one deposit. Fetch the data and write it to the file system.
-     * Updates the deposit status.
-     *
-     * @param Deposit $deposit
-     * @return type
+     * {@inheritDoc}
      */
     protected function processDeposit(Deposit $deposit) {
         $journal = $deposit->getJournal();
@@ -69,18 +68,30 @@ class ValidateBagCommand extends AbstractProcessingCmd {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function nextState() {
         return "bag-validated";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function processingState() {
         return "payload-validated";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function failureLogMessage() {
         return "Bag checksum validation failed.";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function successLogMessage() {
         return "Bag checksum validation succeeded.";
     }

@@ -12,17 +12,15 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Dump\Container;
 use Symfony\Component\HttpKernel\Tests\Logger;
 
+/**
+ * Reset the processing status for one deposit.
+ */
 class ResetDepositCommand extends ContainerAwareCommand {
 
     /**
      * @var Registry
      */
     protected $em;
-
-    /**
-     * @var Container
-     */
-    protected $container;
 
     /**
      * @var Logger
@@ -36,11 +34,13 @@ class ResetDepositCommand extends ContainerAwareCommand {
      */
     public function setContainer(ContainerInterface $container = null) {
         parent::setContainer($container);
-        $this->container = $container;
         $this->logger = $container->get('monolog.logger.processing');
         $this->em = $container->get('doctrine')->getManager();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function configure() {
         $this->setName('pln:reset');
         $this->setDescription('Reset deposits.');
@@ -52,9 +52,12 @@ class ResetDepositCommand extends ContainerAwareCommand {
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected function execute(InputInterface $input, OutputInterface $output) {
 
-        /** @var DepositRepository */
+        /** @var DepositRepository $repo */
         $repo = $this->em->getRepository('AppBundle:Deposit');
 
         $state = $input->getArgument('state');

@@ -12,6 +12,11 @@ use Doctrine\ORM\EntityRepository;
  */
 class TermOfUseRepository extends EntityRepository
 {
+    /**
+     * Get the terms, ordered by weight.
+     *
+     * @return TermOfUse[]
+     */
     public function getTerms() {
         $qb = $this->createQueryBuilder('t')
                 ->orderBy('t.weight', 'ASC')

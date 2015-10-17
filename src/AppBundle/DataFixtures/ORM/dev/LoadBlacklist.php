@@ -6,8 +6,14 @@ use AppBundle\Entity\Blacklist;
 use AppBundle\Utility\AbstractDataFixture;
 use Doctrine\Common\Persistence\ObjectManager;
 
+/**
+ * Load a blacklist entry for development.
+ */
 class LoadBlacklist extends AbstractDataFixture {
 
+    /**
+     * {@inheritDocs}
+     */
     protected function doLoad(ObjectManager $manager) {
         $entry = new Blacklist();
         $entry->setComment('Test entry');
@@ -17,6 +23,9 @@ class LoadBlacklist extends AbstractDataFixture {
         $this->setReference('bl', $entry);
     }
 
+    /**
+     * {@inheritDocs}
+     */
     protected function getEnvironments() {
         return array('dev');
     }
