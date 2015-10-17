@@ -19,18 +19,6 @@ class ProfileType extends AbstractType {
                 ->add('email')
                 ->add('fullname')
                 ->add('institution')
-                ->add('enabled', 'checkbox', array(
-                    'label' => 'Account Enabled'
-                ))
-                ->add('roles', 'choice', array(
-                    'label' => 'Roles',
-                    'choices' => array(
-                        'ROLE_ADMIN' => 'Admin',
-                    ),
-                    'multiple' => true,
-                    'expanded' => true,
-                    'required' => false,
-                ))
                 ->add('submit', 'submit', array('label' => 'Update'));
     }
 
