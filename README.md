@@ -1,4 +1,7 @@
-pkppln3
-=======
+# PKP PLN Staging Software
 
-A Symfony project created on July 12, 2015, 3:46 pm.
+A PHP/Symfony rewrite of the [PKP PLN staging](https://github.com/mjordan/pkppln) tools and software.
+
+## License
+
+GPL 3. 
