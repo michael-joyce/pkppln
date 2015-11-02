@@ -52,9 +52,11 @@ class AdminUserController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+			$entity->setPlainPassword(substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 15));
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
+			$this->addFlash("Success", "The user has been created with a random password. The user should initiate password recovery.");
 
             return $this->redirect($this->generateUrl('user_show', array('id' => $entity->getId())));
         }
