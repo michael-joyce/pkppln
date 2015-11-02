@@ -1,7 +1,7 @@
 
 /* Move the content down, to make room for the nav bar. */
-.container {
-    margin-top: 70px;
+body > .container {
+    padding-top: 70px;
 }
 
 /* Custom app styles */
