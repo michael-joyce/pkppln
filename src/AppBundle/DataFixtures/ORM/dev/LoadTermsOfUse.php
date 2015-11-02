@@ -28,11 +28,6 @@ class LoadTermsOfUse extends AbstractDataFixture {
 
 	/**
 	 * Create and persist a term.
-	 *
-	 * @param string $weight
-	 * @param string $langCode
-	 * @param string $key
-	 * @param string $content
 	 */
 	private function createTerm($data, ObjectManager $manager) {
 		$term = new TermOfUse();
