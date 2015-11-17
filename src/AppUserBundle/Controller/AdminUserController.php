@@ -10,7 +10,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Admin-only user controller.
@@ -52,9 +51,11 @@ class AdminUserController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+			$entity->setPlainPassword(substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 15));
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
+			$this->addFlash("Success", "The user has been created with a random password. The user should initiate password recovery.");
 
             return $this->redirect($this->generateUrl('user_show', array('id' => $entity->getId())));
         }
@@ -196,8 +197,9 @@ class AdminUserController extends Controller
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
-            $em->flush();
-
+			$userManager = $this->container->get('fos_user.user_manager');			
+			$userManager->updateUser($entity);
+			$this->addFlash("success", 'User info updated.');
             return $this->redirect($this->generateUrl('user_edit', array('id' => $id)));
         }
 
@@ -244,4 +246,48 @@ class AdminUserController extends Controller
             ->getForm()
         ;
     }
+	
+	/**
+	 * Change a user's password.
+	 * 
+	 * @Route("/{id}/password", name="admin_user_password")
+	 * @Method({"GET", "POST"})
+	 * @Template()
+	 * 
+	 * @param Request $request
+	 * @param int $id
+	 */
+	public function passwordAction(Request $request, $id) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('AppUserBundle:User')->find($id);
+		
+		$builder = $this->createFormBuilder()
+			->setAction($this->generateUrl('admin_user_password', array('id' => $id)))
+			->setMethod('POST')
+			->add('password', 'repeated', array(
+				'type' => 'password',
+				'invalid_message' => 'The password fields must match',
+				'required' => true,
+				'first_options' => array('label' => 'Password'),
+				'second_options' => array('label' => 'Password Confirm')
+			));
+		$builder->add('submit', 'submit', array('label' => 'Change'));
+		$form = $builder->getForm();
+			
+		$form->handleRequest($request);
+		if($form->isValid()) {
+			$userManager = $this->container->get('fos_user.user_manager');			
+			$data = $form->getData();
+			$entity->setPlainPassword($data['password']);
+			$userManager->updateUser($entity);
+			$this->addFlash('success', 'Password successfully changed.');
+			return $this->redirect($this->generateUrl('user_show', array('id' => $id)));			
+		}
+		return array(
+			'entity' => $entity,
+			'form' => $form->createView()
+		);		
+	}
+	
 }

@@ -16,7 +16,7 @@
 
     <pkp:terms_of_use>
         {% for term in terms %}
-        <pkp:{{term.keyCode}} updated="{{term.created|date('c')}}" xml:lang="{{term.langCode}}">
+        <pkp:{{term.keyCode}} updated="{{term.created|date('Y-m-d H:i:sP', 'UTC')}}">
             {{term.content}}
         </pkp:{{term.keyCode}}>
         {% endfor %}
