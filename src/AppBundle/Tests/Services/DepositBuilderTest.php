@@ -42,7 +42,7 @@ class DepositBuilderTest extends AbstractTestCase {
         $journal = $this->references->getReference('journal');    
         $deposit = $this->builder->fromXml($journal, $this->getContentXml(), 'test');
         $this->assertEquals('SHA-1', $deposit->getChecksumType());
-        $this->assertEquals('593d10668849', $deposit->getChecksumValue());
+        $this->assertEquals('593D10668849', $deposit->getChecksumValue());
         $this->assertEquals('9BF70AAA-6547-4ECE-A379-365E60BB1BB2', $deposit->getDepositUuid());        
         $this->assertNotEmpty($deposit->getFileUuid());        
         $this->assertEquals('', $deposit->getFileType());

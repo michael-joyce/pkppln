@@ -5,6 +5,7 @@ namespace AppBundle\Tests;
 use AppBundle\Entity\Deposit;
 use AppBundle\Utility\AbstractTestCase;
 use AppBundle\Utility\Namespaces;
+use Doctrine\Common\Util\Debug;
 use SimpleXMLElement;
 
 class SwordControllerTest extends AbstractTestCase
@@ -244,4 +245,83 @@ ENDXML;
         );
     }
         
+    public function testCreateDepositRegistersJournal()
+    {
+        $repo = $this->em->getRepository('AppBundle:Journal');
+        
+        $uuid = '6646afaa-beba-40c8-a286-c64a3e90d0f6';
+        $journalUrl = 'http://test.example.com/path/to/journal';
+
+        $this->assertNull($repo->findOneBy(array('uuid' => $uuid)));
+
+        $xmlStr = $this->getDepositXml();
+        $client = static::createClient();
+        $crawler = $client->request(
+            'POST',
+            '/api/sword/2.0/col-iri/' . $uuid,
+            array(),
+            array(),
+            array(
+                'Content-Type' => 'application/xml',
+                'HTTP_On-Behalf-Of' => $uuid,
+                'HTTP_Journal-Url' => $journalUrl,
+            ),
+            $xmlStr
+        );
+        $response = $client->getResponse();
+        $this->assertEquals(201, $response->getStatusCode());
+
+        $this->em->flush();
+        $this->em->clear();
+
+        $journal = $repo->findOneBy(array('uuid' => strtoupper($uuid)));
+        $this->assertNotNull($journal);
+        $this->assertEquals($journalUrl, $journal->getUrl());
+    }
+
+    public function testCreateDepositEntity()
+    {
+        $repo = $this->em->getRepository('AppBundle:Deposit');
+
+        $uuid = '6646afaa-beba-40c8-a286-c64a3e90d0f6';
+        $journalUrl = 'http://test.example.com/path/to/journal';
+
+        $this->assertNull($repo->findOneBy(array('depositUuid' => 'C672022E-A787-4D09-9511-60A049768A04')));
+
+        $xmlStr = $this->getDepositXml();
+        $client = static::createClient();
+        $crawler = $client->request(
+            'POST',
+            '/api/sword/2.0/col-iri/' . $uuid,
+            array(),
+            array(),
+            array(
+                'Content-Type' => 'application/xml',
+                'HTTP_On-Behalf-Of' => $uuid,
+                'HTTP_Journal-Url' => $journalUrl,
+            ),
+            $xmlStr
+        );
+        $response = $client->getResponse();
+        $this->assertEquals(201, $response->getStatusCode());
+
+        $this->em->flush();
+        $this->em->clear();
+
+        $deposit = $repo->findOneBy(array('depositUuid' => 'C672022E-A787-4D09-9511-60A049768A04'));
+        $this->assertNotNull($deposit);
+        $this->assertInstanceOf('AppBundle\Entity\Deposit', $deposit);
+        $this->assertEquals('C672022E-A787-4D09-9511-60A049768A04', $deposit->getDepositUuid());
+        $this->assertEquals(date('Y-m-d'), $deposit->getReceived()->format('Y-m-d'));
+        $this->assertEquals('add', $deposit->getAction());
+        $this->assertEquals(1, $deposit->getVolume());
+        $this->assertEquals(1, $deposit->getIssue());
+        $this->assertEquals('2014-07-13', $deposit->getPubDate()->format('Y-m-d'));
+        $this->assertEquals('SHA-1', $deposit->getChecksumType());
+        $this->assertEquals(strtoupper('c3ac694a86e33f126a53023ce7e4b81173e4c4b3'), $deposit->getChecksumValue());
+        $this->assertEquals('http://test.example.com/path/to/journal/pln/deposits/C672022E-A787-4D09-9511-60A049768A04', $deposit->getUrl());
+        $this->assertEquals(619, $deposit->getSize());
+        $this->assertEquals('deposited', $deposit->getState());
+        $this->assertEquals('', $deposit->getPlnState());
+    }
 }

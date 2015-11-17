@@ -80,7 +80,8 @@ class SwordController extends Controller {
     private function getXmlValue(SimpleXMLElement $xml, $xpath) {
         $data = $xml->xpath($xpath);
         if (count($data) === 1) {
-            return (string) $data[0];
+            $str = (string)$data[0];
+            return trim($str);
         }
         if (count($data) === 0) {
             return null;
