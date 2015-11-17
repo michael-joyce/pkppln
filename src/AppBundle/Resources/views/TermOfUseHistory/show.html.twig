@@ -44,10 +44,18 @@
                                         {{ field }}
                                     </th>
                                     <td>
-                                        {{ change[0] }}
+                                        {% if change[0].timestamp is defined %}
+                                            {{ change[0]|date('c')}}
+                                        {% else %}
+                                            {{ change[0] }}
+                                        {% endif %}
                                     </td>
                                     <td>
-                                        {{ change[1] }}
+                                        {% if change[1].timestamp is defined %}
+                                            {{ change[1]|date('c')}}
+                                        {% else %}
+                                            {{ change[1] }}
+                                        {% endif %}
                                     </td>
                                 </tr>
                             {% endfor %}

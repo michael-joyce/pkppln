@@ -60,6 +60,8 @@ class TermsOfUseListener {
                     'keyCode' => array(null, $entity->getKeyCode()),
                     'langCode' => array(null, $entity->getLangCode()),
                     'content' => array(null, $entity->getContent()),
+                    'created' => array(null, $entity->getContent()),
+                    'updated' => array(null, $entity->getUpdated()),
                 );
             case 'update':
                 return $unitOfWork->getEntityChangeSet($entity);
@@ -70,6 +72,8 @@ class TermsOfUseListener {
                     'keyCode' => array($entity->getKeyCode(), null),
                     'langCode' => array($entity->getLangCode(), null),
                     'content' => array($entity->getContent(), null),
+                    'created' => array($entity->getCreated(), null),
+                    'updated' => array($entity->getUpdated(), null),
                 );
         }
     }

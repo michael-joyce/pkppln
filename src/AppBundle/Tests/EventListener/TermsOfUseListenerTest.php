@@ -5,6 +5,7 @@ namespace AppBundle\Tests\EventListener;
 use AppBundle\Entity\TermOfUse;
 use AppBundle\Entity\TermOfUseRepository;
 use AppBundle\Utility\AbstractTestCase;
+use DateTime;
 use Doctrine\Common\Persistence\ObjectRepository;
 
 class TermsOfUseListenerTest extends AbstractTestCase {
@@ -40,13 +41,16 @@ class TermsOfUseListenerTest extends AbstractTestCase {
 
         $item = $history[0];
         $this->assertEquals('create', $item->getAction());
+        $changeset = $item->getChangeSet();
+        unset($changeset['updated']);
+        unset($changeset['created']);
         $this->assertEquals(array(
             'id' => array(null, 4),
             'weight' => array(null, 8),
             'keyCode' => array(null, 'test.x'),
             'langCode' => array(null, 'en-US'),
-            'content' => array(null, 'created term.')
-        ), $item->getChangeSet());
+            'content' => array(null, 'created term.'),
+        ), $changeset);
     }
 
     public function testDeleteTerm() {
@@ -60,13 +64,17 @@ class TermsOfUseListenerTest extends AbstractTestCase {
 
         $item = $history[1];
         $this->assertEquals('delete', $item->getAction());
+
+        $changeset = $item->getChangeSet();
+        unset($changeset['updated']);
+        unset($changeset['created']);
         $this->assertEquals(array(
             'id' => array(1, null),
             'weight' => array(0, null),
             'keyCode' => array('test.a', null),
             'langCode' => array('en-US', null),
-            'content' => array('first term.', null)
-        ), $item->getChangeSet());
+            'content' => array('first term.', null),
+        ), $changeset);
     }
 
     public function testUpdateTerm() {

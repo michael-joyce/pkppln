@@ -4,7 +4,6 @@ namespace AppBundle\Tests\Entity;
 
 use AppBundle\Entity\TermOfUseRepository;
 use AppBundle\Utility\AbstractTestCase;
-use Doctrine\Common\Persistence\ObjectManager;
 
 class TermOfUseRepositoryTest extends AbstractTestCase {
     

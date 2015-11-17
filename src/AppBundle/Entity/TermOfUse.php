@@ -109,18 +109,6 @@ class TermOfUse {
     }
 
     /**
-     * Set created
-     *
-     * @param DateTime $created
-     * @return TermOfUse
-     */
-    public function setCreated(DateTime $created) {
-        $this->created = $created;
-
-        return $this;
-    }
-
-    /**
      * Get created
      *
      * @return DateTime
@@ -202,7 +190,6 @@ class TermOfUse {
     
     /**
      * @ORM\PreUpdate
-     * @return type
      */
     public function setUpdatedTimestamp() {
         $this->updated = new DateTime();
@@ -215,20 +202,6 @@ class TermOfUse {
      */
     public function __toString() {
         return $this->content;
-    }
-
-
-    /**
-     * Set updated
-     *
-     * @param \DateTime $updated
-     * @return TermOfUse
-     */
-    public function setUpdated($updated)
-    {
-        $this->updated = $updated;
-
-        return $this;
     }
 
     /**

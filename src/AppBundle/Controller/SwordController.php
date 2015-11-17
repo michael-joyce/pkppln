@@ -10,7 +10,6 @@ use AppBundle\Services\BlackWhitelist;
 use AppBundle\Utility\Namespaces;
 use DateTime;
 use Exception;
-use J20\Uuid\Uuid;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use SimpleXMLElement;
@@ -26,16 +25,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * @Route("/api/sword/2.0")
  */
 class SwordController extends Controller {
-
-    private static $namespaces = array(
-        'atom' => 'http://www.w3.org/2005/Atom',
-        'dc' => "http://purl.org/dc/terms/",
-        'sword' => "http://purl.org/net/sword/terms/",
-        'pkp' => 'http://pkp.sfu.ca/SWORD',
-        'app' => 'http://www.w3.org/2007/app',
-        'lom' => 'http://lockssomatic.info/SWORD2',
-        'xsi' => 'http://www.w3.org/2001/XMLSchema-instance'
-    );
 
     private static $states = array(
         'failed' => 'The deposit to the PKP PLN staging server (or LOCKSS-O-Matic) has failed.',
@@ -193,10 +182,10 @@ class SwordController extends Controller {
         $journal = $journalRepo->findOneBy(array('uuid' => $journal_uuid));
         $xml = $this->parseXml($request->getContent());
         if ($journal === null) {
-            $journal = $this->getContainer()->get('journalbuilder')->fromXml($xml);
+            $journal = $this->get('journalbuilder')->fromXml($xml, $journal_uuid);
         }
         
-        $deposit = $this->getContainer()->get('depositbuilder')->fromXml($xml);
+        $deposit = $this->get('depositbuilder')->fromXml($journal, $xml);
         
         /** @var Response */
         $response = $this->statementAction($request, $journal->getUuid(), $deposit->getDepositUuid());
@@ -282,16 +271,14 @@ class SwordController extends Controller {
         
         $em = $this->getDoctrine()->getManager();
 
-        /** @var Journal */
+        /** @var Journal $journal */
         $journal = $em->getRepository('AppBundle:Journal')->findOneBy(array('uuid' => $journal_uuid));
-
-        /** @var Deposit */
-        $deposit = $em->getRepository('AppBundle:Deposit')->findOneBy(array('deposit_uuid' => $deposit_uuid));
-
         if($journal === null) {
             throw new SwordException(400, "Journal UUID not found.");
         }
 
+        /** @var Deposit $deposit */
+        $deposit = $em->getRepository('AppBundle:Deposit')->findOneBy(array('deposit_uuid' => $deposit_uuid));
         if($deposit === null) {
             throw new SwordException(400, "Deposit UUID not found.");
         }
@@ -302,7 +289,7 @@ class SwordController extends Controller {
 
         $journal->setContacted(new DateTime());
         $xml = $this->parseXml($request->getContent());
-        $newDeposit = $this->getContainer()->get('depositbuilder')->fromXml($xml, 'edit');
+        $newDeposit = $this->get('depositbuilder')->fromXml($xml, 'edit');
 
         /** @var Response */
         $response = $this->statementAction($request, $journal_uuid, $deposit_uuid);
