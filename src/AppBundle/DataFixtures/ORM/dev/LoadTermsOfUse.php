@@ -32,7 +32,6 @@ class LoadTermsOfUse extends AbstractDataFixture {
 	private function createTerm($data, ObjectManager $manager) {
 		$term = new TermOfUse();
 		$term->setWeight($data[1]);
-		$term->setCreated(new DateTime($data[2]));
 		$term->setKeyCode($data[3]);
 		$term->setLangCode($data[4]);
 		$term->setContent($data[5]);

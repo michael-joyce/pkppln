@@ -75,7 +75,7 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      * @param Journal $journal
      * @return string
      */
-    private function absolutePath($parameterName, Journal $journal) {
+    protected function absolutePath($parameterName, Journal $journal = null) {
         $path = $this->container->getParameter($parameterName);
         if( ! substr($path, -1) !== '/') {
             $path .= '/';
@@ -84,7 +84,10 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
             $root = dirname($this->container->get('kernel')->getRootDir());
             $path =  $root . '/' . $path;
         }
-        return  $path . $journal->getUuid();
+        if($journal !== null) {
+            return  $path . $journal->getUuid();
+        }
+        return $path;
     }
 
     /**
@@ -94,7 +97,7 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      * @param Journal $journal
      * @return string
      */
-    public final function getHarvestDir(Journal $journal) {
+    public final function getHarvestDir(Journal $journal = null) {
         return $this->absolutePath('pln_harvest_directory', $journal);
     }
 
@@ -166,6 +169,15 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
     }
 
     /**
+     * Preprocess the list of deposits. 
+     * 
+     * @param Deposit[] $deposits
+     */
+    protected function preprocessDeposits($deposits = array()) {
+        // do nothing by default.
+    }
+
+    /**
      * Process one deposit return true on success and false on failure.
      *
      * @param Deposit $deposit
@@ -219,6 +231,7 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
         $count = count($deposits);
 
         $this->logger->info("Processing {$count} deposits.");
+        $this->preprocessDeposits($deposits);
 
         foreach ($deposits as $deposit) {
             /** @var $deposit Deposit */
