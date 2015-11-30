@@ -10,4 +10,4 @@
 /vendor/
 /web/bundles/
 data
-docs
+docs/api
