@@ -11,6 +11,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Journal
  *
+ * Any OJS journal may make deposits to the PLN.
+ *
  * @ORM\Table(name="journal")
  * @ORM\HasLifecycleCallbacks
  * @ORM\Entity(repositoryClass="JournalRepository")

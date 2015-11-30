@@ -191,7 +191,7 @@ class WhitelistController extends Controller {
         if ($editForm->isValid()) {
             $em->flush();
             $this->addFlash('success', 'The whitelist entry has been updated.');
-            return $this->redirect($this->generateUrl('whitelist_edit', array('id' => $id)));
+            return $this->redirect($this->generateUrl('whitelist_show', array('id' => $entity->getId())));
         }
 
         return array(

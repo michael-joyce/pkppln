@@ -7,7 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Whitelist
+ * During development it is necessary to whitelist select journals for testing
+ * purposes and only allow deposits from those journals.
  *
  * @ORM\Table()
  * @ORM\Entity()
@@ -50,6 +51,9 @@ class Whitelist {
      */
     private $created;
 
+    /**
+     * Build a new, empty whitelist entry.
+     */
     public function __construct() {
         $this->created = new DateTime();
     }

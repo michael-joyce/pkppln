@@ -8,6 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * TermOfUse
  *
+ * A single term of use that the journal managers must agree to.
+ *
  * @ORM\Table()
  * @ORM\HasLifecycleCallbacks
  * @ORM\Entity(repositoryClass="TermOfUseRepository")

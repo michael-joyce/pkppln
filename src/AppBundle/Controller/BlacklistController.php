@@ -194,7 +194,7 @@ class BlacklistController extends Controller {
             $em->flush();
             $this->addFlash('success', 'The blacklist entry has been updated.');
 
-            return $this->redirect($this->generateUrl('blacklist_edit', array('id' => $id)));
+            return $this->redirect($this->generateUrl('blacklist_show', array('id' => $entity->getId())));
         }
 
         return array(

@@ -255,7 +255,7 @@ class TermOfUseController extends Controller {
         if ($editForm->isValid()) {
             $em->flush();
             $this->addFlash('success', 'The terms of use entry has been updated.');
-            return $this->redirect($this->generateUrl('termofuse_edit', array('id' => $id)));
+            return $this->redirect($this->generateUrl('termofuse_show', array('id' => $entity->getId())));
         }
 
         return array(

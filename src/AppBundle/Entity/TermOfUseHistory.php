@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * TermOfUseHistory
  * 
  * A new TermOfUseHistory object is created every time a Term of Use is created,
- * updated, or deleted.
+ * updated, or deleted. The history object is created by an event listener.
  *
  * @ORM\Table()
  * @ORM\HasLifecycleCallbacks

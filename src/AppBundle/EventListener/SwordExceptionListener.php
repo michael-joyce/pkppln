@@ -2,6 +2,7 @@
 
 namespace AppBundle\EventListener;
 
+use AppBundle\Controller\SwordController;
 use AppBundle\Exception\SwordException;
 use Monolog\Logger;
 use Symfony\Bundle\TwigBundle\TwigEngine;
@@ -21,11 +22,21 @@ class SwordExceptionListener {
      * @var Logger
      */
     private $logger;
-        
+
+    /**
+     * Set the logger for exceptions
+     *
+     * @param Logger $logger
+     */
     public function setLogger(Logger $logger) {
         $this->logger = $logger;
     }
-    
+
+    /**
+     * Set the Twig Engine for templating and output.
+     * 
+     * @param TwigEngine $templating
+     */
     public function setTemplating(TwigEngine $templating) {
         $this->templating = $templating;
     }
@@ -37,7 +48,12 @@ class SwordExceptionListener {
      */
     public function onKernelException(GetResponseForExceptionEvent $event) {
         $exception = $event->getException();
-        
+
+        // only intercept SwordController exceptions.
+        if( ! $this->controller[0] instanceof SwordController) {
+            return;
+        }
+
         $this->logger->critical($exception->getMessage());
         $this->logger->critical($exception->getTraceAsString());
         
