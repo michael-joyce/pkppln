@@ -54,14 +54,18 @@ class PurgeCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if($this->getContainer()->get('kernel')->getEnvironment() === 'prod') {
+            $output->writeln("This command cannot be used in production.");
+            exit;
+        }
         $helper = $this->getHelper('question');
-        $question = new ConfirmationQuestion('This command will purge all data from the database. Continue y/N? ', false);
-        if (!$helper->ask($input, $output, $question)) {
+        $confirmQ = new ConfirmationQuestion('This command will purge all data from the database. Continue y/N? ', false);
+        if (!$helper->ask($input, $output, $confirmQ)) {
             return;
         }
 
-        $question = new ConfirmationQuestion('Load database fixtures y/N? ', false);
-        $fixtures = $helper->ask($input, $output, $question);
+        $loadQ = new ConfirmationQuestion('Load database fixtures y/N? ', false);
+        $fixtures = $helper->ask($input, $output, $loadQ);
 
         $this->exec('doctrine:schema:drop', array('--force' => true), $output);
         $this->exec('doctrine:schema:create', array(), $output);

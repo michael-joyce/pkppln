@@ -11,15 +11,14 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Default controller for the application, handles the home page and a few others.
  */
-class DefaultController extends Controller
-{
+class DefaultController extends Controller {
+
     const PERMISSION_STMT = 'LOCKSS system has permission to collect, preserve, and serve this Archival Unit.';
 
     /**
      * @Route("/", name="home")
      */
-    public function indexAction()
-    {
+    public function indexAction() {
         return $this->render('default/index.html.twig');
     }
 
@@ -44,7 +43,7 @@ class DefaultController extends Controller
     public function fetchAction(Request $request, $depositId, $fileId) {
         
     }
-    
+
     /**
      * @Route("/feeds/terms.{_format}", 
      *      defaults={"_format"="atom"}, 
@@ -60,4 +59,5 @@ class DefaultController extends Controller
         $terms = $repo->getTerms();
         return array('terms' => $terms);
     }
+
 }

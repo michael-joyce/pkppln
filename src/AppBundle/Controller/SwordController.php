@@ -80,7 +80,7 @@ class SwordController extends Controller {
     private function getXmlValue(SimpleXMLElement $xml, $xpath) {
         $data = $xml->xpath($xpath);
         if (count($data) === 1) {
-            $str = (string)$data[0];
+            $str = (string) $data[0];
             return trim($str);
         }
         if (count($data) === 0) {
@@ -103,11 +103,11 @@ class SwordController extends Controller {
         /** @var BlackWhitelist */
         $bw = $this->get('blackwhitelist');
         $this->get('monolog.logger.sword')->notice("Checking access for {$journal_uuid}");
-        if($bw->isWhitelisted($journal_uuid)) {
+        if ($bw->isWhitelisted($journal_uuid)) {
             $this->get('monolog.logger.sword')->notice("whitelisted {$journal_uuid}");
             return true;
         }
-        if($bw->isBlacklisted($journal_uuid)) {
+        if ($bw->isBlacklisted($journal_uuid)) {
             $this->get('monolog.logger.sword')->notice("blacklisted {$journal_uuid}");
             return false;
         }
@@ -151,9 +151,7 @@ class SwordController extends Controller {
             "onBehalfOf" => $obh,
             "accepting" => $accepting,
             "colIri" => $this->generateUrl(
-                    "create_deposit", 
-                    array("journal_uuid" => $obh), 
-                    UrlGeneratorInterface::ABSOLUTE_URL
+                    "create_deposit", array("journal_uuid" => $obh), UrlGeneratorInterface::ABSOLUTE_URL
             ),
             "terms" => $terms,
         ));
@@ -172,7 +170,7 @@ class SwordController extends Controller {
         /** @var LoggerInterface */
         $logger = $this->get('monolog.logger.sword');
 
-        if( $this->checkAccess($journal_uuid) === false) {
+        if ($this->checkAccess($journal_uuid) === false) {
             $logger->notice("create deposit [Not Authorized] - {$request->getClientIp()} - {$journal_uuid}");
             throw new SwordException(400, "Not authorized to make deposits.");
         }
@@ -185,15 +183,13 @@ class SwordController extends Controller {
         if ($journal === null) {
             $journal = $this->get('journalbuilder')->fromXml($xml, $journal_uuid);
         }
-        
+
         $deposit = $this->get('depositbuilder')->fromXml($journal, $xml);
-        
+
         /** @var Response */
         $response = $this->statementAction($request, $journal->getUuid(), $deposit->getDepositUuid());
         $response->headers->set(
-                'Location',
-                $deposit->getDepositReceipt(),
-                true);
+                'Location', $deposit->getDepositReceipt(), true);
         $response->setStatusCode(Response::HTTP_CREATED);
 
         return $response;
@@ -209,7 +205,7 @@ class SwordController extends Controller {
         /** @var LoggerInterface */
         $logger = $this->get('monolog.logger.sword');
 
-        if( $this->checkAccess($journal_uuid) === false) {
+        if ($this->checkAccess($journal_uuid) === false) {
             $logger->notice("statement [not authorized] - {$request->getClientIp()} - {$journal_uuid} - {$deposit_uuid}");
             throw new SwordException(400, "Not authorized to request statements.");
         }
@@ -224,15 +220,15 @@ class SwordController extends Controller {
         /** @var Deposit */
         $deposit = $em->getRepository('AppBundle:Deposit')->findOneBy(array('depositUuid' => $deposit_uuid));
 
-        if($journal === null) {
+        if ($journal === null) {
             throw new SwordException(400, "Journal UUID not found.");
         }
 
-        if($deposit === null) {
+        if ($deposit === null) {
             throw new SwordException(400, "Deposit UUID not found.");
         }
 
-        if($journal->getId() !== $deposit->getJournal()->getId()) {
+        if ($journal->getId() !== $deposit->getJournal()->getId()) {
             throw new SwordException(400, "Deposit does not belong to journal.");
         }
 
@@ -240,7 +236,7 @@ class SwordController extends Controller {
         $em->flush();
 
         $state = 'The deposit is in an unknown state.';
-        if(array_key_exists($deposit->getPlnState(), self::$states)) {
+        if (array_key_exists($deposit->getPlnState(), self::$states)) {
             $state = self::$states[$deposit->getPlnState()];
         }
 
@@ -263,28 +259,28 @@ class SwordController extends Controller {
         /** @var LoggerInterface */
         $logger = $this->get('monolog.logger.sword');
 
-        if( $this->checkAccess($journal_uuid) === false) {
+        if ($this->checkAccess($journal_uuid) === false) {
             $logger->notice("edit [not authorized] - {$request->getClientIp()} - {$journal_uuid} - {$deposit_uuid}");
             throw new SwordException(400, "Not authorized to edit deposits.");
         }
 
         $logger->notice("edit - {$request->getClientIp()} - {$journal_uuid} - {$deposit_uuid}");
-        
+
         $em = $this->getDoctrine()->getManager();
 
         /** @var Journal $journal */
         $journal = $em->getRepository('AppBundle:Journal')->findOneBy(array('uuid' => $journal_uuid));
-        if($journal === null) {
+        if ($journal === null) {
             throw new SwordException(400, "Journal UUID not found.");
         }
 
         /** @var Deposit $deposit */
         $deposit = $em->getRepository('AppBundle:Deposit')->findOneBy(array('deposit_uuid' => $deposit_uuid));
-        if($deposit === null) {
+        if ($deposit === null) {
             throw new SwordException(400, "Deposit UUID not found.");
         }
 
-        if($journal->getId() !== $deposit->getJournal()->getId()) {
+        if ($journal->getId() !== $deposit->getJournal()->getId()) {
             throw new SwordException(400, "Deposit does not belong to journal.");
         }
 
@@ -295,9 +291,7 @@ class SwordController extends Controller {
         /** @var Response */
         $response = $this->statementAction($request, $journal_uuid, $deposit_uuid);
         $response->headers->set(
-                'Location', 
-                $deposit->getDepositReceipt(), 
-                true
+                'Location', $deposit->getDepositReceipt(), true
         );
         $response->setStatusCode(Response::HTTP_CREATED);
 

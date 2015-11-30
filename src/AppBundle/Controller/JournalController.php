@@ -13,8 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @Route("/journal")
  */
-class JournalController extends Controller
-{
+class JournalController extends Controller {
 
     /**
      * Lists all Journal entities.
@@ -23,16 +22,13 @@ class JournalController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function indexAction(Request $request)
-    {
+    public function indexAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
         $dql = 'SELECT e FROM AppBundle:Journal e';
         $query = $em->createQuery($dql);
         $paginator = $this->get('knp_paginator');
         $entities = $paginator->paginate(
-            $query,
-            $request->query->getInt('page', 1),
-            25
+                $query, $request->query->getInt('page', 1), 25
         );
 
 
@@ -65,9 +61,7 @@ class JournalController extends Controller
             $results = $repo->search($q);
 
             $entities = $paginator->paginate(
-                    $results,
-                    $request->query->getInt('page', 1), 
-                    25
+                    $results, $request->query->getInt('page', 1), 25
             );
         }
 
@@ -85,8 +79,7 @@ class JournalController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function showAction($id)
-    {
+    public function showAction($id) {
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AppBundle:Journal')->find($id);
@@ -96,10 +89,10 @@ class JournalController extends Controller
         }
 
         return array(
-            'entity'      => $entity,
+            'entity' => $entity,
         );
     }
-    
+
     /**
      * Finds and displays a Journal entity.
      *
@@ -120,16 +113,14 @@ class JournalController extends Controller
                 ->setParameter('journal', $journal);
         $paginator = $this->get('knp_paginator');
         $entities = $paginator->paginate(
-            $qb,
-            $request->query->getInt('page', 1),
-            25
+                $qb, $request->query->getInt('page', 1), 25
         );
-        
-        
+
+
         return array(
-            'journal'      => $journal,
-            'entities'     => $entities,
+            'journal' => $journal,
+            'entities' => $entities,
         );
     }
-    
+
 }

@@ -15,8 +15,7 @@ use AppBundle\Form\BlacklistType;
  *
  * @Route("/blacklist")
  */
-class BlacklistController extends Controller
-{
+class BlacklistController extends Controller {
 
     /**
      * Lists all Blacklist entities.
@@ -25,16 +24,13 @@ class BlacklistController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function indexAction(Request $request)
-    {
+    public function indexAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
         $dql = 'SELECT e FROM AppBundle:Blacklist e';
         $query = $em->createQuery($dql);
         $paginator = $this->get('knp_paginator');
         $entities = $paginator->paginate(
-            $query,
-            $request->query->getInt('page', 1),
-            25
+                $query, $request->query->getInt('page', 1), 25
         );
 
 
@@ -42,6 +38,7 @@ class BlacklistController extends Controller
             'entities' => $entities,
         );
     }
+
     /**
      * Creates a new Blacklist entity.
      *
@@ -49,8 +46,7 @@ class BlacklistController extends Controller
      * @Method("POST")
      * @Template("AppBundle:Blacklist:new.html.twig")
      */
-    public function createAction(Request $request)
-    {
+    public function createAction(Request $request) {
         $entity = new Blacklist();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
@@ -59,13 +55,14 @@ class BlacklistController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
+            $this->addFlash('success', 'The blacklist entry has been saved.');
 
             return $this->redirect($this->generateUrl('blacklist_show', array('id' => $entity->getId())));
         }
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
@@ -76,8 +73,7 @@ class BlacklistController extends Controller
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createCreateForm(Blacklist $entity)
-    {
+    private function createCreateForm(Blacklist $entity) {
         $form = $this->createForm(new BlacklistType(), $entity, array(
             'action' => $this->generateUrl('blacklist_create'),
             'method' => 'POST',
@@ -95,14 +91,13 @@ class BlacklistController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function newAction()
-    {
+    public function newAction() {
         $entity = new Blacklist();
-        $form   = $this->createCreateForm($entity);
+        $form = $this->createCreateForm($entity);
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
@@ -113,12 +108,11 @@ class BlacklistController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function showAction($id)
-    {
+    public function showAction($id) {
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AppBundle:Blacklist')->find($id);
-        
+
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Blacklist entity.');
         }
@@ -126,8 +120,8 @@ class BlacklistController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
-            'entity'      => $entity,
-            'journal'     => $journal,
+            'entity' => $entity,
+            'journal' => $journal,
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -139,8 +133,7 @@ class BlacklistController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function editAction($id)
-    {
+    public function editAction($id) {
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AppBundle:Blacklist')->find($id);
@@ -153,21 +146,20 @@ class BlacklistController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
 
     /**
-    * Creates a form to edit a Blacklist entity.
-    *
-    * @param Blacklist $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
-    private function createEditForm(Blacklist $entity)
-    {
+     * Creates a form to edit a Blacklist entity.
+     *
+     * @param Blacklist $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    private function createEditForm(Blacklist $entity) {
         $form = $this->createForm(new BlacklistType(), $entity, array(
             'action' => $this->generateUrl('blacklist_update', array('id' => $entity->getId())),
             'method' => 'PUT',
@@ -177,6 +169,7 @@ class BlacklistController extends Controller
 
         return $form;
     }
+
     /**
      * Edits an existing Blacklist entity.
      *
@@ -184,8 +177,7 @@ class BlacklistController extends Controller
      * @Method("PUT")
      * @Template("AppBundle:Blacklist:edit.html.twig")
      */
-    public function updateAction(Request $request, $id)
-    {
+    public function updateAction(Request $request, $id) {
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AppBundle:Blacklist')->find($id);
@@ -200,32 +192,34 @@ class BlacklistController extends Controller
 
         if ($editForm->isValid()) {
             $em->flush();
+            $this->addFlash('success', 'The blacklist entry has been updated.');
 
             return $this->redirect($this->generateUrl('blacklist_edit', array('id' => $id)));
         }
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
+
     /**
      * Deletes a Blacklist entity.
      *
      * @Route("/{id}/delete", name="blacklist_delete")
      */
-    public function deleteAction(Request $request, $id)
-    {
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('AppBundle:Blacklist')->find($id);
+    public function deleteAction(Request $request, $id) {
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('AppBundle:Blacklist')->find($id);
 
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find Blacklist entity.');
-            }
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Blacklist entity.');
+        }
 
-            $em->remove($entity);
-            $em->flush();
+        $em->remove($entity);
+        $this->addFlash('success', 'The blacklist entry has been deleted.');
+        $em->flush();
 
         return $this->redirect($this->generateUrl('blacklist'));
     }
@@ -237,13 +231,13 @@ class BlacklistController extends Controller
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createDeleteForm($id)
-    {
+    private function createDeleteForm($id) {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('blacklist_delete', array('id' => $id)))
-            ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
+                        ->setAction($this->generateUrl('blacklist_delete', array('id' => $id)))
+                        ->setMethod('DELETE')
+                        ->add('submit', 'submit', array('label' => 'Delete'))
+                        ->getForm()
         ;
     }
+
 }

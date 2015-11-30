@@ -60,7 +60,7 @@ class TermsOfUseListener {
                     'keyCode' => array(null, $entity->getKeyCode()),
                     'langCode' => array(null, $entity->getLangCode()),
                     'content' => array(null, $entity->getContent()),
-                    'created' => array(null, $entity->getContent()),
+                    'created' => array(null, $entity->getCreated()),
                     'updated' => array(null, $entity->getUpdated()),
                 );
             case 'update':

@@ -14,8 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @Route("/termhistory")
  */
-class TermOfUseHistoryController extends Controller
-{
+class TermOfUseHistoryController extends Controller {
 
     /**
      * Lists all TermOfUseHistory entities.
@@ -24,16 +23,13 @@ class TermOfUseHistoryController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function indexAction(Request $request)
-    {
+    public function indexAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
         $dql = 'SELECT e FROM AppBundle:TermOfUseHistory e ORDER BY e.termId';
         $query = $em->createQuery($dql);
         $paginator = $this->get('knp_paginator');
         $entities = $paginator->paginate(
-            $query,
-            $request->query->getInt('page', 1),
-            25
+                $query, $request->query->getInt('page', 1), 25
         );
 
 
@@ -49,8 +45,7 @@ class TermOfUseHistoryController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function showAction(Request $request, $id)
-    {
+    public function showAction(Request $request, $id) {
         $em = $this->getDoctrine()->getManager();
         $repo = $em->getRepository('AppBundle:TermOfUseHistory');
         $query = $repo->createQueryBuilder('h')
@@ -60,9 +55,7 @@ class TermOfUseHistoryController extends Controller
 
         $paginator = $this->get('knp_paginator');
         $entities = $paginator->paginate(
-            $query,
-            $request->query->getInt('page', 1),
-            25
+                $query, $request->query->getInt('page', 1), 25
         );
 
 
@@ -70,4 +63,5 @@ class TermOfUseHistoryController extends Controller
             'entities' => $entities,
         );
     }
+
 }

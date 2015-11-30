@@ -15,8 +15,7 @@ use AppBundle\Form\WhitelistType;
  *
  * @Route("/whitelist")
  */
-class WhitelistController extends Controller
-{
+class WhitelistController extends Controller {
 
     /**
      * Lists all Whitelist entities.
@@ -25,16 +24,13 @@ class WhitelistController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function indexAction(Request $request)
-    {
+    public function indexAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
         $dql = 'SELECT e FROM AppBundle:Whitelist e';
         $query = $em->createQuery($dql);
         $paginator = $this->get('knp_paginator');
         $entities = $paginator->paginate(
-            $query,
-            $request->query->getInt('page', 1),
-            25
+                $query, $request->query->getInt('page', 1), 25
         );
 
 
@@ -42,6 +38,7 @@ class WhitelistController extends Controller
             'entities' => $entities,
         );
     }
+
     /**
      * Creates a new Whitelist entity.
      *
@@ -49,8 +46,7 @@ class WhitelistController extends Controller
      * @Method("POST")
      * @Template("AppBundle:Whitelist:new.html.twig")
      */
-    public function createAction(Request $request)
-    {
+    public function createAction(Request $request) {
         $entity = new Whitelist();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
@@ -59,13 +55,13 @@ class WhitelistController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
-
+            $this->addFlash('success', 'The whitelist entry has been saved.');
             return $this->redirect($this->generateUrl('whitelist_show', array('id' => $entity->getId())));
         }
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
@@ -76,8 +72,7 @@ class WhitelistController extends Controller
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createCreateForm(Whitelist $entity)
-    {
+    private function createCreateForm(Whitelist $entity) {
         $form = $this->createForm(new WhitelistType(), $entity, array(
             'action' => $this->generateUrl('whitelist_create'),
             'method' => 'POST',
@@ -95,14 +90,13 @@ class WhitelistController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function newAction()
-    {
+    public function newAction() {
         $entity = new Whitelist();
-        $form   = $this->createCreateForm($entity);
+        $form = $this->createCreateForm($entity);
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
@@ -113,8 +107,7 @@ class WhitelistController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function showAction($id)
-    {
+    public function showAction($id) {
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AppBundle:Whitelist')->find($id);
@@ -126,7 +119,7 @@ class WhitelistController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
-            'entity'      => $entity,
+            'entity' => $entity,
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -138,8 +131,7 @@ class WhitelistController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function editAction($id)
-    {
+    public function editAction($id) {
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AppBundle:Whitelist')->find($id);
@@ -152,21 +144,20 @@ class WhitelistController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
 
     /**
-    * Creates a form to edit a Whitelist entity.
-    *
-    * @param Whitelist $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
-    private function createEditForm(Whitelist $entity)
-    {
+     * Creates a form to edit a Whitelist entity.
+     *
+     * @param Whitelist $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    private function createEditForm(Whitelist $entity) {
         $form = $this->createForm(new WhitelistType(), $entity, array(
             'action' => $this->generateUrl('whitelist_update', array('id' => $entity->getId())),
             'method' => 'PUT',
@@ -176,6 +167,7 @@ class WhitelistController extends Controller
 
         return $form;
     }
+
     /**
      * Edits an existing Whitelist entity.
      *
@@ -183,8 +175,7 @@ class WhitelistController extends Controller
      * @Method("PUT")
      * @Template("AppBundle:Whitelist:edit.html.twig")
      */
-    public function updateAction(Request $request, $id)
-    {
+    public function updateAction(Request $request, $id) {
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AppBundle:Whitelist')->find($id);
@@ -199,32 +190,33 @@ class WhitelistController extends Controller
 
         if ($editForm->isValid()) {
             $em->flush();
-
+            $this->addFlash('success', 'The whitelist entry has been updated.');
             return $this->redirect($this->generateUrl('whitelist_edit', array('id' => $id)));
         }
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
+
     /**
      * Deletes a Whitelist entity.
      *
      * @Route("/{id}/delete", name="whitelist_delete")
      */
-    public function deleteAction(Request $request, $id)
-    {
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('AppBundle:Whitelist')->find($id);
+    public function deleteAction(Request $request, $id) {
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('AppBundle:Whitelist')->find($id);
 
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find Whitelist entity.');
-            }
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Whitelist entity.');
+        }
 
-            $em->remove($entity);
-            $em->flush();
+        $em->remove($entity);
+        $this->addFlash('success', 'The whitelist entry has been deleted.');
+        $em->flush();
 
         return $this->redirect($this->generateUrl('whitelist'));
     }
@@ -236,13 +228,13 @@ class WhitelistController extends Controller
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createDeleteForm($id)
-    {
+    private function createDeleteForm($id) {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('whitelist_delete', array('id' => $id)))
-            ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
+                        ->setAction($this->generateUrl('whitelist_delete', array('id' => $id)))
+                        ->setMethod('DELETE')
+                        ->add('submit', 'submit', array('label' => 'Delete'))
+                        ->getForm()
         ;
     }
+
 }
