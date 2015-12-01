@@ -113,6 +113,26 @@ class SwordController extends Controller {
         }
         return $this->container->getParameter("pln_accepting");
     }
+	
+	private function journalContact($uuid) {
+		$em = $this->getDoctrine()->getManager();
+		$journalRepo = $em->getRepository('AppBundle:Journal');
+		$journal = $journalRepo->findOneBy(array(
+			'uuid' => $uuid
+		));
+		if($journal !== null) {
+			$journal->setTimestamp();
+			$em->flush();
+		}
+	}
+	
+	private function getTermsOfUse() {
+        $em = $this->getDoctrine()->getManager();
+        /** @var TermOfUseRepository */
+        $repo = $em->getRepository("AppBundle:TermOfUse");
+        $terms = $repo->getTerms();
+		return $terms;
+	}
 
     /**
      * Return a SWORD service document for a journal. Requires On-Behalf-Of
@@ -141,19 +161,19 @@ class SwordController extends Controller {
         if ($journalUrl === null) {
             throw new SwordException(400, "Missing Journal-Url header");
         }
-        $em = $this->getDoctrine()->getManager();
-        /** @var TermOfUseRepository */
-        $repo = $em->getRepository("AppBundle:TermOfUse");
-        $terms = $repo->getTerms();
-
+		
+		$this->journalContact($obh);
+		
         /** @var Response */
         $response = $this->render("AppBundle:Sword:serviceDocument.xml.twig", array(
             "onBehalfOf" => $obh,
             "accepting" => $accepting,
             "colIri" => $this->generateUrl(
-                    "create_deposit", array("journal_uuid" => $obh), UrlGeneratorInterface::ABSOLUTE_URL
+                "create_deposit", 
+				array("journal_uuid" => $obh), 
+				UrlGeneratorInterface::ABSOLUTE_URL
             ),
-            "terms" => $terms,
+            "terms" => $this->getTermsOfUse(),
         ));
         /** @var Response */
         $response->headers->set("Content-Type", "text/xml");

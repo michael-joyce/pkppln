@@ -6,6 +6,8 @@ use AppBundle\Controller\SwordController;
 use AppBundle\Exception\SwordException;
 use Monolog\Logger;
 use Symfony\Bundle\TwigBundle\TwigEngine;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
 /**
@@ -19,9 +21,19 @@ class SwordExceptionListener {
     private $templating;
     
     /**
+     * @var callable
+     */
+    private $controller;
+    
+    /**
      * @var Logger
      */
     private $logger;
+	
+	/**
+	 * @var RequestStack
+	 */
+	private $requestStack;
 
     /**
      * Set the logger for exceptions
@@ -53,9 +65,13 @@ class SwordExceptionListener {
         if( ! $this->controller[0] instanceof SwordController) {
             return;
         }
+		
+		if( ! $exception instanceof SwordException) {
+			return;
+		}
 
-        $this->logger->critical($exception->getMessage());
-        $this->logger->critical($exception->getTraceAsString());
+        $this->logger->critical($exception->getMessage() . ' from ' . $this->requestStack->getCurrentRequest()->getClientIp());
+//        $this->logger->critical($exception->getTraceAsString());
         
         if($exception instanceof SwordException) {
             $response = $this->templating->renderResponse(
@@ -68,4 +84,18 @@ class SwordExceptionListener {
         }
     }
     
+    /**
+     * Once the controller has been initialized, this event is fired. Grab
+     * a reference to the active controller.
+     *
+     * @param FilterControllerEvent $event
+     */
+    public function onKernelController(FilterControllerEvent $event)
+    {
+        $this->controller = $event->getController();
+    }
+	
+	public function setRequestStack(RequestStack $requestStack) {
+		$this->requestStack = $requestStack;
+	}
 }
