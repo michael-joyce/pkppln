@@ -26,7 +26,11 @@
             </tr>
             <tr>
                 <th>Notified</th>
-                <td>{{ entity.notified|date('Y-m-d H:i:s') }}</td>
+                <td>
+					{% if entity.notified %}
+						{{ entity.notified|date('Y-m-d H:i:s') }}
+					{% endif %}
+				</td>
             </tr>
             <tr>
                 <th>Title</th>
