@@ -55,6 +55,10 @@ class ReserializeBagCommand extends AbstractProcessingCmd {
 
         $bag->update();        
         $path = $this->getStagingDir($deposit->getJournal()) . '/' . $deposit->getFileUuid() . '.zip';
+        if(file_exists($path)) {
+            $this->logger->warning("{$path} already exists. Removing it.");
+            unlink($path);
+        }
         $bag->package($path, 'zip');
         $deposit->setPackagePath($path);
         $deposit->setPackageSize(filesize($path));

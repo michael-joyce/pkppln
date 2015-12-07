@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -23,17 +24,29 @@ class JournalController extends Controller {
      * @Template()
      */
     public function indexAction(Request $request) {
+        /**
+         * @var EntityManager
+         */
         $em = $this->getDoctrine()->getManager();
-        $dql = 'SELECT e FROM AppBundle:Journal e';
-        $query = $em->createQuery($dql);
+        $repo = $em->getRepository('AppBundle:Journal');
+        $qb = $repo->createQueryBuilder('e');
+        $status = $request->query->get('status');
+        if($status !== null) {
+            $qb->where('e.status = :status');
+            $qb->setParameter('status', $status);
+        }
+        $query = $qb->getQuery();
+
         $paginator = $this->get('knp_paginator');
         $entities = $paginator->paginate(
                 $query, $request->query->getInt('page', 1), 25
         );
+        $statuses = $repo->statusSummary();
 
 
         return array(
             'entities' => $entities,
+            'statuses' => $statuses,
         );
     }
 

@@ -45,7 +45,7 @@ class ValidatePayloadCommand extends AbstractProcessingCmd {
                 $this->logger->error("Deposit checksum type {$deposit->getChecksumType()} unknown.");
                 return false;
         }
-        if($checksumValue !== $deposit->getChecksumValue()) {
+        if(strtoupper($checksumValue) !== $deposit->getChecksumValue()) {
             $this->logger->error("Deposit file {$depositPath} checksum does not match.");
             return false;
         }

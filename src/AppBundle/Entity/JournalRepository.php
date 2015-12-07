@@ -44,4 +44,12 @@ class JournalRepository extends EntityRepository {
             'status' => $status,
         ));
     }
+
+    public function statusSummary() {
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('e.status, count(e) as ct')
+                ->groupBy('e.status')
+                ->orderBy('e.status');
+        return $qb->getQuery()->getResult();
+    }
 }

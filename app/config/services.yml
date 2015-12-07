@@ -9,7 +9,6 @@ services:
         calls: 
             - [ setLogger, ["@monolog.logger.sword"]]
             - [ setTemplating, ["@templating"]]
-            - [ setRequestStack, ["@request_stack"]]
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException } 
             - { name: kernel.event_listener, event: kernel.controller, method: onKernelController}
