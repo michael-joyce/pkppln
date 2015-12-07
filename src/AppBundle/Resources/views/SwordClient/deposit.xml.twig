@@ -1,6 +1,7 @@
 <entry xmlns="http://www.w3.org/2005/Atom"
         xmlns:dcterms="http://purl.org/dc/terms/"
-        xmlns:lom="http://lockssomatic.info/SWORD2">
+        xmlns:lom="http://lockssomatic.info/SWORD2"
+        xmlns:pkp="http://pkp.sfu.ca/SWORD">
     <title>{{ title }}</title>
     <id>urn:uuid:{{ deposit.depositUuid }}</id>
     <updated>{{ deposit.received|date('Y-m-d') }}</updated>
@@ -12,7 +13,15 @@
     <lom:content 
         size="{{ deposit.packageSize / 1000 }}"
         checksumType="{{ deposit.packageChecksumType }}"
-        checksumValue="{{ deposit.checksumValue }}">
+        checksumValue="{{ deposit.checksumValue }}"
+        pkp:volume="{{deposit.volume}}"
+        pkp:issue="{{deposit.issue}}"
+        pkp:pubDate="{{deposit.pubDate|date}}"
+        pkp:journalTitle="{{deposit.journal.title}}"
+        pkp:journalUrl="{{deposit.journal.url}}"
+        pkp:issn="{{deposit.journal.issn}}"
+        pkp:publisherName="{{deposit.journal.publisherName}}"
+        pkp:publisherUrl="{{deposit.journal.publisherUrl}}">
         {{ baseUri }}{{ path('fetch', { 'depositId': deposit.depositUuid, 'fileId': deposit.fileUuid }) }}
     </lom:content>
 </entry>

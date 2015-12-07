@@ -83,7 +83,16 @@ class SwordClient {
             'On-Behalf-Of' => $this->serverUuid,
             'Journal-Url' => $journal->getUrl(),
         );
-        $response = $client->get($this->sdIri, [ 'headers' => $headers]);
+        $this->logger->critical('Headers: ' . print_r($headers, true));
+        try {
+            $response = $client->get($this->sdIri, [ 'headers' => $headers]);
+        } catch(RequestException $e) {
+            $this->logger->critical($e->getMessage());
+            if($e->hasResponse()) {
+                $this->logger->critical($e->getResponse()->getBody());
+            }
+            throw $e;
+        }
         $xml = new SimpleXMLElement($response->getBody());
         $this->namespaces->registerNamespaces($xml);
         $this->maxUpload = $xml->xpath('sword:maxUploadSize')[0];
@@ -99,10 +108,18 @@ class SwordClient {
             'deposit' => $deposit,
             'baseUri' => $this->baseUri,
         ));
+        try {
         $client = new Client();
         $request = $client->createRequest('POST', $this->colIri);
         $request->setBody(Stream::factory($xml));
         $response = $client->send($request);
+        } catch(RequestException $e) {
+            $this->logger->critical($e->getMessage());
+            if($e->hasResponse()) {
+                $this->logger->critical($e->getResponse()->getBody());
+            }
+            throw $e;
+        }
         $deposit->setDepositReceipt($response->getHeader('Location'));
         
         $responseXml = new SimpleXMLElement($response->getBody());
