@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use DateInterval;
+use DateTime;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Func;
 
@@ -50,6 +52,15 @@ class JournalRepository extends EntityRepository {
         $qb->select('e.status, count(e) as ct')
                 ->groupBy('e.status')
                 ->orderBy('e.status');
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findSilent($days) {
+        $dt = new DateTime("-{$days} day");
+
+        $qb = $this->createQueryBuilder('e');
+        $qb->where('e.contacted < :dt');
+        $qb->setParameter('dt', $dt);
         return $qb->getQuery()->getResult();
     }
 }

@@ -43,3 +43,6 @@ parameters:
 
     # Default locale for terms of use
     terms_of_use_default_locale: 'en-US'
+
+    # Number of days a journal can go without contacting the PLN and sill be healthy
+    days_silent: 60
