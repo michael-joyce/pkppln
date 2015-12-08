@@ -47,7 +47,7 @@ class HealthCheckCommand extends ContainerAwareCommand {
         $em = $this->getContainer()->get('doctrine')->getManager();
         $days = $this->getContainer()->getParameter('days_silent');
         $repo = $em->getRepository('AppBundle:Journal');
-        $journals = $repo->findSilent(0);
+        $journals = $repo->findSilent($days);
         $count = count($journals);
         $this->logger->notice("Found {$count} silent journals.");
         foreach($journals as $journal) {
@@ -56,7 +56,10 @@ class HealthCheckCommand extends ContainerAwareCommand {
         }
         $em->flush();
 
-        
+        // figure out who to notify.
+        // generate the email via twig.
+        // send via swiftmail.
+
     }
 
 }

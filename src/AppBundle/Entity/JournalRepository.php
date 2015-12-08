@@ -59,6 +59,7 @@ class JournalRepository extends EntityRepository {
         $dt = new DateTime("-{$days} day");
 
         $qb = $this->createQueryBuilder('e');
+        $qb->where("e.status = 'healthy'");
         $qb->where('e.contacted < :dt');
         $qb->setParameter('dt', $dt);
         return $qb->getQuery()->getResult();
