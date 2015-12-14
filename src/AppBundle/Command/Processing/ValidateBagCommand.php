@@ -2,6 +2,9 @@
 
 namespace AppBundle\Command\Processing;
 
+// sigh. Something isn't autoloading here. 
+require_once('vendor/scholarslab/bagit/lib/bagit.php');
+
 use AppBundle\Entity\Deposit;
 use BagIt;
 use Exception;
@@ -54,11 +57,16 @@ class ValidateBagCommand extends AbstractProcessingCmd {
             $this->logger->error("Cannot extract to {$temp} "  . $zipFile->getStatusString());
             return false;
         }
-        rename($temp . '/' . $deposit->getDepositUuid(), $extractedPath);
-        
+        if(file_exists($extractedPath)) {
+            $this->logger->warning("{$extractedPath} is not empty. Removing it.");
+            $this->fs->remove($extractedPath);
+        }
+        rename($temp . '/' . $deposit->getDepositUuid(), $extractedPath);        
         $this->logger->info("Validating {$extractedPath}");
+
         $bag = new BagIt($extractedPath);
         $bag->validate();
+
         if(count($bag->getBagErrors()) > 0) {
             foreach($bag->getBagErrors() as $error) {
                 $this->logger->error("Bagit validation error for {$error[0]} - {$error[1]}");

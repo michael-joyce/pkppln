@@ -58,6 +58,9 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
                 $valid = false;
                 $this->logErrors($validator);
                 $report .= "{$basename} validation failed.\n";
+                foreach ($validator->getErrors() as $error) {
+                    $report .= "On line {$error['line']}: {$error['message']}\n";
+                }
             } else {
                 $report .= "{$basename} validation succeeded.\n";
             }
