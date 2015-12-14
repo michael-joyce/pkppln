@@ -405,6 +405,16 @@ class Journal {
         return $this->deposits;
     }
 
+    public function getCompletedDeposits() {
+        $completed = [];
+        foreach($this->deposits as $deposit) {
+            //if($deposit->getState() === 'deposited') {
+                $completed[] = $deposit;
+            //}
+        }
+        return $completed;
+    }
+
     /**
      * Count the deposits for a journal.
      *
