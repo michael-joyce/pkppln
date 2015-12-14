@@ -405,6 +405,11 @@ class Journal {
         return $this->deposits;
     }
 
+    /**
+     * Get the deposits which have been sent to LOCKSSOMatic.
+     * 
+     * @return Deposit[]
+     */
     public function getCompletedDeposits() {
         $completed = [];
         foreach($this->deposits as $deposit) {
