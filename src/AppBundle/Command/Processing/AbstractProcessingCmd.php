@@ -98,7 +98,11 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      * @return string
      */
     public final function getHarvestDir(Journal $journal = null) {
-        return $this->absolutePath('pln_harvest_directory', $journal);
+        $path = $this->absolutePath('pln_harvest_directory', $journal);
+		if( ! $this->fs->exists($path)) {
+			$this->fs->mkdir($path);
+		}
+		return $path;
     }
 
     /**

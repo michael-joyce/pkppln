@@ -93,8 +93,13 @@ class HarvestCommand extends AbstractProcessingCmd {
                 throw new Exception("Expected file size {$expectedSize} is not close to reported size {$size} - {$deposit->getUrl()}");
             }
         } catch(RequestException $e) {
-            $this->logger->error($e->getResponse()->getStatusCode() . ' ' . $this->logger->error($e->getResponse()->getReasonPhrase()));
-            throw $e;
+			$response = $e->getResponse();
+			if($response !== null) {
+	            $this->logger->critial($e->getResponse()->getStatusCode() . ' ' . $this->logger->error($e->getResponse()->getReasonPhrase()));
+			} else {
+	            $this->logger->critical($e->getMessage());
+			}
+            //throw $e;
         }
 
     }
