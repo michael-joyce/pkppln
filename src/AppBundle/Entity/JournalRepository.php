@@ -60,8 +60,17 @@ class JournalRepository extends EntityRepository {
 
         $qb = $this->createQueryBuilder('e');
         $qb->where("e.status = 'healthy'");
-        $qb->where('e.contacted < :dt');
+        $qb->andWhere('e.contacted < :dt');
         $qb->setParameter('dt', $dt);
         return $qb->getQuery()->getResult();
+    }
+    
+    public function findOverdue($days) {
+        $dt = new DateTime("-{$days} day");
+        $qb = $this->createQueryBuilder('e');
+        $qb->where("e.status = 'unhealthy'");
+        $qb->andWhere('e.notified < :dt');
+        $qb->setParameter('dt', $dt);
+        return $qb->getQUery()->getResult();
     }
 }

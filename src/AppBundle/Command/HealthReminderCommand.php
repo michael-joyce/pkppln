@@ -15,7 +15,7 @@ use Symfony\Component\HttpKernel\Tests\Logger;
 /**
  * Run all the commands in order.
  */
-class HealthCheckCommand extends ContainerAwareCommand {
+class HealthReminderCommand extends ContainerAwareCommand {
 
     /**
      * @var TwigEngine
@@ -31,8 +31,8 @@ class HealthCheckCommand extends ContainerAwareCommand {
      * {@inheritDoc}
      */
     protected function configure() {
-        $this->setName('pln:health:check');
-        $this->setDescription('Find journals that have gone silent.');
+        $this->setName('pln:health:reminder');
+        $this->setDescription('Remind admins about silent journals.');
         $this->addOption(
                 'dry-run', 'd', InputOption::VALUE_NONE, 'Do not update journal status'
         );
@@ -57,8 +57,8 @@ class HealthCheckCommand extends ContainerAwareCommand {
      * @param User[] $users
      * @param Journal[] $journals
      */
-    protected function sendNotifications($days, $users, $journals) {
-        $notification = $this->templating->render('AppBundle:HealthCheck:notification.txt.twig', array(
+    protected function sendReminders($days, $users, $journals) {
+        $notification = $this->templating->render('AppBundle:HealthCheck:reminder.txt.twig', array(
             'journals' => $journals,
             'days' => $days,
             'base_url' => $this->getContainer()->getParameter('staging_server_uri'),
@@ -66,7 +66,7 @@ class HealthCheckCommand extends ContainerAwareCommand {
         $mailer = $this->getContainer()->get('mailer');
         foreach ($users as $user) {
             $message = Swift_Message::newInstance(
-                'Automated notification from the PKP PLN', 
+                'Automated reminder from the PKP PLN', 
                 $notification, 
                 'text/plain', 
                 'utf-8'
@@ -85,10 +85,10 @@ class HealthCheckCommand extends ContainerAwareCommand {
      */
     protected function execute(InputInterface $input, OutputInterface $output) {
         $em = $this->getContainer()->get('doctrine')->getManager();
-        $days = $this->getContainer()->getParameter('days_silent');
-        $journals = $em->getRepository('AppBundle:Journal')->findSilent($days);
+        $days = $this->getContainer()->getParameter('days_reminder');
+        $journals = $em->getRepository('AppBundle:Journal')->findOverdue($days);
         $count = count($journals);
-        $this->logger->notice("Found {$count} silent journals.");
+        $this->logger->notice("Found {$count} overdue journals.");
         if (count($journals) === 0) {
             return;
         }
@@ -98,20 +98,15 @@ class HealthCheckCommand extends ContainerAwareCommand {
             $this->logger->error('No users to notify.');
             return;
         }
-        $this->sendNotifications($days, $users, $journals);
+        $this->sendReminders($days, $users, $journals);
 
         foreach ($journals as $journal) {
-            $journal->setStatus('unhealthy');
             $journal->setNotified(new DateTime());
         }
 
         if (!$input->getOption('dry-run')) {
             $em->flush();
         }
-
-        // figure out who to notify.
-        // generate the email via twig.
-        // send via swiftmail.
     }
 
 }
