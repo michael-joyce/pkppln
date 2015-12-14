@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block pageheader %}
+
+    <h1>PKP Private LOCKSS Network</h1>
+
+{% endblock %}
+
+{% block body %}
+
+            <p>This the <a href="https://pkp.sfu.ca/">Public Knowledge Project's</a> 
+                <a href="https://pkp.sfu.ca/pkp-lockss/">Private LOCKSS Network</a>.</p>
+
+            <p>If you manage an OJS Journal and want to have your journal's content 
+                archived in this PLN, you must</p>
+            <ol>
+                <li>Make sure you are running OJS version 2.4.7 or higher.</li>
+                <li>Enable the <em>pln</em> plugin for your journal. The plugin is
+                    included with OJS - you do not need to download or install it.</li>
+                <li>Agree to the terms of use in the journal plugin's user interface.</li>
+            </ol>
+
+            <p>In particular, you do not need to create an account on this website. 
+                Once you agree to the terms of use, your content will be packaged up
+                and sent to the PLN. No further action is required on your part.
+            </p>
+            <h2>Terms of use</h2>
+            <p>For your reference, the most recent terms of use are below. You
+                will be required to agree to the terms of use in the journal management
+                pages of each journal to be archived.
+            </p>
+
+            <ol>
+                {% for term in terms %}
+                    <li>{{ term.content }}</li>
+                {% endfor %}
+            </ol>
+
+{% endblock %}

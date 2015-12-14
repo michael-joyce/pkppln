@@ -19,7 +19,11 @@ class DefaultController extends Controller {
      * @Route("/", name="home")
      */
     public function indexAction() {
-        return $this->render('default/index.html.twig');
+        $em = $this->container->get('doctrine');
+        $terms = $em->getRepository('AppBundle:TermOfUse')->getTerms();
+        return $this->render('AppBundle:Default:index.html.twig', array(
+            'terms' => $terms,
+        ));
     }
 
     /**
