@@ -34,6 +34,19 @@ class User extends BaseUser
      * @ORM\Column(name="institution", type="string", nullable=true)
      */
     private $institution;
+    
+    /**
+     * Should this user get notification emails when a journal goes silent?
+     *
+     * @var boolean
+     * @ORM\Column(name="notify", type="boolean")
+     */
+    private $notify;
+    
+    public function __construct() {
+        parent::__construct();
+        $this->notify = false;
+    }
 
     /**
      * Get id
@@ -99,5 +112,28 @@ class User extends BaseUser
     public function getFullname()
     {
         return $this->fullname;
+    }
+
+    /**
+     * Set notify
+     *
+     * @param boolean $notify
+     * @return User
+     */
+    public function setNotify($notify)
+    {
+        $this->notify = $notify;
+
+        return $this;
+    }
+
+    /**
+     * Get notify
+     *
+     * @return boolean 
+     */
+    public function getNotify()
+    {
+        return $this->notify;
     }
 }
