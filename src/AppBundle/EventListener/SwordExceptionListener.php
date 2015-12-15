@@ -29,6 +29,8 @@ class SwordExceptionListener {
      * @var Logger
      */
     private $logger;
+    
+    private $requestStack;
 
     /**
      * Set the logger for exceptions
@@ -47,7 +49,11 @@ class SwordExceptionListener {
     public function setTemplating(TwigEngine $templating) {
         $this->templating = $templating;
     }
-
+    
+    public function setRequestStack(RequestStack $requestStack) {
+        $this->requestStack = $requestStack;
+    }
+    
     /**
      * Respond to an exception with an error document wrapped in a Response.
      *
