@@ -272,6 +272,10 @@ class Journal {
     {
         return $this->url;
     }
+    
+    public function getGatewayUrl() {
+        return $this->url . '/gateway/plugin/PLNGatewayPlugin';
+    }
 
     /**
      * Set status

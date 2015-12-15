@@ -2,7 +2,12 @@
 
 namespace AppBundle\Command;
 
+use AppBundle\Entity\Journal;
+use AppUserBundle\Entity\User;
 use DateTime;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\XmlParseException;
 use Swift_Message;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Bundle\TwigBundle\TwigEngine;
@@ -76,6 +81,29 @@ class HealthCheckCommand extends ContainerAwareCommand {
             $mailer->send($message);
         }
     }
+    
+    protected function pingJournal(Journal $journal) {
+        $client = new Client();
+        try {
+            $response = $client->get($journal->getGatewayUrl());
+            if($response->getStatusCode() !== 200) {
+                return false;
+            }
+            $xml = $response->xml();
+            $element = $xml->xpath('//terms')[0];
+            if($element && isset($element['termsAccepted']) && ((string)$element['termsAccepted']) === 'yes') {
+                return true;
+            }
+        } catch (RequestException $e) {
+            $this->logger->error("Cannot ping {$journal->getUrl()}: {$e->getMessage()}");
+            if ($e->hasResponse()) {
+                $this->logger->error($e->getResponse()->getStatusCode() . ' ' . $this->logger->error($e->getResponse()->getReasonPhrase()));
+            }
+        } catch (XmlParseException $e) {
+            $this->logger->error("Cannot parse journal ping response {$journal->getUrl()}: {$e->getMessage()}");
+        }
+        return false;
+    }
 
     /**
      * Execute the runall command, which executes all the commands.
@@ -101,17 +129,19 @@ class HealthCheckCommand extends ContainerAwareCommand {
         $this->sendNotifications($days, $users, $journals);
 
         foreach ($journals as $journal) {
-            $journal->setStatus('unhealthy');
-            $journal->setNotified(new DateTime());
+            if($this->pingJournal($journal)) {
+                $this->logger->notice("Ping Success {$journal->getUrl()})");
+                $journal->setStatus('healthy');
+                $journal->setContacted(new DateTime());
+            } else {
+                $journal->setStatus('unhealthy');
+                $journal->setNotified(new DateTime());
+            }
         }
 
         if (!$input->getOption('dry-run')) {
             $em->flush();
         }
-
-        // figure out who to notify.
-        // generate the email via twig.
-        // send via swiftmail.
     }
 
 }
