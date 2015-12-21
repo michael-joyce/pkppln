@@ -62,7 +62,7 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
         $this->fs = new Filesystem();
         $this->depositDir = $container->getParameter('pln_harvest_directory');
         if (!$this->fs->isAbsolutePath($this->depositDir)) {
-            $this->depositDir = $this->container->get('kernel')->getRootDir() . '/' . $this->depositDir;
+            $this->depositDir = dirname($this->container->get('kernel')->getRootDir()) . '/' . $this->depositDir;
         }
     }
 
