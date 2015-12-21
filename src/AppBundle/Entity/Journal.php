@@ -272,6 +272,10 @@ class Journal {
     {
         return $this->url;
     }
+    
+    public function getGatewayUrl() {
+        return $this->url . '/gateway/plugin/PLNGatewayPlugin';
+    }
 
     /**
      * Set status
@@ -403,6 +407,21 @@ class Journal {
     public function getDeposits()
     {
         return $this->deposits;
+    }
+
+    /**
+     * Get the deposits which have been sent to LOCKSSOMatic.
+     * 
+     * @return Deposit[]
+     */
+    public function getCompletedDeposits() {
+        $completed = [];
+        foreach($this->deposits as $deposit) {
+            //if($deposit->getState() === 'deposited') {
+                $completed[] = $deposit;
+            //}
+        }
+        return $completed;
     }
 
     /**

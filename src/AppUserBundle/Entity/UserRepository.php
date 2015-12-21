@@ -12,4 +12,15 @@ use Doctrine\ORM\EntityRepository;
  */
 class UserRepository extends EntityRepository
 {
+    /**
+     * Find the users that should be notified about a journal going dark.
+     * 
+     * @return User[]
+     */
+    public function findUserToNotify() {
+        return $this->findBy(array(
+            'notify' => true,
+            'enabled' => true,
+        ));
+    }
 }

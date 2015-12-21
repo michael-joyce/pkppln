@@ -19,8 +19,13 @@ class AdminUserType extends AbstractType {
                 ->add('email')
                 ->add('fullname')
                 ->add('institution')
+                ->add('notify', 'checkbox', array(
+                    'label' => 'Notify user when journals go silent',
+                    'required' => false,
+                ))
                 ->add('enabled', 'checkbox', array(
-                    'label' => 'Account Enabled'
+                    'label' => 'Account Enabled',
+                    'required' => false,
                 ))
                 ->add('roles', 'choice', array(
                     'label' => 'Roles',
