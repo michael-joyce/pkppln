@@ -150,7 +150,7 @@ class Deposit
      * 
      * @ORM\Column(type="string")
      */
-    private $state = "deposited";
+    private $state;
     
     /**
      * Stae of the deposit in LOCKSSOMatic or the PLN.
@@ -219,6 +219,7 @@ class Deposit
     public function __construct() {
          $this->received = new DateTime();
          $this->processingLog = '';
+		 $this->state = "depositedByJournal";
     }
 
     /**
