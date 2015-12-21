@@ -410,6 +410,21 @@ class Journal {
     }
 
     /**
+     * Get the deposits which have been sent to LOCKSSOMatic.
+     * 
+     * @return Deposit[]
+     */
+    public function getCompletedDeposits() {
+        $completed = [];
+        foreach($this->deposits as $deposit) {
+            //if($deposit->getState() === 'deposited') {
+                $completed[] = $deposit;
+            //}
+        }
+        return $completed;
+    }
+
+    /**
      * Count the deposits for a journal.
      *
      * @return int
