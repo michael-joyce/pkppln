@@ -3,6 +3,7 @@
 namespace AppBundle\Command;
 
 use AppBundle\Entity\Journal;
+use AppBundle\Services\Ping;
 use AppUserBundle\Entity\User;
 use DateTime;
 use GuzzleHttp\Client;
@@ -31,6 +32,11 @@ class HealthCheckCommand extends ContainerAwareCommand {
      * @var Logger
      */
     protected $logger;
+	
+	/**
+	 * @var Ping
+	 */
+	protected $ping;
 
     /**
      * {@inheritDoc}
@@ -53,6 +59,7 @@ class HealthCheckCommand extends ContainerAwareCommand {
         parent::setContainer($container);
         $this->templating = $container->get('templating');
         $this->logger = $container->get('monolog.logger.processing');
+		$this->ping = $container->get('ping');
     }
     
     /**

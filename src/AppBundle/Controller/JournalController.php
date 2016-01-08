@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use Exception;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -106,7 +107,37 @@ class JournalController extends Controller {
         );
     }
 
-    /**
+   /**
+     * Finds and displays a Journal entity.
+     *
+     * @Route("/ping/{id}", name="journal_ping")
+     * @Method("GET")
+     * @Template()
+     */
+    public function pingAction($id) {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('AppBundle:Journal')->find($id);
+		
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Journal entity.');
+        }
+		
+		try {
+			$result = $this->container->get('ping')->ping($entity);
+			return array(
+				'entity' => $entity,
+				'ping' => $result,
+			);
+		} catch (Exception $e) {
+			$this->addFlash('danger', $e->getMessage());
+			return $this->redirect($this->generateUrl('journal_show', array(
+				'id' => $id
+			)));
+		}
+    }
+
+	/**
      * Finds and displays a Journal entity.
      *
      * @Route("/{id}/deposits", name="journal_deposits")

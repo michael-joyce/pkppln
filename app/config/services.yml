@@ -61,3 +61,8 @@ services:
             - { name: doctrine.event_listener, event: postPersist }
             - { name: doctrine.event_listener, event: postUpdate }
             - { name: doctrine.event_listener, event: preRemove }
+
+    ping:
+        class: AppBundle\Services\Ping
+        calls:
+            - [ setLogger, ["@monolog.logger" ]]

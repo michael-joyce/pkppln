@@ -11,6 +11,9 @@
             <a href="{{ path('journal') }}" class="btn btn-default">
                 <span class="glyphicon glyphicon-arrow-left"></span> Back
             </a>
+            <a href="{{ path('journal_ping', {'id': entity.id}) }}" class="btn btn-default ping">
+                <span class="glyphicon glyphicon-refresh"></span> Ping
+            </a>
         </div>
     </div>
 
