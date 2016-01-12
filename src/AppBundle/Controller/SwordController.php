@@ -26,11 +26,17 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class SwordController extends Controller {
 
-    private static $states = array(
-        'failed' => 'The deposit to the PKP PLN staging server (or LOCKSS-O-Matic) has failed.',
-        'inProgress' => 'The deposit to the staging server has succeeded but the deposit has not yet been registered with the PLN.',
-        'disagreement' => 'The PKP LOCKSS network is not in agreement on content checksums.',
+    private static $lockssStates = array(
+        'received' => 'LOCKSS is aware of the deposit.',
+        'syncing' => 'LOCKSS boxes are downloading the deposit.',
         'agreement' => 'The PKP LOCKSS network agrees internally on content checksums.',
+        'unknown' => 'The deposit is not known to LOCKSS.'
+    );
+    
+    private static $processingStates = array(
+        'received' => 'The PLN has downloaded the deposit file.',
+        'validated' => 'The PLN has validated the checksums and OJS export XML.',
+        'sent' => 'The PLN has notified LOCKSS that the deposit is ready.',
         'unknown' => 'The deposit is in an unknown state.'
     );
 
@@ -254,16 +260,37 @@ class SwordController extends Controller {
 
         $journal->setContacted(new DateTime());
         $em->flush();
-
-        $state = 'The deposit is in an unknown state.';
-        if (array_key_exists($deposit->getPlnState(), self::$states)) {
-            $state = self::$states[$deposit->getPlnState()];
+        
+        $processingState = 'unknown';
+        switch($deposit->getState()) {
+            case 'depositedByJournal': 
+            case 'harvested':
+            case 'payload-validated':
+            case 'bag-validated':
+            case 'virus-checked':
+            case 'xml-validated':
+                $processingState = 'received';
+                break;
+            case 'reserialized':
+                $processingState = 'validated';
+                break;
+            case 'deposited':
+                $processingState = 'sent';
+            default:
+                $processingState = 'unknown';
+                $logger->critical('Deposit ' . $deposit->getId() . ' is in unknown processing state ' . $deposit->getState());
+                break;
         }
+        
+        $plnState = 'unknown';
 
         /** @var Response */
         $response = $this->render("AppBundle:Sword:statement.xml.twig", array(
             "deposit" => $deposit,
-            "state" => $state,
+            "processingState" => $processingState,
+            'processingStateDesc' => self::$processingStates[$processingState],
+            'plnState' => $plnState,
+            'plnStateDesc' => self::$lockssStates[$plnState]
         ));
         $response->headers->set('Content-Type', 'text/xml');
         return $response;
