@@ -33,6 +33,14 @@ class Deposit
      * @ORM\JoinColumn(name="journal_id", referencedColumnName="id")
      */
     private $journal;
+	
+	/**
+	 * Serialized 
+	 * 
+	 * @ORM\Column(type="array")
+	 * @var array
+	 */
+	private $license;
     
     /**
      * UUID for the deposit file. Journals may send the same deposit multiple
@@ -217,9 +225,10 @@ class Deposit
     private $processingLog;
 
     public function __construct() {
-         $this->received = new DateTime();
-         $this->processingLog = '';
-		 $this->state = "depositedByJournal";
+		$this->license = array();
+		$this->received = new DateTime();
+		$this->processingLog = '';
+		$this->state = "depositedByJournal";
     }
 
     /**
@@ -765,4 +774,44 @@ class Deposit
         return $this->packageChecksumValue;
     }
 
+
+    /**
+     * Set license
+     *
+     * @param array $license
+     * @return Deposit
+     */
+    public function setLicense($license)
+    {
+        $this->license = $license;
+
+        return $this;
+    }
+	
+	public function addLicense($key, $value) {
+		$this->license[$key] = $value;
+	}
+
+    /**
+     * Get license
+     *
+     * @return array 
+     */
+    public function getLicense()
+    {
+        return $this->license;
+    }
+
+    /**
+     * Set processingLog
+     *
+     * @param string $processingLog
+     * @return Deposit
+     */
+    public function setProcessingLog($processingLog)
+    {
+        $this->processingLog = $processingLog;
+
+        return $this;
+    }
 }

@@ -62,6 +62,13 @@ class DepositBuilder {
             ), UrlGeneratorInterface::ABSOLUTE_URL
         );
     }
+	
+	public function getLicensingInfo(Deposit $deposit, SimpleXMLElement $xml) {
+		$item = $xml->xpath('//pkp:license/node()');
+		foreach($item as $child) {
+			$deposit->addLicense($child->getName(), (string)$child);
+		}
+	}
 
     public function fromXml(Journal $journal, SimpleXMLElement $xml, $action = 'add') {
         $id = $this->getXmlValue($xml, '//atom:id');
@@ -82,6 +89,8 @@ class DepositBuilder {
         $deposit->setUrl($this->getXmlValue($xml, 'pkp:content'));
         $deposit->setDepositReceipt($this->buildDepositReceiptUrl($deposit));
         
+		$this->getLicensingInfo($deposit, $xml);
+		
         if($action === 'add') {
             $deposit->addToProcessingLog("Deposit received.");
         } else {

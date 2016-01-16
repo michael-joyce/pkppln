@@ -49,6 +49,16 @@
                 <td>{{ entity.pubDate|date('Y-m-d H:i:s') }}</td>
             </tr>
             <tr>
+                <th>License</th>
+                <td><dl class='dl-horizontal'>
+					{% for key, value in entity.license %}
+						<dt>{{ key }}</dt>
+						<dd>{{ value }}</dd>
+					{% endfor %}
+					</dl>
+				</td>
+            </tr>
+            <tr>
                 <th>Checksum type</th>
                 <td>{{ entity.checksumType }}</td>
             </tr>

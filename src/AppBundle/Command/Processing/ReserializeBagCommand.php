@@ -53,6 +53,10 @@ class ReserializeBagCommand extends AbstractProcessingCmd {
         $bag->setBagInfoData('PKP-PLN-Publisher-Name', $journal->getPublisherName());
         $bag->setBagInfoData('PKP-PLN-Publisher-URL', $journal->getPublisherUrl());
 
+		foreach($deposit->getLicense() as $key => $value) {
+			$bag->setBagInfoData('PKP-PLN-' . $key, $value);
+		}
+		
         $bag->update();        
         $path = $this->getStagingDir($deposit->getJournal()) . '/' . $deposit->getFileUuid() . '.zip';
         if(file_exists($path)) {
