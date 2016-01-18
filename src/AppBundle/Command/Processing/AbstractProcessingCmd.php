@@ -161,7 +161,7 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
     protected function checkPerms($path) {
         try {
             if (!$this->fs->exists($path)) {
-                $this->logger->warn("Creating directory {$path}");
+                $this->logger->warning("Creating directory {$path}");
                 $this->fs->mkdir($path);
             }
         } catch (IOExceptionInterface $e) {

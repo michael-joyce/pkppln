@@ -86,10 +86,12 @@ class SwordClient {
         $this->logger->critical('Headers: ' . print_r($headers, true));
         try {
             $response = $client->get($this->sdIri, [ 'headers' => $headers]);
-        } catch(RequestException $e) {
+        } catch (RequestException $e) {
             $this->logger->critical($e->getMessage());
-            if($e->hasResponse()) {
-                $this->logger->critical($e->getResponse()->getBody());
+            if ($e->hasResponse()) {
+                $xml = $e->getResponse()->xml();
+                $xml->registerXPathNamespace('atom', 'http://www.w3.org/2005/Atom');
+                $this->logger->critical((string) $xml->xpath('//atom:summary')[0]);
             }
             throw $e;
         }
@@ -109,19 +111,22 @@ class SwordClient {
             'baseUri' => $this->baseUri,
         ));
         try {
-        $client = new Client();
-        $request = $client->createRequest('POST', $this->colIri);
-        $request->setBody(Stream::factory($xml));
-        $response = $client->send($request);
-        } catch(RequestException $e) {
+            $client = new Client();
+            $request = $client->createRequest('POST', $this->colIri);
+            $request->setBody(Stream::factory($xml));
+            $response = $client->send($request);
+        } catch (RequestException $e) {
             $this->logger->critical($e->getMessage());
-            if($e->hasResponse()) {
-                $this->logger->critical($e->getResponse()->getBody());
+            if ($e->hasResponse()) {
+                $xml = $e->getResponse()->xml();
+                $xml->registerXPathNamespace('atom', 'http://www.w3.org/2005/Atom');
+                $this->logger->critical("Summary: " . (string) $xml->xpath('//atom:summary')[0]);
+                $this->logger->warning("Detail: " . (string)$xml->xpath('//sword:verboseDescription')[0]);
             }
             throw $e;
         }
         $deposit->setDepositReceipt($response->getHeader('Location'));
-        
+
         $responseXml = new SimpleXMLElement($response->getBody());
         $this->namespaces->registerNamespaces($responseXml);
         return true;

@@ -67,7 +67,7 @@ class HarvestCommand extends AbstractProcessingCmd {
 
             $response = $client->get($url);
             $this->logger->info("Harvest {$url} - {$response->getStatusCode()} - {$response->getHeader('Content-Length')}");
-        } catch (RequestException $e) {
+        } catch (Exception $e) {
             $this->logger->error($e);
             if ($e->hasResponse()) {
                 $this->logger->error($e->getResponse()->getStatusCode() . ' ' . $this->logger->error($e->getResponse()->getReasonPhrase()));
@@ -95,7 +95,7 @@ class HarvestCommand extends AbstractProcessingCmd {
         } catch(RequestException $e) {
 			$response = $e->getResponse();
 			if($response !== null) {
-	            $this->logger->critial($e->getResponse()->getStatusCode() . ' ' . $this->logger->error($e->getResponse()->getReasonPhrase()));
+	            $this->logger->critical($e->getResponse()->getStatusCode() . ' ' . $this->logger->error($e->getResponse()->getReasonPhrase()));
 			} else {
 	            $this->logger->critical($e->getMessage());
 			}
