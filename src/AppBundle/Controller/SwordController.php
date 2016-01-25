@@ -102,9 +102,9 @@ class SwordController extends Controller {
     private function checkAccess($journal_uuid) {
         /** @var BlackWhitelist */
         $bw = $this->get('blackwhitelist');
-        $this->get('monolog.logger.sword')->notice("Checking access for {$journal_uuid}");
+        $this->get('monolog.logger.sword')->info("Checking access for {$journal_uuid}");
         if ($bw->isWhitelisted($journal_uuid)) {
-            $this->get('monolog.logger.sword')->notice("whitelisted {$journal_uuid}");
+            $this->get('monolog.logger.sword')->info("whitelisted {$journal_uuid}");
             return true;
         }
         if ($bw->isBlacklisted($journal_uuid)) {
@@ -194,7 +194,7 @@ class SwordController extends Controller {
             $logger->notice("create deposit [Not Authorized] - {$request->getClientIp()} - {$journal_uuid}");
             throw new SwordException(400, "Not authorized to make deposits.");
         }
-        $logger->notice("create deposit - {$request->getClientIp()} - {$journal_uuid}");
+        $logger->info("create deposit - {$request->getClientIp()} - {$journal_uuid}");
 
         $em = $this->getDoctrine()->getManager();
         $journalRepo = $em->getRepository('AppBundle:Journal');
@@ -230,7 +230,7 @@ class SwordController extends Controller {
             throw new SwordException(400, "Not authorized to request statements.");
         }
 
-        $logger->notice("statement - {$request->getClientIp()} - {$journal_uuid} - {$deposit_uuid}");
+        $logger->info("statement - {$request->getClientIp()} - {$journal_uuid} - {$deposit_uuid}");
 
         $em = $this->getDoctrine()->getManager();
 
@@ -284,7 +284,7 @@ class SwordController extends Controller {
             throw new SwordException(400, "Not authorized to edit deposits.");
         }
 
-        $logger->notice("edit - {$request->getClientIp()} - {$journal_uuid} - {$deposit_uuid}");
+        $logger->info("edit - {$request->getClientIp()} - {$journal_uuid} - {$deposit_uuid}");
 
         $em = $this->getDoctrine()->getManager();
 
