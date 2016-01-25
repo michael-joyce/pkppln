@@ -28,7 +28,7 @@ class SwordController extends Controller {
 
     private static $states = array(
         'failed' => 'The deposit to the PKP PLN staging server (or LOCKSS-O-Matic) has failed.',
-        'inProgress' => 'The deposit to the staging server has succeeded but the deposit has not yet been registered with the PLN.',
+        'in_progress' => 'The deposit to the staging server has succeeded but the deposit has not yet been registered with the PLN.',
         'disagreement' => 'The PKP LOCKSS network is not in agreement on content checksums.',
         'agreement' => 'The PKP LOCKSS network agrees internally on content checksums.',
         'unknown' => 'The deposit is in an unknown state.'
@@ -251,19 +251,13 @@ class SwordController extends Controller {
         if ($journal->getId() !== $deposit->getJournal()->getId()) {
             throw new SwordException(400, "Deposit does not belong to journal.");
         }
-
+        
         $journal->setContacted(new DateTime());
         $em->flush();
-
-        $state = 'The deposit is in an unknown state.';
-        if (array_key_exists($deposit->getPlnState(), self::$states)) {
-            $state = self::$states[$deposit->getPlnState()];
-        }
 
         /** @var Response */
         $response = $this->render("AppBundle:Sword:statement.xml.twig", array(
             "deposit" => $deposit,
-            "state" => $state,
         ));
         $response->headers->set('Content-Type', 'text/xml');
         return $response;

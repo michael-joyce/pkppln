@@ -34,13 +34,13 @@ class Deposit
      */
     private $journal;
 	
-	/**
-	 * Serialized 
-	 * 
-	 * @ORM\Column(type="array")
-	 * @var array
-	 */
-	private $license;
+    /**
+     * Serialized 
+     * 
+     * @ORM\Column(type="array")
+     * @var array
+     */
+    private $license;
     
     /**
      * UUID for the deposit file. Journals may send the same deposit multiple
