@@ -321,7 +321,7 @@ ENDXML;
         $this->assertEquals(strtoupper('c3ac694a86e33f126a53023ce7e4b81173e4c4b3'), $deposit->getChecksumValue());
         $this->assertEquals('http://test.example.com/path/to/journal/pln/deposits/C672022E-A787-4D09-9511-60A049768A04', $deposit->getUrl());
         $this->assertEquals(619, $deposit->getSize());
-        $this->assertEquals('deposited', $deposit->getState());
+        $this->assertEquals('depositedByJournal', $deposit->getState());
         $this->assertEquals('', $deposit->getPlnState());
     }
 }
