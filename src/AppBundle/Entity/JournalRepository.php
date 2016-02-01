@@ -2,7 +2,6 @@
 
 namespace AppBundle\Entity;
 
-use DateInterval;
 use DateTime;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Func;
@@ -23,12 +22,16 @@ class JournalRepository extends EntityRepository {
     public function search($q) {
         $qb = $this->createQueryBuilder('j');
         $qb->where(
-                $qb->expr()->like(
-                        new Func(
-                                'CONCAT', 
-                                array('j.title', 'j.issn', 'j.url', 'j.email', 'j.publisherName')),
-                        "'%$q%'"
-                )
+            $qb->expr()->like(
+                new Func(
+                    'CONCAT', array(
+                        'j.title', 
+                        'j.issn', 
+                        'j.url', 
+                        'j.email', 
+                        'j.publisherName')),
+                "'%$q%'"
+            )
         );
         $query = $qb->getQuery();
         $journals = $query->getResult();
@@ -43,15 +46,15 @@ class JournalRepository extends EntityRepository {
      */
     public function findByStatus($status) {
         return $this->findBy(array(
-            'status' => $status,
+                'status' => $status,
         ));
     }
 
     public function statusSummary() {
         $qb = $this->createQueryBuilder('e');
         $qb->select('e.status, count(e) as ct')
-                ->groupBy('e.status')
-                ->orderBy('e.status');
+            ->groupBy('e.status')
+            ->orderBy('e.status');
         return $qb->getQuery()->getResult();
     }
 
@@ -64,7 +67,7 @@ class JournalRepository extends EntityRepository {
         $qb->setParameter('dt', $dt);
         return $qb->getQuery()->getResult();
     }
-    
+
     public function findOverdue($days) {
         $dt = new DateTime("-{$days} day");
         $qb = $this->createQueryBuilder('e');
@@ -73,4 +76,5 @@ class JournalRepository extends EntityRepository {
         $qb->setParameter('dt', $dt);
         return $qb->getQUery()->getResult();
     }
+
 }

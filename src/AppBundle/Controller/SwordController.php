@@ -120,7 +120,7 @@ class SwordController extends Controller {
         return $this->container->getParameter("pln_accepting");
     }
 	
-	private function journalContact($uuid) {
+	private function journalContact($uuid, $url) {
 		$em = $this->getDoctrine()->getManager();
 		$journalRepo = $em->getRepository('AppBundle:Journal');
 		$journal = $journalRepo->findOneBy(array(
@@ -128,8 +128,18 @@ class SwordController extends Controller {
 		));
 		if($journal !== null) {
 			$journal->setTimestamp();
-			$em->flush();
-		}
+		} else {
+            $journal = new Journal();
+            $journal->setUuid($uuid);
+            $journal->setUrl($url);
+			$journal->setTimestamp();
+            $journal->setTitle('unknown');
+            $journal->setIssn('unknown');
+            $journal->setStatus('new');
+            $journal->setEmail('unknown@unknown.com');
+            $em->persist($journal);            
+        }
+        $em->flush($journal);
 	}
 	
 	private function getTermsOfUse() {
@@ -168,7 +178,7 @@ class SwordController extends Controller {
             throw new SwordException(400, "Missing Journal-Url header");
         }
 		
-		$this->journalContact($obh);
+		$this->journalContact($obh, $journalUrl);
 		
         /** @var Response */
         $response = $this->render("AppBundle:Sword:serviceDocument.xml.twig", array(
