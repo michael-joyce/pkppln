@@ -120,10 +120,11 @@ class SwordClient {
             if ($e->hasResponse()) {
                 $xml = $e->getResponse()->xml();
                 $xml->registerXPathNamespace('atom', 'http://www.w3.org/2005/Atom');
+                $xml->registerXPathNamespace('sword', 'http://purl.org/net/sword/');
                 $this->logger->critical("Summary: " . (string) $xml->xpath('//atom:summary')[0]);
-                $this->logger->warning("Detail: " . (string)$xml->xpath('//sword:verboseDescription')[0]);
+                $this->logger->warning("Detail: " . (string) $xml->xpath('//sword:verboseDescription')[0]);
             }
-            throw $e;
+            return;
         }
         $deposit->setDepositReceipt($response->getHeader('Location'));
 

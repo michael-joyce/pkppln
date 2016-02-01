@@ -23,6 +23,8 @@
         pkp:publisherName="{{deposit.journal.publisherName}}"
         pkp:publisherUrl="{{deposit.journal.publisherUrl}}">
         {{ baseUri }}{{ path('fetch', { 'depositId': deposit.depositUuid, 'fileId': deposit.fileUuid }) }}
+        <lom:property name="base_url" value="{{baseUri}}" />
+        <lom:property name="manifest_url" value="{{baseUri}}" />
+        <lom:property name="permission_url" value="{{ path('lockss_permission') }}" />
     </lom:content>
 </entry>
-
