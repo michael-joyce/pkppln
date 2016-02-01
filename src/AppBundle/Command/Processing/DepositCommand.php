@@ -35,7 +35,7 @@ class DepositCommand extends AbstractProcessingCmd {
          */
         $client = $this->container->get('sword_client');
         $client->setLogger($this->logger);
-        return $client->createDeposit($deposit);
+        return $client->createDeposit($deposit);            
     }
 
     /**
