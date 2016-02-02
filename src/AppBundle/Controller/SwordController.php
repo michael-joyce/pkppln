@@ -139,6 +139,9 @@ class SwordController extends Controller {
             $journal->setEmail('unknown@unknown.com');
             $em->persist($journal);            
         }
+		if($journal->getStatus() !== 'new') {
+			$journal->setStatus('healthy');
+		}
         $em->flush($journal);
 	}
 	
@@ -205,21 +208,26 @@ class SwordController extends Controller {
     public function createDepositAction(Request $request, $journal_uuid) {
         /** @var LoggerInterface */
         $logger = $this->get('monolog.logger.sword');
-
+		
+        $accepting = $this->checkAccess($journal_uuid);
+        $acceptingLog = 'not accepting';
+        if ($accepting) {
+            $acceptingLog = 'accepting';
+        }
+		
+		$logger->notice("create deposit - {$request->getClientIp()} - {$journal_uuid} - {$acceptingLog}");
+		if( ! $accepting) {
+			throw new SwordException(400, "Not authorized to create deposits.");
+		}
+		
         if ($this->checkAccess($journal_uuid) === false) {
             $logger->notice("create deposit [Not Authorized] - {$request->getClientIp()} - {$journal_uuid}");
             throw new SwordException(400, "Not authorized to make deposits.");
         }
-        $logger->info("create deposit - {$request->getClientIp()} - {$journal_uuid}");
 
-        $em = $this->getDoctrine()->getManager();
-        $journalRepo = $em->getRepository('AppBundle:Journal');
-        $journal = $journalRepo->findOneBy(array('uuid' => $journal_uuid));
         $xml = $this->parseXml($request->getContent());
-        if ($journal === null) {
-            $journal = $this->get('journalbuilder')->fromXml($xml, $journal_uuid);
-        }
-
+		$journal = $this->get('journalbuilder')->fromXml($xml, $journal_uuid);
+		$journal->setStatus('healthy');
         $deposit = $this->get('depositbuilder')->fromXml($journal, $xml);
 
         /** @var Response */
@@ -240,26 +248,27 @@ class SwordController extends Controller {
     public function statementAction(Request $request, $journal_uuid, $deposit_uuid) {
         /** @var LoggerInterface */
         $logger = $this->get('monolog.logger.sword');
-
-        if ($this->checkAccess($journal_uuid) === false) {
-            $logger->notice("statement [not authorized] - {$request->getClientIp()} - {$journal_uuid} - {$deposit_uuid}");
-            throw new SwordException(400, "Not authorized to request statements.");
+        $accepting = $this->checkAccess($journal_uuid);
+        $acceptingLog = 'not accepting';
+        if ($accepting) {
+            $acceptingLog = 'accepting';
         }
-
-        $logger->info("statement - {$request->getClientIp()} - {$journal_uuid} - {$deposit_uuid}");
-
-        $em = $this->getDoctrine()->getManager();
+		
+		$logger->notice("statement - {$request->getClientIp()} - {$journal_uuid} - {$acceptingLog}");
+		if( ! $accepting) {
+			throw new SwordException(400, "Not authorized to request statements.");
+		}
+		
+		$em = $this->getDoctrine()->getManager();
 
         /** @var Journal */
         $journal = $em->getRepository('AppBundle:Journal')->findOneBy(array('uuid' => $journal_uuid));
-
-        /** @var Deposit */
-        $deposit = $em->getRepository('AppBundle:Deposit')->findOneBy(array('depositUuid' => $deposit_uuid));
-
         if ($journal === null) {
             throw new SwordException(400, "Journal UUID not found.");
         }
 
+        /** @var Deposit */
+        $deposit = $em->getRepository('AppBundle:Deposit')->findOneBy(array('depositUuid' => $deposit_uuid));
         if ($deposit === null) {
             throw new SwordException(400, "Deposit UUID not found.");
         }
@@ -269,7 +278,9 @@ class SwordController extends Controller {
         }
         
         $journal->setContacted(new DateTime());
+		$journal->setStatus('healthy');
         $em->flush();
+		
         $processingState = 'unknown';
         switch($deposit->getState()) {
             case 'depositedByJournal': 
@@ -315,12 +326,16 @@ class SwordController extends Controller {
         /** @var LoggerInterface */
         $logger = $this->get('monolog.logger.sword');
 
-        if ($this->checkAccess($journal_uuid) === false) {
-            $logger->notice("edit [not authorized] - {$request->getClientIp()} - {$journal_uuid} - {$deposit_uuid}");
-            throw new SwordException(400, "Not authorized to edit deposits.");
+        $accepting = $this->checkAccess($journal_uuid);
+        $acceptingLog = 'not accepting';
+        if ($accepting) {
+            $acceptingLog = 'accepting';
         }
-
-        $logger->info("edit - {$request->getClientIp()} - {$journal_uuid} - {$deposit_uuid}");
+		
+		$logger->notice("edit deposit - {$request->getClientIp()} - {$journal_uuid} - {$acceptingLog}");
+		if( ! $accepting) {
+			throw new SwordException(400, "Not authorized to edit deposits.");
+		}
 
         $em = $this->getDoctrine()->getManager();
 

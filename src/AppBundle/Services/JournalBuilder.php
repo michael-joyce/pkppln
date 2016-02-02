@@ -51,7 +51,12 @@ class JournalBuilder {
     }
 
     public function fromXml(SimpleXMLElement $xml, $journal_uuid) {
-        $journal = new Journal();
+		$journal = $this->em->getRepository('AppBundle:Journal')->findOneBy(array(
+			'uuid' => $journal_uuid
+		));
+		if($journal === null) {
+			$journal = new Journal();
+		}
         $journal->setUuid($journal_uuid);
         $journal->setTitle($this->getXmlValue($xml, '//atom:title'));
         $journal->setUrl($this->getXmlValue($xml, '//pkp:journal_url'));
@@ -63,5 +68,5 @@ class JournalBuilder {
         $this->em->flush($journal);
         return $journal;
     }
-
+	
 }
