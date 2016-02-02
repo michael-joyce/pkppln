@@ -123,12 +123,12 @@ monolog:
             type: stream
             channels: ['sword']
             path: "%kernel.logs_dir%/sword.log"
-            level: info
+            level: notice
         processing:
             type: stream
             channels: ['processing']
             path: "%kernel.logs_dir%/processing.log"
-            level: info
+            level: notice
 
 fos_user:
     db_driver: orm

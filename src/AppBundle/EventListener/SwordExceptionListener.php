@@ -72,7 +72,6 @@ class SwordExceptionListener {
         }
 
         $this->logger->critical($exception->getMessage() . ' from ' . $this->requestStack->getCurrentRequest()->getClientIp());
-        $this->logger->critical($exception->getTraceAsString());
 
         if ($exception instanceof SwordException) {
             $response = $this->templating->renderResponse(

@@ -169,13 +169,13 @@ class SwordController extends Controller {
         if ($accepting) {
             $acceptingLog = 'accepting';
         }
-
+		
         $logger->notice("service document - {$request->getClientIp()} - {$obh} - {$journalUrl} - {$acceptingLog}");
         if ($obh === null) {
-            throw new SwordException(400, "Missing On-Behalf-Of header");
+			throw new SwordException(400, "Missing On-Behalf-Of header for {$journalUrl}");
         }
         if ($journalUrl === null) {
-            throw new SwordException(400, "Missing Journal-Url header");
+			throw new SwordException(400, "Missing Journal-Url header for {$obh}");
         }
 		
 		$this->journalContact($obh, $journalUrl);
