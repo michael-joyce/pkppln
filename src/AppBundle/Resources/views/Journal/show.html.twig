@@ -30,10 +30,10 @@
             <tr>
                 <th>Notified</th>
                 <td>
-					{% if entity.notified %}
-						{{ entity.notified|date('Y-m-d H:i:s') }}
-					{% endif %}
-				</td>
+                    {% if entity.notified %}
+                        {{ entity.notified|date('Y-m-d H:i:s') }}
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <th>Title</th>
@@ -73,4 +73,13 @@
             </tr>    
         </tbody>
     </table>
+                        
+    {% if entity.status == 'unhealthy' %}
+        <p>This journal has not contacted the PLN in quite some time. You can update its status:<br/>
+            <a class='btn btn-default' href="{{ path('journal_status', {'id': entity.id, 'status': 'healthy'}) }}">Healthy</a>
+            <a class='btn btn-default' href="{{ path('journal_status', {'id': entity.id, 'status': 'triggered'}) }}">Triggered</a>
+            <a class='btn btn-default' href="{{ path('journal_status', {'id': entity.id, 'status': 'dead'}) }}">Dead (do not trigger)</a>
+        </p>
+    {% endif %}
+                        
 {% endblock %}

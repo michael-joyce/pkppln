@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use Exception;
+use DateTime;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -105,6 +106,31 @@ class JournalController extends Controller {
         return array(
             'entity' => $entity,
         );
+    }
+    
+    /**
+     * Update a journal status.
+     * 
+     * @Route("/{id}/status", name="journal_status")
+     * 
+     * @param Request $request
+     * @param type $id
+     */
+    public function updateStatus(Request $request, $id) {
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('AppBundle:Journal')->find($id);
+        $status = $request->query->get('status');
+        if( ! $status) {
+            $this->addFlash("error", "The journal's status has not been changed.");
+        } else {
+            $entity->setStatus($status);
+            if($status === 'healthy') {
+                $entity->setContacted(new DateTime());
+            }
+            $this->addFlash("success", "The journal's status has been updated.");
+            $em->flush();
+        }
+        return $this->redirect($this->generateUrl('journal_show', array('id' => $entity->getId())));
     }
 
    /**
