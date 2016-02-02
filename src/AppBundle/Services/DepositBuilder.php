@@ -79,7 +79,6 @@ class DepositBuilder {
         $deposit->setChecksumType($this->getXmlValue($xml, 'pkp:content/@checksumType'));
         $deposit->setChecksumValue($this->getXmlValue($xml, 'pkp:content/@checksumValue'));
         $deposit->setDepositUuid($deposit_uuid);
-        $deposit->setFileUuid(Uuid::v4(true));
         $deposit->setFileType('');
         $deposit->setIssue($this->getXmlValue($xml, 'pkp:content/@issue'));
         $deposit->setVolume($this->getXmlValue($xml, 'pkp:content/@volume'));

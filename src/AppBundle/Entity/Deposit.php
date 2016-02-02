@@ -43,17 +43,6 @@ class Deposit
     private $license;
     
     /**
-     * UUID for the deposit file. Journals may send the same deposit multiple
-     * times (eg. changes to an issue).
-     *
-     * @var string
-     * 
-     * @Assert\Uuid
-     * @ORM\Column(type="string", length=36, nullable=false)
-     */
-    private $fileUuid;
-
-    /**
      * Bagit doesn't understand compressed files that don't have a file
      * extension. So set the file type, and build file names from that.
      *
@@ -239,29 +228,6 @@ class Deposit
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set file_uuid
-     *
-     * @param string $fileUuid
-     * @return Deposit
-     */
-    public function setFileUuid($fileUuid)
-    {
-        $this->fileUuid = strtoupper($fileUuid);
-
-        return $this;
-    }
-
-    /**
-     * Get file_uuid
-     *
-     * @return string 
-     */
-    public function getFileUuid()
-    {
-        return $this->fileUuid;
     }
 
     /**
@@ -660,7 +626,7 @@ class Deposit
                 $extension = '.tgz';
                 break;
         }
-        return $this->getFileUuid() . $extension;
+        return $this->getDepositUuid() . $extension;
     }
 
     /**

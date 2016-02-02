@@ -31,7 +31,6 @@ class LoadDeposits extends AbstractDataFixture implements OrderedFixtureInterfac
         $deposit->setDepositUuid('d38e7ecb-7d7e-408d-94b0-b00d434fdbd2');
         $deposit->setDepositReceipt('http://example.com/path/to/reciept');
         $deposit->setFileType('application/zip');
-        $deposit->setFileUuid('96c0e180-17e6-4b12-a1d2-c9ff3131820a');
         $deposit->setIssue(2);
         $deposit->setJournal($this->getReference('journal'));
         $deposit->setPubDate(new DateTime());

@@ -24,7 +24,7 @@
         <tbody>
             {% for entity in entities %}
                 <tr>
-                    <td><a href="{{ path('deposit_show', { 'id': entity.id }) }}">{{ entity.fileuuid }}</a></td>
+                    <td><a href="{{ path('deposit_show', { 'id': entity.id }) }}">{{ entity.deposituuid }}</a></td>
                     <td>{% if entity.received %}{{ entity.received|date('Y-m-d') }}{% endif %}</td>
                     <td>{{ entity.action }}</td>
                     <td><a href="{{ path('journal_show', {'id': entity.journal.id}) }}">{{ entity.journal.title }}</a></td>

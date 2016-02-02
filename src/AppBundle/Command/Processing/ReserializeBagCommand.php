@@ -37,9 +37,8 @@ class ReserializeBagCommand extends AbstractProcessingCmd {
         if (!$this->checkPerms($dir)) {
             return false;
         }
-        $bag->setBagInfoData('External-Identifier', $deposit->getFileUuid());        
+        $bag->setBagInfoData('External-Identifier', $deposit->getDepositUuid());        
         $bag->setBagInfoData('PKP-PLN-Deposit-UUID', $deposit->getDepositUuid());
-        $bag->setBagInfoData('PKP-PLN-File-UUID', $deposit->getFileUuid());
         $bag->setBagInfoData('PKP-PLN-Deposit-Received', $deposit->getReceived()->format('c'));
         $bag->setBagInfoData('PKP-PLN-Deposit-Volume', $deposit->getVolume());
         $bag->setBagInfoData('PKP-PLN-Deposit-Issue', $deposit->getIssue());
@@ -58,7 +57,7 @@ class ReserializeBagCommand extends AbstractProcessingCmd {
 		}
 		
         $bag->update();        
-        $path = $this->getStagingDir($deposit->getJournal()) . '/' . $deposit->getFileUuid() . '.zip';
+        $path = $this->getStagingDir($deposit->getJournal()) . '/' . $deposit->getDepositUuid() . '.zip';
         if(file_exists($path)) {
             $this->logger->warning("{$path} already exists. Removing it.");
             unlink($path);

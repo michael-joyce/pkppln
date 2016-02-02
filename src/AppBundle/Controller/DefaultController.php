@@ -41,10 +41,10 @@ class DefaultController extends Controller {
     /**
      * Fetch a processed and packaged deposit.
      * 
-     * @Route("/fetch/{depositId}/{fileId}.zip", name="fetch")
+     * @Route("/fetch/{depositId}.zip", name="fetch")
      * @param Request $request
      */
-    public function fetchAction(Request $request, $depositId, $fileId) {
+    public function fetchAction(Request $request, $depositId) {
         
     }
 

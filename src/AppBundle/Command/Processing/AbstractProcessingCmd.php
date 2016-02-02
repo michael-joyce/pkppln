@@ -134,9 +134,7 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
     public final function getBagPath(Deposit $deposit) {
         return $this->getProcessingDir($deposit->getJournal())
                 . '/'
-                . $deposit->getDepositUuid()
-                . '/'
-                . $deposit->getFileUuid();
+                . $deposit->getDepositUuid();
     }
 
     /**
