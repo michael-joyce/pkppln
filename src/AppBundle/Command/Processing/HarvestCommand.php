@@ -138,6 +138,7 @@ class HarvestCommand extends AbstractProcessingCmd {
      * @return type
      */
     protected function processDeposit(Deposit $deposit) {
+		$this->logger->notice("harvest - {$deposit->getDepositUuid()}");
         $response = $this->fetchDeposit($deposit->getUrl(), $deposit->getSize());
         if ($response === false) {            
             return false;

@@ -12,12 +12,14 @@
             <div class="panel panel-default">
                 <div class="panel-heading"><strong>Filter</strong></div>
                 <div class="panel-body">
-                    <ul>
-                    {% for status in statuses %}
-                        <li><a href="{{path('journal', { 'status': status.status })}}">{{ status.status }} ({{status.ct}})</a></li>
-                    {% endfor %}
-                    </ul>
-                </div>
+					<p>Filter the list of journals with these links.</p>
+				</div>
+				<ul class='list-group'>
+				{% for status in statuses %}
+					<li class='list-group-item'><a href="{{path('journal', { 'status': status.status })}}">{{ status.status }}</a><span class='badge'>{{status.ct}}</span></li>
+				{% endfor %}
+					<li class='list-group-item'><a href="{{path('journal')}}">All Journals</a></li>
+				</ul>
             </div>
         </div>
         <div class="col-sm-10">
@@ -45,7 +47,7 @@
                             <td><a href="{{ path('journal_show', { 'id': entity.id }) }}">{{ entity.title }}</a></td>
                             <td>{% if entity.contacted %}{{ entity.contacted|date('Y-m-d H:i:s') }}{% endif %}</td>
                             <td>{{ entity.status }}</td>
-                            <td><a href="{{ entity.url }}">{{ entity.url }}</a></td>
+                            <td><a href="{{ entity.url }}">{{ entity.url|preg_replace('~/~', '/&#8203;')|raw }}asdsa</a></td>
                         </tr>
                     {% endfor %}
                 </tbody>

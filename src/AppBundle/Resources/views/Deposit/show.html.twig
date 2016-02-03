@@ -64,7 +64,7 @@
             </tr>
             <tr>
                 <th>Url</th>
-                <td><a href="{{ entity.url }}">{{ entity.url }}</a></td>
+                <td><a href="{{ entity.url }}">{{ entity.url|preg_replace('~/~', '/&#8203;')|raw }}</a></td>
             </tr>
             <tr>
                 <th>Size (kb)</th>
@@ -84,7 +84,7 @@
             </tr>
             <tr>
                 <th>Package path</th>
-                <td>{{ entity.packagePath }}</td>
+                <td>{{ entity.packagePath|preg_replace('~/~', '/&#8203;')|raw }}</td>
             </tr>
             <tr>
                 <th>Package checksum type</th>
@@ -100,7 +100,7 @@
             </tr>
             <tr>
                 <th>Deposit receipt</th>
-                <td><a href="{{ entity.depositReceipt }}">{{ entity.depositReceipt }}</a></td>
+                <td><a href="{{ entity.depositReceipt }}">{{ entity.depositReceipt|preg_replace('~/~', '/&#8203;')|raw }}</a></td>
             </tr>
             <tr>
                 <th>Processing log</th>

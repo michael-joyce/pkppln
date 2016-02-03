@@ -51,7 +51,7 @@
                     <tr>
                         <td><a href="{{ path('journal_show', { 'id': entity.id }) }}">{{ entity.title }}</a></td>
                         <td>{{ entity.issn }}</td>
-                        <td><a href="{{ entity.url }}">{{ entity.url }}</a></td>
+                        <td><a href="{{ entity.url }}">{{ entity.url|preg_replace('~/~', '/&#8203;')|raw }}</a></td>
                         <td>{{ entity.status }}</td>
                         <td><a href='mailto:{{ entity.email }}'>{{ entity.email }}</a></td>
                         <td> 

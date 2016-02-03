@@ -45,7 +45,7 @@
             </tr>
             <tr>
                 <th>Url</th>
-                <td><a href="{{ entity.url }}">{{ entity.url }}</a></td>
+                <td><a href="{{ entity.url }}">{{ entity.url|preg_replace('~/~', '/&#8203;')|raw }}</a></td>
             </tr>
             <tr>
                 <th>Status</th>
@@ -61,7 +61,7 @@
             </tr>
             <tr>
                 <th>Publisher Url</th>
-                <td><a href="{{ entity.publisherUrl }}">{{ entity.publisherUrl }}</a></td>
+                <td><a href="{{ entity.publisherUrl }}">{{ entity.publisherUrl|preg_replace('~/~', '/&#8203;')|raw }}</a></td>
             </tr>
             <tr>
                 <th>Deposits</th>

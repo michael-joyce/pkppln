@@ -25,11 +25,11 @@
             </tr>
             <tr>
                 <th>Url</th>
-                <td><a href="{{ entity.url }}">{{ entity.url }}</a></td>
+                <td><a href="{{ entity.url }}">{{ entity.url|preg_replace('~/~', '/&#8203;')|raw }}</a></td>
             </tr>
             <tr>
                 <th>Ping Url</th>
-                <td><a href="{{ entity.getGatewayUrl() }}">{{ entity.getGatewayUrl() }}</a></td>
+                <td><a href="{{ entity.getGatewayUrl() }}">{{ entity.getGatewayUrl()|preg_replace('~/~', '/&#8203;')|raw }}</a></td>
             </tr>
             <tr>
                 <th>Status</th>

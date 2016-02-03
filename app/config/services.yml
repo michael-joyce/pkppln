@@ -4,6 +4,12 @@ parameters:
 #    parameter_name: value
 
 services:
+    
+    # There's a bug or an incompatibility or something in FOSUserBundle
+    # with Symfony 2.7 and 2.8. This fixes it.
+    fos_user.doctrine_registry:
+        alias: doctrine
+
     sword_exception_listener:
         class: AppBundle\EventListener\SwordExceptionListener
         calls: 
