@@ -62,10 +62,15 @@ class ResetDepositCommand extends ContainerAwareCommand {
 
         $state = $input->getArgument('state');
         $uuids = $input->getArgument('deposit');
-
-        foreach($uuids as $uuid) {
-            $deposit = $repo->findOneBy(array('deposit_uuid' => $uuid));
-            $this->logger->info("Setting {$uuid} to {$state}");
+		$deposits = array();
+		if(count($uuids) > 0) {
+			$deposits = $repo->findBy(array('deposit_uuid' => $deposits));
+		} else {
+			$deposits = $repo->findAll();
+		}
+		$this->logger->notice("mangling " . count($deposits));
+        foreach($deposits as $deposit) {
+            $this->logger->notice("Setting {$deposit->getDepositUuid()} to {$state}");
             $deposit->setState($state);
         }
         $this->em->flush();
