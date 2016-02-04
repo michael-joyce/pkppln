@@ -87,17 +87,17 @@ class VirusCheckCommand extends AbstractProcessingCmd {
                 $this->logger->error("No attributes found on embed element.");
             }
             $filename = $attrs->getNamedItem('filename')->nodeValue;
-            $fs = new Filesystem();
-            $tmpdir = sys_get_temp_dir();
-            $path = "{$tmpdir}/{$filename}";
-            $this->logger->info("Scanning {$path}");
-            $fs->dumpFile($path, base64_decode($em->nodeValue));
+            $this->logger->info("Scanning $filename");
+            $path = tempnam(sys_get_temp_dir(), 'pln-vs-');
+			$fs = new Filesystem();
+			$fs->dumpFile($path, base64_decode($em->nodeValue));
             if (!$this->scan($path)) {
                 $clean = false;
                 $report .= "{$filename} - virus detected\n";
             } else {
                 $report .= "{$filename} - clean\n";
             }
+			$fs->remove($path);
         }
         return $clean;
     }
