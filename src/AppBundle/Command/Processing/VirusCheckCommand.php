@@ -123,10 +123,10 @@ class VirusCheckCommand extends AbstractProcessingCmd {
         $bag = new BagIt($extractedPath);
         foreach ($bag->getBagContents() as $filename) {
             if (substr($filename, -4) !== '.xml') {
-                $this->logger->notice("{$filename} is not xml. skipping. ");
+                $this->logger->info("{$filename} is not xml. skipping. ");
                 continue;
             }
-            $this->logger->notice("Scanning {$filename} for embedded viruses.");
+            $this->logger->info("Scanning {$filename} for embedded viruses.");
             if (!$this->scanEmbeddedData($filename, $report)) {
                 $clean = false;
             }

@@ -37,6 +37,7 @@ class JournalController extends Controller {
             $qb->where('e.status = :status');
             $qb->setParameter('status', $status);
         }
+		$qb->orderBy('e.id');
         $query = $qb->getQuery();
 
         $paginator = $this->get('knp_paginator');

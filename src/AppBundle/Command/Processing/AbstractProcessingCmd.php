@@ -6,6 +6,7 @@ use AppBundle\Entity\Deposit;
 use AppBundle\Entity\DepositRepository;
 use AppBundle\Entity\Journal;
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Exception;
 use Symfony\Bridge\Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -237,23 +238,34 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
 
         foreach ($deposits as $deposit) {
             /** @var $deposit Deposit */
-            $result = $this->processDeposit($deposit);
+			$errorMsg = null;
+			$result = false;
+			try {
+				$result = $this->processDeposit($deposit);
+			} catch(Exception $e) {
+				$errorMsg = $e->getMessage();
+				$this->logger->error($errorMsg);
+			}
+			
             if ($input->getOption('dry-run')) {
                 continue;
             }
             if ($result) {
                 $deposit->setState($this->nextState());
                 $deposit->addToProcessingLog($this->successLogMessage());
+				$this->em->flush($deposit);
                 continue;
             }
             $deposit->addToProcessingLog($this->failureLogMessage());
+			if($errorMsg !== null) {
+				$deposit->addToProcessingLog($errorMsg);
+			}
             if ($input->getOption('force')) {
                 $deposit->setState($this->nextState());
                 $deposit->addToProcessingLog("Ignoring error.");
-                continue;
             }
+			$this->em->flush($deposit);
         }
-        $this->em->flush();
     }
 
 }

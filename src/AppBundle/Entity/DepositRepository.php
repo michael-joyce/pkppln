@@ -24,5 +24,20 @@ class DepositRepository extends EntityRepository
             'state' => $state,
         ));
     }
+	
+	public function stateSummary() {
+		$qb = $this->createQueryBuilder('e');
+		$qb->select('e.state, count(e) as ct')
+				->groupBy('e.state')
+				->orderBy('e.state');
+		return $qb->getQuery()->getResult();
+	}
+	
+	public function search($q) {
+		$qb = $this->createQueryBuilder('d');
+		$qb->where('d.depositUuid LIKE :q');
+		$qb->setParameter('q', '%' . strtoupper($q) . '%');
+		return $qb->getQuery()->getResult();
+	}
     
 }
