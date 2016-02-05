@@ -50,7 +50,7 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
             }
             $basename = basename($filename);
             $dom = new DOMDocument();
-            $dom->load($filename);
+            $dom->load($filename, LIBXML_COMPACT | LIBXML_PARSEHUGE);
             /** @var DtdValidator */
             $validator = $this->container->get('dtdvalidator');
             $validator->validate($dom);
