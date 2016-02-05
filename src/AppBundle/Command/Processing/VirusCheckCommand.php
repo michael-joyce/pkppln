@@ -77,7 +77,7 @@ class VirusCheckCommand extends AbstractProcessingCmd {
      */
     protected function scanEmbeddedData($path, &$report) {
         $dom = new DOMDocument();
-        $dom->load($path);
+        $dom->load($path, LIBXML_COMPACT | LIBXML_PARSEHUGE);
         $xp = new DOMXPath($dom);
         $clean = true;
         foreach ($xp->query('//embed') as $em) {
