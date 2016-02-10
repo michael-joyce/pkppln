@@ -100,7 +100,7 @@ class Journal {
      * Name of the publisher
      *
      * @var string
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="string", nullable=false)
      */
     private $publisherName;
 
@@ -123,6 +123,7 @@ class Journal {
 
     public function __construct() {
         $this->deposits = new ArrayCollection();
+        $this->publisherName = '';
     }
 
     /**
