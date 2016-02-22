@@ -36,5 +36,6 @@ security:
         - { path: ^/api, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, role: ROLE_ADMIN }
         - { path: ^/$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/onix.xml$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, role: ROLE_USER }
         - { path: ^/admin/, role: ROLE_ADMIN }
