@@ -46,6 +46,25 @@ class DefaultController extends Controller {
      */
     public function fetchAction(Request $request, $depositId) {
         
+    /**
+     * Fetch the current ONYX-PH metadata file and serve it up. The file is big
+     * and nasty. It isn't generated on the fly.
+     * 
+     * @see http://www.editeur.org/127/ONIX-PH/
+     * 
+     * @param Request $request
+     * @Route("/onix.{_format}", name="onix", requirements={"_format":"xml"})
+     */
+    public function onyxAction(Request $request) {
+        $path = $this->container->get('filepaths')->getOnixPath();
+        $fs = new Filesystem();
+        if( ! $fs->exists($path)) {
+            $this->container->get('logger')->critical("The ONIX-PH file could not be found at {$path}");
+            throw new NotFoundHttpException("The ONIX-PH file could not be found.");
+        }
+        return new BinaryFileResponse($path, 200, array(
+            'Content-Type' => 'text/xml'
+        ));
     }
 
     /**

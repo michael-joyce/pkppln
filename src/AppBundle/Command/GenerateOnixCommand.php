@@ -52,17 +52,17 @@ class GenerateOnixCommand extends ContainerAwareCommand {
 
     protected function execute(InputInterface $input, OutputInterface $output) {
         $file = $input->getArgument('file');
+        if( ! $file) {
+            $fp = $this->getContainer()->get('filepaths');
+            $file = $fp->getOnixPath();
+        }
         $journals = $this->em->getRepository('AppBundle:Journal')->findAll();
         $onix = $this->templating->render('AppBundle:Onix:onix.xml.twig', array(
             'journals' => $journals,
         ));
-        if($file) {
-            $fh = fopen($file, 'w');
-            fwrite($fh, $onix);
-            fclose($fh);
-        } else {
-            $output->write($onix);
-        }
+        $fh = fopen($file, 'w');
+        fwrite($fh, $onix);
+        fclose($fh);
     }
 
 }

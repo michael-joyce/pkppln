@@ -72,3 +72,10 @@ services:
         class: AppBundle\Services\Ping
         calls:
             - [ setLogger, ["@monolog.logger" ]]
+
+    filepaths:
+        class: AppBundle\Services\FilePaths
+        calls:
+            - [ setBaseDir, ["%pln_data_dir%"]]
+            - [ setLogger, ["@monolog.logger" ]]
+            - [ setKernelEnv, ["%kernel.root_dir%"]]
