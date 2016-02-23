@@ -103,6 +103,13 @@
                 <td><a href="{{ entity.depositReceipt }}">{{ entity.depositReceipt|preg_replace('~/~', '/&#8203;')|raw }}</a></td>
             </tr>
             <tr>
+                <th>Staged deposit</th>
+                <td><a href='{{ url('fetch', { 'journalUuid': entity.journal.uuid, 'depositUuid': entity.depositUuid }) }}'>
+                    {{ url('fetch', { 'journalUuid': entity.journal.uuid, 'depositUuid': entity.depositUuid }) }}
+                    </a>
+                </td>
+            </tr>
+            <tr>
                 <th>Processing log</th>
                 <td>
                     {{- entity.processingLog|nl2br -}}

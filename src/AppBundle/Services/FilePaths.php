@@ -64,6 +64,9 @@ class FilePaths {
         if(substr($dirname, -1) !== '/') {
             $path .= '/';
         }
+        if( ! $this->fs->exists($path)) {
+            $this->fs->mkdir($path);
+        }
         if($journal !== null) {
             return  $path . $journal->getUuid();
         }
@@ -108,7 +111,7 @@ class FilePaths {
      * @return string
      */
     public final function getStagingDir(Journal $journal) {
-        $path = $this->absolutePath('staging', $journal);
+        $path = $this->absolutePath('staged', $journal);
 		if( ! $this->fs->exists($path)) {
             $this->logger->notice("Creating directory {$path}");
 			$this->fs->mkdir($path);

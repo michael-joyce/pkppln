@@ -22,9 +22,11 @@
         pkp:issn="{{deposit.journal.issn}}"
         pkp:publisherName="{{deposit.journal.publisherName}}"
         pkp:publisherUrl="{{deposit.journal.publisherUrl}}">
-        {{ baseUri }}{{ path('fetch', { 'depositId': deposit.depositUuid }) }}
-        <lom:property name="base_url" value="{{baseUri}}" />
-        <lom:property name="manifest_url" value="{{baseUri}}" />
-        <lom:property name="permission_url" value="{{ path('lockss_permission') }}" />
+        {{ url('fetch', { 'journalUuid': deposit.journal.uuid, 'depositUuid': deposit.depositUuid }) }}
+        <lom:property name="base_url" value="{{ url('home') }}" />
+        <lom:property name="permission_url" value="{{ url('lockss_permission') }}" />
+        <lom:property name="volume" value=" {{ deposit.volume }}" />
+        <lom:property name="journal_id" value="{{ deposit.journal.uuid }}"/>
+        <lom:property name="original_journal_title" value="{{ deposit.journal.title }}" />
     </lom:content>
 </entry>

@@ -8,9 +8,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -46,10 +48,23 @@ class DefaultController extends Controller {
     /**
      * Fetch a processed and packaged deposit.
      * 
-     * @Route("/fetch/{depositId}.zip", name="fetch")
+     * @Route("/fetch/{journalUuid}/{depositUuid}.zip", name="fetch")
      * @param Request $request
      */
-    public function fetchAction(Request $request, $depositId) {
+    public function fetchAction(Request $request, $journalUuid, $depositUuid) {
+        $em = $this->container->get('doctrine');
+        $journal = $em->getRepository('AppBundle:Journal')->findOneBy(array('uuid' => $journalUuid));
+        $deposit = $em->getRepository('AppBundle:Deposit')->findOneBy(array('depositUuid' => $depositUuid));
+        if($deposit->getJournal()->getId() !== $journal->getId()) {
+            throw new BadRequestHttpException("The requested Journal ID does not match the deposit's journal ID.");
+        }
+        $path = $this->get('filepaths')->getStagingDir($journal) . '/' . $deposit->getDepositUuid() . '.zip';
+        $fs = new Filesystem();
+        if( ! $fs->exists($path)) {
+            throw new NotFoundHttpException("{$journalUuid}/{$depositUuid}.zip does not exist.");
+        }
+        return new BinaryFileResponse($path);
+    }
     
     /**
      * @Route("/onix.xml")
@@ -60,7 +75,7 @@ class DefaultController extends Controller {
             Response::HTTP_MOVED_PERMANENTLY
         );
     }
-        
+    
     /**
      * Fetch the current ONYX-PH metadata file and serve it up. The file is big
      * and nasty. It isn't generated on the fly.
@@ -70,7 +85,7 @@ class DefaultController extends Controller {
      * @param Request $request
      * @Route("/feeds/onix.{_format}", name="onix", requirements={"_format":"xml"})
      */
-    public function onyxAction(Request $request) {
+    public function onyxFeedAction(Request $request) {
         $path = $this->container->get('filepaths')->getOnixPath();
         $fs = new Filesystem();
         if( ! $fs->exists($path)) {
