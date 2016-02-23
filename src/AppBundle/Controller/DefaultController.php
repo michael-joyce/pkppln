@@ -8,8 +8,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Default controller for the application, handles the home page and a few others.
@@ -48,6 +50,16 @@ class DefaultController extends Controller {
      * @param Request $request
      */
     public function fetchAction(Request $request, $depositId) {
+    
+    /**
+     * @Route("/onix.xml")
+     */
+    public function onyxRedirect() {
+        return new RedirectResponse(
+            $this->generateUrl('onix', array('_format' => 'xml')), 
+            Response::HTTP_MOVED_PERMANENTLY
+        );
+    }
         
     /**
      * Fetch the current ONYX-PH metadata file and serve it up. The file is big
@@ -56,7 +68,7 @@ class DefaultController extends Controller {
      * @see http://www.editeur.org/127/ONIX-PH/
      * 
      * @param Request $request
-     * @Route("/onix.{_format}", name="onix", requirements={"_format":"xml"})
+     * @Route("/feeds/onix.{_format}", name="onix", requirements={"_format":"xml"})
      */
     public function onyxAction(Request $request) {
         $path = $this->container->get('filepaths')->getOnixPath();
