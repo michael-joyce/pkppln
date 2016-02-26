@@ -73,7 +73,15 @@
                         {{ entity.countDeposits() }}
                     </a>
                 </td>
-            </tr>    
+            </tr>
+			<tr>
+				<th>Service Document</th>
+				<td>
+					<a href="{{ url('service_document', {"On-Behalf-Of": entity.uuid, "Journal-Url": entity.url }) }}">
+						{{ url('service_document', {"On-Behalf-Of": entity.uuid, "Journal-Url": entity.url })|preg_replace('~/~', '/&#8203;')|raw }}
+					</a>
+				</td>
+			</tr>
         </tbody>
     </table>
                         

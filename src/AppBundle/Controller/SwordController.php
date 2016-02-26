@@ -186,11 +186,13 @@ class SwordController extends Controller {
         }
 		
 		$this->journalContact($obh, $journalUrl);
+		$minOjsVersion = $this->container->getParameter('min_ojs_version');
 		
         /** @var Response */
         $response = $this->render("AppBundle:Sword:serviceDocument.xml.twig", array(
             "onBehalfOf" => $obh,
             "accepting" => $accepting,
+			"minOjsVersion" => $minOjsVersion,
             "colIri" => $this->generateUrl(
                 "create_deposit", 
 				array("journal_uuid" => $obh), 
@@ -221,6 +223,7 @@ class SwordController extends Controller {
 		
 		$logger->notice("create deposit - {$request->getClientIp()} - {$journal_uuid} - {$acceptingLog}");
 		if( ! $accepting) {
+            $logger->notice("create deposit [Not Accepting] - {$request->getClientIp()} - {$journal_uuid}");
 			throw new SwordException(400, "Not authorized to create deposits.");
 		}
 		
@@ -228,8 +231,16 @@ class SwordController extends Controller {
             $logger->notice("create deposit [Not Authorized] - {$request->getClientIp()} - {$journal_uuid}");
             throw new SwordException(400, "Not authorized to make deposits.");
         }
-
+		
         $xml = $this->parseXml($request->getContent());
+		
+		$ojsVersion = $this->getXmlValue($xml, '//pkp:ojsVersion');
+		$requiredVersion = $this->container->getParameter('min_ojs_version');
+		if( ( ! $ojsVersion) || version_compare($ojsVersion, $requiredVersion, '<')) {
+            $logger->notice("create deposit [Bad Version] - {$request->getClientIp()} - {$journal_uuid}");
+			throw new SwordException(400, "OJS version {$requiredVersion} or higher required.");
+		}
+		
 		$journal = $this->get('journalbuilder')->fromXml($xml, $journal_uuid);
 		$journal->setStatus('healthy');
         $deposit = $this->get('depositbuilder')->fromXml($journal, $xml);

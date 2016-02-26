@@ -7,7 +7,8 @@
     <sword:version>2.0</sword:version>
     <sword:maxUploadSize>{{ pln_maxUploadSize }}</sword:maxUploadSize>
     <pkp:uploadChecksumType>{{ pln_uploadChecksumType }}</pkp:uploadChecksumType>
-    
+	<pkp:minOjsVersion>{{ minOjsVersion }}</pkp:minOjsVersion>
+	
     {% if accepting == true %}
         <pkp:pln_accepting is_accepting="Yes">The PKP PLN is currently accepting deposits.</pkp:pln_accepting>
     {% else %}
