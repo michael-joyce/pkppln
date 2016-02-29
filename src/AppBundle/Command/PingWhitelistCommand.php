@@ -88,18 +88,21 @@ class PingWhitelistCommand extends ContainerAwareCommand {
         $em = $this->getContainer()->get('doctrine')->getManager();
         $journals = $em->getRepository('AppBundle:Journal')->findAll();
         $minVersion = $input->getArgument('minVersion');
-
+        $count = count($journals);
+        $i = 0;
+        
         foreach ($journals as $journal) {
+            $i++;
+            $fmt = sprintf("%5d", $i);
             $version = $this->pingJournal($journal);
-            if($version) {
-                $this->logger->notice("Ping - success {$version} - {$journal->getUrl()}");
-                if(version_compare($version, $minVersion, '>=')) {
-                    $output->writeln("Whitelist - {$version} - {$journal->getUrl()}");
-                } else {
-                    $output->writeln("Too Old - {$version} - {$journal->getUrl()}");
-                }
+            if( ! $version) {
+                $output->writeln("{$fmt}/{$count} - ping failed - - {$journal->getUrl()}");
+                continue;
+            }
+            if(version_compare($version, $minVersion, '>=')) {
+                $output->writeln("{$fmt}/{$count} - Whitelist - {$version} - {$journal->getUrl()}");
             } else {
-                $this->logger->notice("Ping - failed {$journal->getUrl()}");
+                $output->writeln("{$fmt}/{$count} - Too Old - {$version} - {$journal->getUrl()}");
             }
         }
 
