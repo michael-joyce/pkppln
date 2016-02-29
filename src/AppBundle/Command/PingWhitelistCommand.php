@@ -14,6 +14,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Tests\Logger;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Run all the commands in order.
@@ -73,7 +74,7 @@ class PingWhitelistCommand extends ContainerAwareCommand {
                 $this->logger->error("Cannot find release version in ping: {$journal->getUrl()}");
                 return false;
             }
-            return (string)$element[0];
+            return false;//(string)$element[0];
         } catch (RequestException $e) {
             $this->logger->error("Cannot ping {$journal->getUrl()}: {$e->getMessage()}");
             if ($e->hasResponse()) {
@@ -94,6 +95,8 @@ class PingWhitelistCommand extends ContainerAwareCommand {
     protected function execute(InputInterface $input, OutputInterface $output) {
         $em = $this->getContainer()->get('doctrine')->getManager();
         $journals = $em->getRepository('AppBundle:Journal')->findAll();
+		$router = $this->getContainer()->get('router');
+		
         $minVersion = $input->getArgument('minVersion');
         $count = count($journals);
         $i = 0;
@@ -103,7 +106,8 @@ class PingWhitelistCommand extends ContainerAwareCommand {
             $fmt = sprintf("%5d", $i);
             $version = $this->pingJournal($journal);
             if( ! $version) {
-                $output->writeln("{$fmt}/{$count} - ping failed - - {$journal->getUrl()}");
+				$url = $router->generate('journal_show', array('id' => $journal->getId()), UrlGeneratorInterface::ABSOLUTE_URL);
+				$output->writeln("{$fmt}/{$count} - ping failed - - {$journal->getUrl()} - {$url}");
                 continue;
             }
             if(version_compare($version, $minVersion, '>=')) {
