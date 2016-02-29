@@ -57,33 +57,6 @@ class PingWhitelistCommand extends ContainerAwareCommand {
 		$this->ping = $container->get('ping');
     }
     
-    /**
-     * Send the notifications.
-     * 
-     * @param integer $days
-     * @param User[] $users
-     * @param Journal[] $journals
-     */
-    protected function sendNotifications($days, $users, $journals) {
-        $notification = $this->templating->render('AppBundle:HealthCheck:notification.txt.twig', array(
-            'journals' => $journals,
-            'days' => $days,
-            'base_url' => $this->getContainer()->getParameter('staging_server_uri'),
-        ));
-        $mailer = $this->getContainer()->get('mailer');
-        foreach ($users as $user) {
-            $message = Swift_Message::newInstance(
-                'Automated notification from the PKP PLN', 
-                $notification, 
-                'text/plain', 
-                'utf-8'
-            );
-            $message->setFrom('noreplies@pkp-pln.lib.sfu.ca');
-            $message->setTo($user->getEmail(), $user->getFullname());
-            $mailer->send($message);
-        }
-    }
-    
     protected function pingJournal(Journal $journal) {
         $client = new Client();
         try {
@@ -114,13 +87,19 @@ class PingWhitelistCommand extends ContainerAwareCommand {
     protected function execute(InputInterface $input, OutputInterface $output) {
         $em = $this->getContainer()->get('doctrine')->getManager();
         $journals = $em->getRepository('AppBundle:Journal')->findAll();
+        $minVersion = $input->getArgument('minVersion');
 
         foreach ($journals as $journal) {
             $version = $this->pingJournal($journal);
             if($version) {
-                $this->logger->notice("Ping Success {$version} - {$journal->getUrl()}");
+                $this->logger->notice("Ping - success {$version} - {$journal->getUrl()}");
+                if(version_compare($version, $minVersion, '>=')) {
+                    $output->writeln("Whitelist - {$version} - {$journal->getUrl()}");
+                } else {
+                    $output->writeln("Too Old - {$version} - {$journal->getUrl()}");
+                }
             } else {
-                $this->logger->notice("Ping failed {$journal->getUrl()}");
+                $this->logger->notice("Ping - failed {$journal->getUrl()}");
             }
         }
 
