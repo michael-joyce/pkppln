@@ -47,6 +47,9 @@
                 <th>Url</th>
                 <td><a href="{{ entity.url }}">{{ entity.url|preg_replace('~/~', '/&#8203;')|raw }}</a></td>
             </tr>
+			<tr>
+				<th>Ping Url</th>
+				<td><a href="{{ entity.gatewayUrl }}">{{entity.gatewayUrl|preg_replace('~/~', '/&#8203;')|raw }}</a></td>
             <tr>
                 <th>Status</th>
                 <td>{{ entity.status }}</td>
