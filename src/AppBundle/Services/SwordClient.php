@@ -48,6 +48,8 @@ class SwordClient {
      * @var Logger
      */
     private $logger;
+    
+    private $plnJournalTitle;
 
     public function __construct($sdIri, $baseUri, $serverUuid) {
         $this->sdIri = $sdIri;
@@ -55,6 +57,10 @@ class SwordClient {
         $this->serverUuid = $serverUuid;
         $this->logger = null;
         $this->namespaces = new Namespaces();
+    }
+    
+    public function setPlnJournalTitle($plnJournalTitle) {
+        $this->plnJournalTitle = $plnJournalTitle;
     }
 
     public function setLogger(Logger $logger) {
@@ -83,7 +89,6 @@ class SwordClient {
             'On-Behalf-Of' => $this->serverUuid,
             'Journal-Url' => $journal->getUrl(),
         );
-        $this->logger->critical('Headers: ' . print_r($headers, true));
         try {
             $response = $client->get($this->sdIri, [ 'headers' => $headers]);
         } catch (RequestException $e) {
@@ -109,6 +114,7 @@ class SwordClient {
             'title' => 'Deposit from OJS',
             'deposit' => $deposit,
             'baseUri' => $this->baseUri,
+            'plnJournalTitle' => $this->plnJournalTitle,
         ));
         try {
             $client = new Client();
