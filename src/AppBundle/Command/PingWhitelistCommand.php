@@ -65,8 +65,12 @@ class PingWhitelistCommand extends ContainerAwareCommand {
                 return false;
             }
             $xml = $response->xml();
-            $element = $xml->xpath('//ojsInfo/release')[0];
-            return (string)$element;
+            $element = $xml->xpath('//ojsInfo/release');
+            if( ! $element || count($element) === 0) {
+                $this->logger->error("Cannot find release version in ping: {$journal->getUrl()}");
+                return false;
+            }
+            return (string)$element[0];
         } catch (RequestException $e) {
             $this->logger->error("Cannot ping {$journal->getUrl()}: {$e->getMessage()}");
             if ($e->hasResponse()) {
