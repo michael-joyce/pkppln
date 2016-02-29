@@ -37,6 +37,14 @@ class Deposit
     private $journal;
 	
     /**
+     * OJS Version that sent this deposit.
+     *
+     * @var string
+     * @ORM\Column(type="string", length=16, nullable=true)
+     */
+    private $ojsVersion;
+	
+    /**
      * Serialized list of licensing terms as reported in the ATOM deposit.
      * 
      * @ORM\Column(type="array")
@@ -794,5 +802,28 @@ class Deposit
         $this->processingLog = $processingLog;
 
         return $this;
+    }
+
+    /**
+     * Set ojsVersion
+     *
+     * @param string $ojsVersion
+     * @return Deposit
+     */
+    public function setOjsVersion($ojsVersion)
+    {
+        $this->ojsVersion = $ojsVersion;
+
+        return $this;
+    }
+
+    /**
+     * Get ojsVersion
+     *
+     * @return string 
+     */
+    public function getOjsVersion()
+    {
+        return $this->ojsVersion;
     }
 }

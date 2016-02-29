@@ -140,6 +140,7 @@ class DepositBuilder {
         $deposit->setJournal($journal);
         $deposit->setSize($this->getXmlValue($xml, 'pkp:content/@size'));
         $deposit->setUrl($this->getXmlValue($xml, 'pkp:content'));
+		$deposit->setOjsVersion($this->getXmlValue($xml, 'pkp:ojsVersion'));
         $deposit->setDepositReceipt($this->buildDepositReceiptUrl($deposit));
         
 		$this->getLicensingInfo($deposit, $xml);

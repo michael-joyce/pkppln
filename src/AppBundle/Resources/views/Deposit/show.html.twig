@@ -32,6 +32,17 @@
                 <th>Action</th>
                 <td>{{ entity.action }}</td>
             </tr>
+			<tr>
+				<th>Journal</th>
+				<td><a href='{{ path('journal_show', { 'id': entity.journal.id }) }}'>
+						{{ entity.journal.title }}
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<th>OJS Version</th>
+				<td>{{ entity.ojsVersion }}</td>
+			</tr>
             <tr>
                 <th>Volume</th>
                 <td>{{ entity.volume }}</td>
