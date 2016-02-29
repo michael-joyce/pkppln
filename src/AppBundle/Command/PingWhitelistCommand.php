@@ -125,10 +125,10 @@ class PingWhitelistCommand extends ContainerAwareCommand {
             }
             if(version_compare($version, $minVersion, '>=')) {
                 $output->writeln("{$fmt}/{$count} - Whitelist - {$version} - {$journal->getUrl()}");
-				$bwlist = new Whitelist();
-				$bwlist->setUuid($journal->getUuid());
-				$bwlist->setComment("{$journal->getUrl()} added automatically by ping-whitelist command.");
-				$em->persist($bwlist);
+				$whitelist = new Whitelist();
+				$whitelist->setUuid($journal->getUuid());
+				$whitelist->setComment("{$journal->getUrl()} added automatically by ping-whitelist command.");
+				$em->persist($whitelist);
             } else {
                 $output->writeln("{$fmt}/{$count} - Too Old - {$version} - {$journal->getUrl()}");
             }
