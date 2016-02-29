@@ -4,11 +4,9 @@ namespace AppBundle\Command;
 
 use AppBundle\Entity\Journal;
 use AppBundle\Services\Ping;
-use AppUserBundle\Entity\User;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\XmlParseException;
-use Swift_Message;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,6 +20,11 @@ use Symfony\Component\HttpKernel\Tests\Logger;
  */
 class PingWhitelistCommand extends ContainerAwareCommand {
 
+	/**
+	 * Default version to require
+	 */
+	const DEFAULT_VERSION = '2.4.8.0';
+	
     /**
      * @var Logger
      */
@@ -38,7 +41,7 @@ class PingWhitelistCommand extends ContainerAwareCommand {
     protected function configure() {
         $this->setName('pln:ping-whitelist');
         $this->setDescription('Find journals running a sufficiently new version of OJS and whitelist them.');
-        $this->addArgument('minVersion', InputArgument::OPTIONAL, 'Minimum version required to whitelist. Defaults to 2.4.8.0', '2.4.8.0');
+        $this->addArgument('minVersion', InputArgument::OPTIONAL, "Minimum version required to whitelist.", self::DEFAULT_VERSION);
         $this->addOption(
                 'dry-run', 'd', InputOption::VALUE_NONE, 'Do not update the whitelist - report only.'
         );
