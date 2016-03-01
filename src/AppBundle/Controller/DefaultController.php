@@ -2,13 +2,11 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Journal;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,6 +21,8 @@ class DefaultController extends Controller {
     const PERMISSION_STMT = 'LOCKSS system has permission to collect, preserve, and serve this Archival Unit.';
 
     /**
+     * Home page.
+     * 
      * @Route("/", name="home")
      */
     public function indexAction() {
@@ -67,6 +67,11 @@ class DefaultController extends Controller {
     }
     
     /**
+     * The ONIX-PH was hosted at /onix.xml which was a dumb thing. Redirect to
+     * the proper URL at /feeds/onix.xml
+     * 
+     * This URI must be public in security.yml
+     * 
      * @Route("/onix.xml")
      */
     public function onyxRedirect() {
@@ -78,14 +83,17 @@ class DefaultController extends Controller {
     
     /**
      * Fetch the current ONYX-PH metadata file and serve it up. The file is big
-     * and nasty. It isn't generated on the fly.
+     * and nasty. It isn't generated on the fly - there must be a cron tab to
+     * generate the file once in a while. 
+     * 
+     * This URI must be public in security.yml
      * 
      * @see http://www.editeur.org/127/ONIX-PH/
      * 
      * @param Request $request
      * @Route("/feeds/onix.{_format}", name="onix", requirements={"_format":"xml"})
      */
-    public function onyxFeedAction(Request $request) {
+    public function onyxFeedAction() {
         $path = $this->container->get('filepaths')->getOnixPath();
         $fs = new Filesystem();
         if( ! $fs->exists($path)) {
@@ -98,6 +106,12 @@ class DefaultController extends Controller {
     }
 
     /**
+     * Someone requested an RSS feed of the Terms of Use. This route generates 
+     * the feed in a RSS, Atom, and a custom JSON format as requested. It might
+     * not be used anywhere.
+     * 
+     * This URI must be public in security.yml
+     * 
      * @Route("/feeds/terms.{_format}", 
      *      defaults={"_format"="atom"}, 
      *      name="feed_terms", 

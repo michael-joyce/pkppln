@@ -26,6 +26,11 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class SwordController extends Controller {
 
+    /**
+     * Human-readable descriptions of the LOCKSS states.
+     *
+     * @var array
+     */
     private static $lockssStates = array(
         'received' => 'LOCKSS is aware of the deposit.',
         'syncing' => 'LOCKSS boxes are downloading the deposit.',
@@ -33,6 +38,11 @@ class SwordController extends Controller {
         'unknown' => 'The deposit is not known to LOCKSS.'
     );
     
+    /**
+     * Human-readable descriptions of the staging server processing states.
+     *
+     * @var array
+     */
     private static $processingStates = array(
         'received' => 'The PLN has downloaded the deposit file.',
         'validated' => 'The PLN has validated the checksums and OJS export XML.',
@@ -55,11 +65,12 @@ class SwordController extends Controller {
     }
 
     /**
-     * Fetch an HTTP header.
+     * Fetch an HTTP header. Checks for the header name, and a variant prefixed
+     * with X-, and for the header as a query string parameter.
      *
      * @param Request $request
-     * @param type $name
-     * @return type
+     * @param string $name
+     * @return string|null
      */
     private function fetchHeader(Request $request, $name) {
         if ($request->headers->has($name)) {
@@ -72,27 +83,6 @@ class SwordController extends Controller {
             return $request->query->get($name);
         }
         return null;
-    }
-
-    /**
-     * Run the XPath query on some xml. If a single element is found by the
-     * xpath, return the string value of the element.
-     *
-     * @param SimpleXMLElement $xml
-     * @param string $xpath
-     * @return string|null
-     * @throws Exception if there are too many elements.
-     */
-    private function getXmlValue(SimpleXMLElement $xml, $xpath) {
-        $data = $xml->xpath($xpath);
-        if (count($data) === 1) {
-            $str = (string) $data[0];
-            return trim($str);
-        }
-        if (count($data) === 0) {
-            return null;
-        }
-        throw new Exception("Too many elements for '{$xpath}'");
     }
 
     /**
@@ -120,6 +110,13 @@ class SwordController extends Controller {
         return $this->container->getParameter("pln_accepting");
     }
 	
+    /**
+     * The journal with UUID $uuid has contacted the PLN. Add a record for the 
+     * journal if there isn't one, otherwise update the timestamp.
+     * 
+     * @param string $uuid
+     * @param string $url
+     */
 	private function journalContact($uuid, $url) {
 		$em = $this->getDoctrine()->getManager();
 		$journalRepo = $em->getRepository('AppBundle:Journal');
@@ -145,6 +142,13 @@ class SwordController extends Controller {
         $em->flush($journal);
 	}
 	
+    /**
+     * Fetch the terms of use from the database.
+     * 
+     * @todo does this really need to be a function?
+     * 
+     * @return TermOfUse[]
+     */
 	private function getTermsOfUse() {
         $em = $this->getDoctrine()->getManager();
         /** @var TermOfUseRepository */

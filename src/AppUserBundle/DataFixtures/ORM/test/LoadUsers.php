@@ -6,6 +6,9 @@ use AppBundle\Utility\AbstractDataFixture;
 use AppUserBundle\Entity\User;
 use Doctrine\Common\Persistence\ObjectManager;
 
+/**
+ * Load some users for unit tests.
+ */
 class LoadUsers extends AbstractDataFixture {
 
     /**
@@ -31,6 +34,9 @@ class LoadUsers extends AbstractDataFixture {
         $manager->flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected function getEnvironments() {
         return array('test');
     }

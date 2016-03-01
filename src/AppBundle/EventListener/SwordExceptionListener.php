@@ -21,15 +21,24 @@ class SwordExceptionListener {
     private $templating;
 
     /**
-     * @var callable
+     * Symfony Controller that generated the exception.
+     * 
+     * @var ControllerInterface
      */
     private $controller;
 
     /**
+     * Monolog logger.
+     * 
      * @var Logger
      */
     private $logger;
     
+    /**
+     * The symfony request stack that generated the exception.
+     *
+     * @var RequestStack
+     */
     private $requestStack;
 
     /**
@@ -50,6 +59,11 @@ class SwordExceptionListener {
         $this->templating = $templating;
     }
     
+    /**
+     * Set the request stack, so it may be interrogated later.
+     * 
+     * @param RequestStack $requestStack
+     */
     public function setRequestStack(RequestStack $requestStack) {
         $this->requestStack = $requestStack;
     }
@@ -73,14 +87,12 @@ class SwordExceptionListener {
 
         $this->logger->critical($exception->getMessage() . ' from ' . $this->requestStack->getCurrentRequest()->getClientIp());
 
-        if ($exception instanceof SwordException) {
-            $response = $this->templating->renderResponse(
-                    'AppBundle:Sword:error.xml.twig', array('error' => $exception)
-            );
-            $response->headers->set('Content-Type', 'text/xml');
-            $response->setStatusCode($exception->getStatusCode());
-            $event->setResponse($response);
-        }
+        $response = $this->templating->renderResponse(
+                'AppBundle:Sword:error.xml.twig', array('error' => $exception)
+        );
+        $response->headers->set('Content-Type', 'text/xml');
+        $response->setStatusCode($exception->getStatusCode());
+        $event->setResponse($response);
     }
 
     /**

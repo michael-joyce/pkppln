@@ -14,6 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
 class User extends BaseUser
 {
     /**
+     * Database ID
+     * 
      * @var integer
      *
      * @ORM\Column(name="id", type="integer")
@@ -43,6 +45,9 @@ class User extends BaseUser
      */
     private $notify;
     
+    /**
+     * Construct a user
+     */
     public function __construct() {
         parent::__construct();
         $this->notify = false;
@@ -58,11 +63,23 @@ class User extends BaseUser
         return $this->id;
     }
     
+    /**
+     * Set the email and username.
+     * 
+     * @param string $email
+     * @return User
+     */
     public function setEmail($email) {
         parent::setUsername($email);
         return parent::setEmail($email);
     }
     
+    /**
+     * Set the canonical email address.
+     * 
+     * @param string $emailCanonical
+     * @return User
+     */
     public function setEmailCanonical($emailCanonical) {
         parent::setUsernameCanonical($emailCanonical);
         return parent::setEmailCanonical($emailCanonical);

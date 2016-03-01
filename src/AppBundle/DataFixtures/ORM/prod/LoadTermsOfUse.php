@@ -12,11 +12,6 @@ use Doctrine\Common\Persistence\ObjectManager;
 class LoadTermsOfUse extends AbstractDataFixture {
 
     /**
-     * @var ObjectManager
-     */
-    private $manager;
-
-    /**
      * List of terms.
      */
     private $terms = array(

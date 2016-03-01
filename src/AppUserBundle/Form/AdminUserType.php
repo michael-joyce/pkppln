@@ -7,6 +7,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use FOS\UserBundle\Form\BaseType;
 
+/**
+ * Special-purpose form type for administering users.
+ */
 class AdminUserType extends AbstractType {
 
     /**
@@ -49,6 +52,8 @@ class AdminUserType extends AbstractType {
     }
     
     /**
+     * Get the name of the form.
+     * 
      * @return string
      */
     public function getName() {

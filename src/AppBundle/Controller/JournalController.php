@@ -12,7 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Journal controller.
+ * Journal controller. Journals are read only, other than journal health status.
  *
  * @Route("/journal")
  */

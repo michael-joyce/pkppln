@@ -9,7 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Deposit controller.
+ * Deposit controller. Deposit's are read only.
  *
  * @Route("/deposit")
  */

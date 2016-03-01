@@ -2,22 +2,34 @@
 
 namespace AppBundle\Services;
 
-use AppBundle\Entity\Deposit;
 use AppBundle\Entity\Journal;
 use Monolog\Logger;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Description of FilePaths
- *
- * @author mjoyce
+ * Calculate file paths.
  */
 class FilePaths {
     
+    /**
+     * Base directory where the files are stored.
+     *
+     * @var string
+     */
     private $baseDir;
     
+    /**
+     * Symfony filesystem object.
+     *
+     * @var FileSystem
+     */
     private $fs;
     
+    /**
+     * Kernel environment, a path on the file system.
+     *
+     * @var string
+     */
     private $env;
     
     /**
@@ -25,18 +37,36 @@ class FilePaths {
      */
     private $logger;
 
+    /**
+     * Build the service.
+     */
     public function __construct() {
         $this->fs = new Filesystem();
     }
     
+    /**
+     * Set the service logger
+     * 
+     * @param Logger $logger
+     */
     public function setLogger(Logger $logger) {
         $this->logger = $logger;
     }
 
+    /**
+     * Set the kernel environment.
+     * 
+     * @param string $env
+     */
     public function setKernelEnv($env) {
         $this->env = $env;
     }
     
+    /**
+     * Set the file system base directory.
+     * 
+     * @param type $dir
+     */
     public function setBaseDir($dir) {
         if(substr($dir, -1) !== '/') {
             $this->baseDir = $dir . '/';
@@ -45,6 +75,11 @@ class FilePaths {
         }
     }
     
+    /**
+     * Get the root dir, based on the baseDir.
+     * 
+     * @return string
+     */
     protected function rootPath() {
         $path = $this->baseDir;
         if ( ! $this->fs->isAbsolutePath($path)) {
@@ -55,6 +90,8 @@ class FilePaths {
     }
     
     /**
+     * Get an absolute path to a processing directory for the journal.
+     * 
      * @param string $dirname
      * @param Journal $journal
      * @return string
@@ -119,6 +156,11 @@ class FilePaths {
 		return $path;
     }
     
+    /**
+     * Get the path to the onix feed XML file.
+     * 
+     * @return string
+     */
     public function getOnixPath() {
         return $this->rootPath() . '/onix.xml';
     }

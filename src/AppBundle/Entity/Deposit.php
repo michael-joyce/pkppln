@@ -16,6 +16,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Deposit
 {
     /**
+     * Database ID
+     * 
      * @var integer
      *
      * @ORM\Column(name="id", type="integer")
@@ -35,7 +37,7 @@ class Deposit
     private $journal;
 	
     /**
-     * Serialized 
+     * Serialized list of licensing terms as reported in the ATOM deposit.
      * 
      * @ORM\Column(type="array")
      * @var array
@@ -207,12 +209,18 @@ class Deposit
 
     /**
      * Processing log for this deposit.
+     * 
+     * @todo should this be refactored into an array, maybe of ProcessingLog
+     * objects?
      *
      * @var string
      * @ORM\Column(type="text")
      */
     private $processingLog;
 
+    /**
+     * Construct an empty deposit.
+     */
     public function __construct() {
 		$this->license = array();
 		$this->received = new DateTime();
@@ -582,11 +590,15 @@ class Deposit
         $this->received = new DateTime();
     }
     
-        
+    /**
+     * return a string representation fo the deposit, which is the deposit's 
+     * UUID.
+     * 
+     * @return type
+     */
     public function __toString() {
         return $this->depositUuid;
     }
-
 
     /**
      * Set file_type
@@ -740,7 +752,6 @@ class Deposit
         return $this->packageChecksumValue;
     }
 
-
     /**
      * Set license
      *
@@ -769,7 +780,11 @@ class Deposit
     }
 
     /**
-     * Set processingLog
+     * Set processingLog. 
+     * 
+     * @todo should this be removed? Doctrine can set the processing log without
+     * it, and there aren't really any use cases for setting the deposit log
+     * otherwise.
      *
      * @param string $processingLog
      * @return Deposit

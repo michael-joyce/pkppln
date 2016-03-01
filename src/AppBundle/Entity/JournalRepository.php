@@ -50,6 +50,11 @@ class JournalRepository extends EntityRepository {
         ));
     }
 
+    /**
+     * Summarize the journal statuses, counting them by status.
+     * 
+     * @return array
+     */
     public function statusSummary() {
         $qb = $this->createQueryBuilder('e');
         $qb->select('e.status, count(e) as ct')
@@ -58,6 +63,12 @@ class JournalRepository extends EntityRepository {
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * Find journals that haven't contacted the PLN in $days.
+     * 
+     * @param integer $days
+     * @return Journal[]
+     */
     public function findSilent($days) {
         $dt = new DateTime("-{$days} day");
 
@@ -68,6 +79,13 @@ class JournalRepository extends EntityRepository {
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * Find journals that have gone silent and that notifications have been sent
+     * for, but they have not been updated yet.
+     * 
+     * @param int $days
+     * @return Journal[]
+     */
     public function findOverdue($days) {
         $dt = new DateTime("-{$days} day");
         $qb = $this->createQueryBuilder('e');

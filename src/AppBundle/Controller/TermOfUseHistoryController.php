@@ -2,7 +2,6 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\TermOfUseHistory;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -10,7 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * TermOfUseHistory controller.
+ * TermOfUseHistory controller. The history is read only.
  *
  * @Route("/termhistory")
  */
@@ -31,7 +30,6 @@ class TermOfUseHistoryController extends Controller {
         $entities = $paginator->paginate(
                 $query, $request->query->getInt('page', 1), 25
         );
-
 
         return array(
             'entities' => $entities,
@@ -57,7 +55,6 @@ class TermOfUseHistoryController extends Controller {
         $entities = $paginator->paginate(
                 $query, $request->query->getInt('page', 1), 25
         );
-
 
         return array(
             'entities' => $entities,

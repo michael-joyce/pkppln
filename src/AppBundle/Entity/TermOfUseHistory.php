@@ -11,6 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
  * A new TermOfUseHistory object is created every time a Term of Use is created,
  * updated, or deleted. The history object is created by an event listener.
  *
+ * @see AppBundle\EventListener\TermsOfUseListener
+ * 
  * @ORM\Table()
  * @ORM\HasLifecycleCallbacks
  * @ORM\Entity(repositoryClass="TermOfUseHistoryRepository")
@@ -18,6 +20,8 @@ use Doctrine\ORM\Mapping as ORM;
 class TermOfUseHistory
 {
     /**
+     * Database ID
+     * 
      * @var integer
      *
      * @ORM\Column(name="id", type="integer")
@@ -27,6 +31,8 @@ class TermOfUseHistory
     private $id;
     
     /**
+     * A term ID, similar to the OJS translation keys.
+     * 
      * @var integer
      * @ORM\Column(type="integer")
      */
@@ -40,6 +46,8 @@ class TermOfUseHistory
     private $action;
 
     /**
+     * The user who added/edited/deleted the term of use.
+     * 
      * @var string
      * @ORM\Column(type="string")
      */
@@ -56,7 +64,7 @@ class TermOfUseHistory
     private $created;
 
     /**
-     * The change set.
+     * The change set, as computed by Doctrine.
      *
      * @var string
      * 
@@ -76,7 +84,7 @@ class TermOfUseHistory
 
 
     /**
-     * Set action
+     * Set action, one of create, update, delete
      *
      * @param string $action
      * @return TermOfUseHistory

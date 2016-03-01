@@ -16,6 +16,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Whitelist {
 
     /**
+     * Database ID.
+     * 
      * @var integer
      *
      * @ORM\Column(name="id", type="integer")

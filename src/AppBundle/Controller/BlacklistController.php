@@ -11,7 +11,7 @@ use AppBundle\Entity\Blacklist;
 use AppBundle\Form\BlacklistType;
 
 /**
- * Blacklist controller.
+ * Blacklist controller. The blacklist is read/write.
  *
  * @Route("/blacklist")
  */

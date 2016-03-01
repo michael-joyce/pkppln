@@ -10,6 +10,9 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\XmlParseException;
 use Monolog\Logger;
 
+/**
+ * Send a PING request to a journal, and return the result.
+ */
 class Ping {
 
     /**
@@ -17,6 +20,11 @@ class Ping {
      */
     private $logger;
 
+    /**
+     * Set the service logger.
+     * 
+     * @param Logger $logger
+     */
     public function setLogger(Logger $logger) {
         $this->logger = $logger;
     }
@@ -26,6 +34,7 @@ class Ping {
 	 * 
 	 * @param Journal $journal
 	 * @return PingResult
+     * @throws Exception
 	 */
 	public function ping(Journal $journal) {
 		$url = $journal->getGatewayUrl();

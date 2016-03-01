@@ -1,22 +1,12 @@
 <?php
 
-/*
- * This file is part of the FOSUserBundle package.
- *
- * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace AppUserBundle\Command;
 
 use Symfony\Component\Console\Output\OutputInterface;
 use FOS\UserBundle\Util\UserManipulator;
 
 /**
- * @author Antoine Hérault <antoine.herault@gmail.com>
- * @author Lenar Lõhmus <lenar@city.ee>
+ * Overrides the DemoteUserCommand from the FOSUserBundle.
  */
 class DemoteUserCommand extends RoleCommand
 {

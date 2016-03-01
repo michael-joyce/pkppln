@@ -11,8 +11,10 @@ use AppBundle\Entity\TermOfUse;
 use AppBundle\Form\TermOfUseType;
 
 /**
- * TermOfUse controller.
+ * TermOfUse controller. The Terms of Use are read/write, with some special
+ * actions on the writes, which are handled by an event listener.
  *
+ * @see AppBundle\EventListener\TermsOfUseListener
  * @Route("/termofuse")
  */
 class TermOfUseController extends Controller {

@@ -18,8 +18,16 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="JournalRepository")
  */
 class Journal {
+    
+    /**
+     * The URL suffix for the ping gateway, appened to the Journal's URL for the
+     * ping.
+     */
+    const GATEWAY_URL_SUFFIX = '/gateway/plugin/PLNGatewayPlugin';
 
     /**
+     * Database ID
+     * 
      * @var integer
      *
      * @ORM\Column(name="id", type="integer")
@@ -71,6 +79,7 @@ class Journal {
     private $issn;
 
     /**
+     * The journal's URL
      *
      * @var string
      * 
@@ -80,7 +89,8 @@ class Journal {
     private $url;
 
     /**
-     * The status of the journal's health.
+     * The status of the journal's health. One of new, healthy, unhealthy, 
+     * triggered, or abandoned.
      *
      * @var string
      * @ORM\Column(type="string", nullable=false)
@@ -121,6 +131,9 @@ class Journal {
      */
     private $deposits;
 
+    /**
+     * Construct a new Journal.
+     */
     public function __construct() {
         $this->deposits = new ArrayCollection();
         $this->publisherName = '';
@@ -274,8 +287,13 @@ class Journal {
         return $this->url;
     }
     
+    /**
+     * Get the plugin's Gateway URL to ping the journal.
+     * 
+     * @return type
+     */
     public function getGatewayUrl() {
-        return $this->url . '/gateway/plugin/PLNGatewayPlugin';
+        return $this->url . self::GATEWAY_URL_SUFFIX;
     }
 
     /**
@@ -371,6 +389,9 @@ class Journal {
     }
 
     /**
+     * Called automatically when the journal is updated, to set the contacted
+     * timestamp.
+     * 
      * @ORM\PrePersist
      */
     public function setTimestamp() {
@@ -418,9 +439,9 @@ class Journal {
     public function getCompletedDeposits() {
         $completed = [];
         foreach($this->deposits as $deposit) {
-            //if($deposit->getState() === 'deposited') {
+            if($deposit->getState() === 'deposited') {
                 $completed[] = $deposit;
-            //}
+            }
         }
         return $completed;
     }

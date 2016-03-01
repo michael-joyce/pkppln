@@ -7,6 +7,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use FOS\UserBundle\Form\BaseType;
 
+/**
+ * Overrides the ProfileType from FOSUserBundle
+ */
 class ProfileType extends AbstractType {
 
     /**
@@ -31,11 +34,18 @@ class ProfileType extends AbstractType {
         ));
     }
     
+    /**
+     * Get the parent form.
+     * 
+     * @return string
+     */
     public function getParent() {
         return 'fos_user_profile';
     }
     
     /**
+     * Get the form name.
+     * 
      * @return string
      */
     public function getName() {

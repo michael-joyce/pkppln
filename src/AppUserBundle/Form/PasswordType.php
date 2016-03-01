@@ -7,6 +7,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use FOS\UserBundle\Form\BaseType;
 
+/**
+ * Override the PasswordType form.
+ */
 class PasswordType extends AbstractType {
 
     /**
@@ -26,11 +29,16 @@ class PasswordType extends AbstractType {
         ));
     }
     
+    /**
+     * Get the parent form name.
+     * @return string
+     */
     public function getParent() {
         return 'fos_user_change_password';
     }
     
     /**
+     * Get the name of the form.
      * @return string
      */
     public function getName() {

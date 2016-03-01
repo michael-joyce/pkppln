@@ -4,7 +4,6 @@ namespace AppBundle\DataFixtures\ORM\dev;
 
 use AppBundle\Entity\TermOfUse;
 use AppBundle\Utility\AbstractDataFixture;
-use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
 
 /**

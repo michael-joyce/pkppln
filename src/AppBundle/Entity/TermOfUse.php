@@ -17,6 +17,8 @@ use Doctrine\ORM\Mapping as ORM;
 class TermOfUse {
 
     /**
+     * Database ID
+     * 
      * @var integer
      *
      * @ORM\Column(name="id", type="integer")
@@ -183,6 +185,9 @@ class TermOfUse {
     }
 
     /**
+     * Called automatically before the database entry is updated or created to
+     * set the timestamps.
+     * 
      * @ORM\PrePersist
      */
     public function setCreatedTimestamp() {
@@ -191,6 +196,9 @@ class TermOfUse {
     }
     
     /**
+     * Called automatically before the database entry is updated or created to
+     * set the timestamps.
+     * 
      * @ORM\PreUpdate
      */
     public function setUpdatedTimestamp() {
@@ -198,7 +206,7 @@ class TermOfUse {
     }
 
     /**
-     * The term's content is a stringified representation.
+     * The term's content is a stringified representation. Returns the content.
      *
      * @return string
      */
@@ -209,7 +217,7 @@ class TermOfUse {
     /**
      * Get updated
      *
-     * @return \DateTime 
+     * @return DateTime 
      */
     public function getUpdated()
     {

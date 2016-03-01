@@ -10,6 +10,9 @@ use Monolog\Logger;
 use SimpleXMLElement;
 use Symfony\Component\Routing\Router;
 
+/**
+ * Construct a journal, and save it to the database.
+ */
 class JournalBuilder {
 
     /**
@@ -27,18 +30,43 @@ class JournalBuilder {
      */
     private $router;
 
+    /**
+     * Set the service logger
+     * 
+     * @param Logger $logger
+     */
     public function setLogger(Logger $logger) {
         $this->logger = $logger;
     }
 
+    /**
+     * Set the ORM thing.
+     * 
+     * @param Registry $registry
+     */
     public function setManager(Registry $registry) {
         $this->em = $registry->getManager();
     }
 
+    /**
+     * Set the router. 
+     * 
+     * @todo why does the journal builder need a router?
+     * 
+     * @param Router $router
+     */
     public function setRouter(Router $router) {
         $this->router = $router;
     }
 
+    /**
+     * Fetch a single XML value from a SimpleXMLElement.
+     * 
+     * @param SimpleXMLElement $xml
+     * @param string $xpath
+     * @return string|null
+     * @throws Exception
+     */
     protected function getXmlValue(SimpleXMLElement $xml, $xpath) {
         $data = $xml->xpath($xpath);
         if (count($data) === 1) {
@@ -50,6 +78,13 @@ class JournalBuilder {
         throw new Exception("Too many elements for '{$xpath}'");
     }
 
+    /**
+     * Build and persist a journal from XML.
+     * 
+     * @param SimpleXMLElement $xml
+     * @param string $journal_uuid
+     * @return Journal
+     */
     public function fromXml(SimpleXMLElement $xml, $journal_uuid) {
 		$journal = $this->em->getRepository('AppBundle:Journal')->findOneBy(array(
 			'uuid' => $journal_uuid
