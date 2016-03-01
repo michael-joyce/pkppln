@@ -61,31 +61,6 @@ class PingWhitelistCommand extends ContainerAwareCommand {
         $this->logger = $container->get('monolog.logger.processing');
 		$this->ping = $container->get('ping');
     }
-    
-    protected function pingJournal(Journal $journal) {
-        $client = new Client();
-        try {
-            $response = $client->get($journal->getGatewayUrl());
-            if($response->getStatusCode() !== 200) {
-                return false;
-            }
-            $xml = $response->xml();
-            $element = $xml->xpath('//ojsInfo/release');
-            if( ! $element || count($element) === 0) {
-                $this->logger->error("Cannot find release version in ping: {$journal->getUrl()}");
-                return false;
-            }
-            return (string)$element[0];
-        } catch (RequestException $e) {
-            $this->logger->error("Cannot ping {$journal->getUrl()}: {$e->getMessage()}");
-            if ($e->hasResponse()) {
-                $this->logger->error($e->getResponse()->getStatusCode() . ' ' . $this->logger->error($e->getResponse()->getReasonPhrase()));
-            }
-        } catch (XmlParseException $e) {
-            $this->logger->error("Cannot parse journal ping response {$journal->getUrl()}: {$e->getMessage()}");
-        }
-        return false;
-    }
 
     /**
      * Execute the runall command, which executes all the commands.
@@ -95,19 +70,20 @@ class PingWhitelistCommand extends ContainerAwareCommand {
      */
     protected function execute(InputInterface $input, OutputInterface $output) {
         $em = $this->getContainer()->get('doctrine')->getManager();
-        $journals = $em->getRepository('AppBundle:Journal')->findAll();
 		$router = $this->getContainer()->get('router');
 		$bwlist = $this->getContainer()->get('blackwhitelist');
+		$ping = $this->getContainer()->get('ping');
 		
+        $journals = $em->getRepository('AppBundle:Journal')->findAll();
         $minVersion = $input->getArgument('minVersion');
         $count = count($journals);
         $i = 0;
         
         foreach ($journals as $journal) {
-			$uuid = $journal->getUuid();
             $i++;
             $fmt = sprintf("%5d", $i);
 			
+			$uuid = $journal->getUuid();
 			if($bwlist->isWhitelisted($uuid)) {
 				$output->writeln("{$fmt}/{$count} - skipped (whitelisted) - - {$journal->getUrl()}");
 				continue;
@@ -116,22 +92,33 @@ class PingWhitelistCommand extends ContainerAwareCommand {
 				$output->writeln("{$fmt}/{$count} - skipped (blacklisted) - - {$journal->getUrl()}");
 				continue;
 			}
+
+			try {
+				$response = $ping->ping($journal);
+			} catch (\Exception $e) {
+				$output->writeln("HTTP ERROR: {$e->getMessage()} - {$journal->getUrl()}");
+				continue;
+			}
+			if($response->getHttpStatus() !== 200) {
+				$output->writeln("CLIENT ERROR: {$response->getHttpStatus()} - {$journal->getUrl()} - {$response->getError()})");
+				continue;
+			}
+			$output->writeln("{$response->getHttpStatus()} - {$response->getOjsRelease()} - {$journal->getUrl()}");
 			
-            $version = $this->pingJournal($journal);
-            if( ! $version) {
-				$url = $router->generate('journal_show', array('id' => $journal->getId()), UrlGeneratorInterface::ABSOLUTE_URL);
-				$output->writeln("{$fmt}/{$count} - ping failed - - {$journal->getUrl()} - {$url}");
-                continue;
-            }
-            if(version_compare($version, $minVersion, '>=')) {
-                $output->writeln("{$fmt}/{$count} - Whitelist - {$version} - {$journal->getUrl()}");
-				$whitelist = new Whitelist();
-				$whitelist->setUuid($journal->getUuid());
-				$whitelist->setComment("{$journal->getUrl()} added automatically by ping-whitelist command.");
-				$em->persist($whitelist);
-            } else {
-                $output->writeln("{$fmt}/{$count} - Too Old - {$version} - {$journal->getUrl()}");
-            }
+//            if( ! $version) {
+//				$url = $router->generate('journal_show', array('id' => $journal->getId()), UrlGeneratorInterface::ABSOLUTE_URL);
+//				$output->writeln("{$fmt}/{$count} - ping failed - - {$journal->getUrl()} - {$url}");
+//                continue;
+//            }
+//            if(version_compare($version, $minVersion, '>=')) {
+//                $output->writeln("{$fmt}/{$count} - Whitelist - {$version} - {$journal->getUrl()}");
+//				$whitelist = new Whitelist();
+//				$whitelist->setUuid($journal->getUuid());
+//				$whitelist->setComment("{$journal->getUrl()} added automatically by ping-whitelist command.");
+//				$em->persist($whitelist);
+//            } else {
+//                $output->writeln("{$fmt}/{$count} - Too Old - {$version} - {$journal->getUrl()}");
+//            }
         }
 
         if (!$input->getOption('dry-run')) {

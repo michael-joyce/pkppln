@@ -2,11 +2,12 @@
 
 namespace AppBundle\Services;
 
-use Exception;
 use AppBundle\Entity\Journal;
 use AppBundle\Utility\PingResult;
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\XmlParseException;
 use Monolog\Logger;
 
 class Ping {
@@ -30,27 +31,23 @@ class Ping {
 		$url = $journal->getGatewayUrl();
 		$client = new Client();
 		try {
-			$response = $client->get($url);
-			if($response->getStatusCode() !== 200) {
-				$this->logger->warning("Ping resoponded with HTTP {$response->getStatusCode()} for {$journal->getGatewayUrl()}");
-			}		
-			$ping = new PingResult($response->xml());
-			return $ping;
+			$response = $client->get($url, array(
+				'headers' => array(
+					'User-Agent' => 'PkpPlnBot 1.0; http://pkp.sfu.ca/pkp-lockss',
+					'Accept' => 'application/xml,text/xml,*/*;q=0.1'
+				),
+			));
+			$pingResponse = new PingResult($response);
+			return $pingResponse;
 		} catch (RequestException $e) {
-            $this->logger->error("Cannot ping {$journal->getUrl()}: {$e->getMessage()}");
             if ($e->hasResponse()) {
-                $this->logger->error($e->getResponse()->getStatusCode() . ' ' . $this->logger->error($e->getResponse()->getReasonPhrase()));
+				return new PingResult($e->getResponse());
             }
-			throw new Exception($e->getMessage());
+			throw $e;
         } catch (XmlParseException $e) {
-            $this->logger->error("Cannot parse journal ping response {$journal->getUrl()}: {$e->getMessage()}");
-			throw new Exception($e->getMessage());
+			return new PingResult($e->getResponse());
         } catch (Exception $e) {
-			$this->logger->error($e->getMessage());
-			if(($e instanceof RequestException) && ($e->hasResponse())) {
-				$this->logger->error($e->getResponse()->getBody());
-			}
-			throw new Exception($e->getMessage());
+			throw $e;
 		}
 	}
 	
