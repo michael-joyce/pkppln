@@ -54,7 +54,9 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
             $validator = $this->container->get('dtdvalidator');
             $validator->validate($dom);
             if ($validator->hasErrors()) {
-                $valid = false;
+                // We do not require strict validation right now, because the 
+                // export from OJS < 2.4.8.1 is not valid.
+                // $valid = false;
                 $this->logErrors($validator);
                 $report .= "{$basename} validation failed.\n";
                 foreach ($validator->getErrors() as $error) {

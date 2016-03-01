@@ -9,6 +9,7 @@ use CL\Tissue\Model\ScanResult;
 use DOMDocument;
 use DOMNamedNodeMap;
 use DOMXPath;
+use Exception;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -79,7 +80,10 @@ class VirusCheckCommand extends AbstractProcessingCmd {
      */
     protected function scanEmbeddedData($path, &$report) {
         $dom = new DOMDocument();
-        $dom->load($path, LIBXML_COMPACT | LIBXML_PARSEHUGE);
+        $valid = $dom->load($path, LIBXML_COMPACT | LIBXML_PARSEHUGE);
+        if( ! $valid) {
+            throw new Exception("{$path} is not well-formed XML" );
+        }
         $xp = new DOMXPath($dom);
         $clean = true;
         foreach ($xp->query('//embed') as $em) {
@@ -129,8 +133,14 @@ class VirusCheckCommand extends AbstractProcessingCmd {
                 continue;
             }
             $this->logger->info("Scanning {$filename} for embedded viruses.");
-            if (!$this->scanEmbeddedData($filename, $report)) {
+            try {
+                if (!$this->scanEmbeddedData($filename, $report)) {
+                    $clean = false;
+                }
+            } catch (Exception $e) {
                 $clean = false;
+                $this->logger->error("{$filename} is not valid XML.");
+                $report .= "{$filename} is not valid XML.";
             }
         }
         $deposit->addToProcessingLog($report);
