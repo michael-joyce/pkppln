@@ -152,6 +152,9 @@ class JournalController extends Controller {
 		
 		try {
 			$result = $this->container->get('ping')->ping($entity);
+            if( ! $result->hasXml() || $result->hasError()) {
+                $this->addFlash('warning', 'The ping did not complete. ' . $ping->getError());
+            }
 			return array(
 				'entity' => $entity,
 				'ping' => $result,
