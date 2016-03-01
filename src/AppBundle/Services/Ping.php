@@ -42,7 +42,7 @@ class Ping {
 		try {
 			$response = $client->get($url, array(
 				'headers' => array(
-					'User-Agent' => 'PkpPlnBot 1.0; http://pkp.sfu.ca/pkp-lockss',
+					'User-Agent' => 'PkpPlnBot 1.0; http://pkp.sfu.ca',
 					'Accept' => 'application/xml,text/xml,*/*;q=0.1'
 				),
 			));
