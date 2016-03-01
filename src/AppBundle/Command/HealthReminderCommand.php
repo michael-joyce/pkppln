@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Tests\Logger;
 
 /**
- * Run all the commands in order.
+ * Send reminders about journals that haven't contacted the PLN in a while.
  */
 class HealthReminderCommand extends ContainerAwareCommand {
 

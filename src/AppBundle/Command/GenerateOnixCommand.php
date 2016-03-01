@@ -1,6 +1,5 @@
 <?php
 
-
 namespace AppBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -13,7 +12,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Run all the commands in order.
+ * Generate an ONIX-PH feed for all the deposits in the PLN.
+ * 
+ * @see http://www.editeur.org/127/ONIX-PH/
  */
 class GenerateOnixCommand extends ContainerAwareCommand {
 
@@ -44,12 +45,18 @@ class GenerateOnixCommand extends ContainerAwareCommand {
         $this->em = $container->get('doctrine')->getManager();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function configure() {
         $this->setName('pln:onix');
         $this->setDescription('Generate ONIX-PH feed.');
         $this->addArgument('file', InputArgument::OPTIONAL, 'File to write the feed to.');
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected function execute(InputInterface $input, OutputInterface $output) {
         $file = $input->getArgument('file');
         if( ! $file) {

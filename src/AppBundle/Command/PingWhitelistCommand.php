@@ -18,7 +18,8 @@ use Symfony\Component\HttpKernel\Tests\Logger;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Run all the commands in order.
+ * Ping all the journals in the database and whitelist those that respond and
+ * that are running a sufficiently recent version of OJS.
  */
 class PingWhitelistCommand extends ContainerAwareCommand {
 

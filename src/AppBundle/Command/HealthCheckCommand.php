@@ -19,7 +19,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Tests\Logger;
 
 /**
- * Run all the commands in order.
+ * Ping all the journals that haven't contacted the PLN in a while, and send
+ * notifications to interested users.
  */
 class HealthCheckCommand extends ContainerAwareCommand {
 
@@ -89,6 +90,13 @@ class HealthCheckCommand extends ContainerAwareCommand {
         }
     }
     
+    /**
+     * Request a ping from a journal.
+     * 
+     * @todo Use the Ping service.
+     * @param Journal $journal
+     * @return boolean
+     */
     protected function pingJournal(Journal $journal) {
         $client = new Client();
         try {

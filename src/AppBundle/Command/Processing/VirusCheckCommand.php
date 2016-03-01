@@ -13,7 +13,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Run a clamAV virus check on a deposit.
+ * Run a clamAV virus check on a deposit. Checks all the files in a deposit
+ * as well as all the embedded files, which are extracted and processed on 
+ * their own.
  */
 class VirusCheckCommand extends AbstractProcessingCmd {
 

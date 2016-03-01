@@ -9,11 +9,10 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\Dump\Container;
 use Symfony\Component\HttpKernel\Tests\Logger;
 
 /**
- * Reset the processing status for one deposit.
+ * List all deposits in a particular state.
  */
 class ListDepositsCommand extends ContainerAwareCommand {
 

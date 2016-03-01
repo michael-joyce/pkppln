@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * app:console command to purge all data from the database and reload it from
- * fixtures.
+ * fixtures. This is a dangerous command.
  */
 class PurgeCommand extends ContainerAwareCommand
 {

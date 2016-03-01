@@ -4,12 +4,11 @@ namespace AppBundle\Command\Processing;
 
 use AppBundle\Entity\Deposit;
 use AppBundle\Services\SwordClient;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-use Symfony\Component\Filesystem\Exception\IOException;
 
 /**
  * Send a fully processed deposit to LOCKSSOMatic.
+ * 
+ * @see SwordClient
  */
 class DepositCommand extends AbstractProcessingCmd {
 

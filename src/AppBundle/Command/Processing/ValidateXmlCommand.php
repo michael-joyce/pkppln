@@ -6,7 +6,6 @@ use AppBundle\Entity\Deposit;
 use AppBundle\Services\DtdValidator;
 use BagIt;
 use DOMDocument;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Validate the OJS XML export.

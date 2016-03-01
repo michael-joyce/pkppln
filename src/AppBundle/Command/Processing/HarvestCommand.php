@@ -9,12 +9,17 @@ use GuzzleHttp\Exception\RequestException;
 use Symfony\Component\Filesystem\Exception\IOException;
 
 /**
- * Harvest a deposit from a journal.
- *
- * @todo Check file sizes before downloading with a HTTP HEAD request.
+ * Harvest a deposit from a journal. Attempts to check file sizes via HTTP HEAD
+ * before downloading, and checks that there will be sufficient disk space.
  */
 class HarvestCommand extends AbstractProcessingCmd {
 
+    /**
+     * File sizes reported via HTTP HEAD must this close to to the file size
+     * as reported in the deposit. Threshold = 0.02 is 2%.
+     */
+    const FILE_SIZE_THRESHOLD = 0.02;
+    
     /**
      * {@inheritDoc}
      */
@@ -57,8 +62,9 @@ class HarvestCommand extends AbstractProcessingCmd {
             $head = $client->head($url);
             $size = $head->getHeader('Content-Length');
             $expectedSize = $expected * 1000;
+            // @todo this set of comparisons doesn't seem right.
             if($head->getStatusCode() === 200 || $size === null || $size === '') {
-                if(abs($expectedSize - $size) / $size > 0.02) {
+                if(abs($expectedSize - $size) / $size > self::FILE_SIZE_THRESHOLD) {
                     throw new Exception("Expected file size {$expectedSize} is not close to reported size {$size}");
                 }
             } else {
@@ -77,6 +83,13 @@ class HarvestCommand extends AbstractProcessingCmd {
         return $response;
     }
 
+    /**
+     * Send an HTTP HEAD request to get the deposit's host to get an estimate
+     * of the download size.
+     * 
+     * @param type $deposit
+     * @throws Exception
+     */
     protected function checkSize($deposit) {
         $client = new Client();
         try {

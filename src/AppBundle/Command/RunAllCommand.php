@@ -6,10 +6,9 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Run all the commands in order.
+ * Run all the processing commands in order.
  */
 class RunAllCommand extends ContainerAwareCommand {
 
@@ -55,5 +54,4 @@ class RunAllCommand extends ContainerAwareCommand {
             $command->run($input, $output);
         }
     }
-
 }

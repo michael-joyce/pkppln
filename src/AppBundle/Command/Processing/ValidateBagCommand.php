@@ -7,7 +7,6 @@ require_once('vendor/scholarslab/bagit/lib/bagit.php');
 
 use AppBundle\Entity\Deposit;
 use BagIt;
-use Exception;
 use ZipArchive;
 
 /**
