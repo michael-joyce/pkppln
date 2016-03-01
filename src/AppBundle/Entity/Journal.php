@@ -126,7 +126,7 @@ class Journal {
     /**
      * The journal's deposits.
      *
-     * @var ArrayCollection
+     * @var Deposit[]|ArrayCollection
      * @ORM\OneToMany(targetEntity="Deposit", mappedBy="journal")
      */
     private $deposits;
@@ -434,12 +434,13 @@ class Journal {
     /**
      * Get the deposits which have been sent to LOCKSSOMatic.
      * 
+     * @param string $action
      * @return Deposit[]
      */
-    public function getCompletedDeposits() {
+    public function getCompletedDeposits($action = 'add') {
         $completed = [];
         foreach($this->deposits as $deposit) {
-            if($deposit->getState() === 'deposited') {
+            if($deposit->getState() === 'deposited' && $deposit->getAction() === $action) {
                 $completed[] = $deposit;
             }
         }
