@@ -58,7 +58,7 @@ class DefaultController extends Controller {
         if($deposit->getJournal()->getId() !== $journal->getId()) {
             throw new BadRequestHttpException("The requested Journal ID does not match the deposit's journal ID.");
         }
-        $path = $this->get('filepaths')->getStagingDir($journal) . '/' . $deposit->getDepositUuid() . '.zip';
+        $path = $this->get('filepaths')->getStagingBagPath($deposit);
         $fs = new Filesystem();
         if( ! $fs->exists($path)) {
             throw new NotFoundHttpException("{$journalUuid}/{$depositUuid}.zip does not exist.");
