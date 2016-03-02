@@ -36,7 +36,7 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
      * {@inheritDoc}
      */
     protected function processDeposit(Deposit $deposit) {
-        $extractedPath = $this->getBagPath($deposit);
+        $extractedPath = $this->filePaths->getProcessingBagPath($deposit);
 
         $this->logger->info("Validating {$extractedPath} XML files.");
         $bag = new BagIt($extractedPath);
@@ -55,7 +55,7 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
             $validator->validate($dom);
             if ($validator->hasErrors()) {
                 // We do not require strict validation right now, because the 
-                // export from OJS < 2.4.8.1 is not valid.
+                // export from OJS < 2.4.8.1 may not be valid.
                 // $valid = false;
                 $this->logErrors($validator);
                 $report .= "{$basename} validation failed.\n";
