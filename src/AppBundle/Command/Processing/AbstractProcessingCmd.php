@@ -5,6 +5,7 @@ namespace AppBundle\Command\Processing;
 use AppBundle\Entity\Deposit;
 use AppBundle\Entity\DepositRepository;
 use AppBundle\Entity\Journal;
+use AppBundle\Services\FilePaths;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Exception;
 use Symfony\Bridge\Monolog\Logger;
@@ -49,6 +50,11 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      */
     protected $depositDir;
 
+	/**
+	 * @var FilePaths
+	 */
+	protected $filePaths;
+
     /**
      * Set the service container, and initialize the command.
      *
@@ -59,82 +65,8 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
         $this->container = $container;
         $this->logger = $container->get('monolog.logger.processing');
         $this->em = $container->get('doctrine')->getManager();
+		$this->filePaths = $container->get('filepaths');
         $this->fs = new Filesystem();
-        $this->depositDir = $container->getParameter('pln_harvest_directory');
-        if (!$this->fs->isAbsolutePath($this->depositDir)) {
-            $this->depositDir = dirname($this->container->get('kernel')->getRootDir()) . '/' . $this->depositDir;
-        }
-    }
-
-    /**
-     * Get named file path from the parameters.yml file. If it is a relative
-     * path, it will be made absolute relative to the kernel's root dir.
-     *
-     * @see AppKernel#getRootDir
-     * @param string $parameterName
-     * @param Journal $journal
-     * @return string
-     */
-    protected function absolutePath($parameterName, Journal $journal = null) {
-        $path = $this->container->getParameter($parameterName);
-        if( ! substr($path, -1) !== '/') {
-            $path .= '/';
-        }
-        if ( ! $this->fs->isAbsolutePath($path)) {
-            $root = dirname($this->container->get('kernel')->getRootDir());
-            $path =  $root . '/' . $path;
-        }
-        if($journal !== null) {
-            return  $path . $journal->getUuid();
-        }
-        return $path;
-    }
-
-    /**
-     * Get the harvest directory.
-     *
-     * @see AppKernel#getRootDir
-     * @param Journal $journal
-     * @return string
-     */
-    public final function getHarvestDir(Journal $journal = null) {
-        $path = $this->absolutePath('pln_harvest_directory', $journal);
-		if( ! $this->fs->exists($path)) {
-			$this->fs->mkdir($path);
-		}
-		return $path;
-    }
-
-    /**
-     * Get the processing directory.
-     *
-     * @param Journal $journal
-     * @return string
-     */
-    public final function getProcessingDir(Journal $journal) {
-        return $this->absolutePath('pln_processing_directory', $journal);
-    }
-
-    /**
-     * Get the staging directory for processed deposits.
-     *
-     * @param Journal $journal
-     * @return string
-     */
-    public final function getStagingDir(Journal $journal) {
-        return $this->absolutePath('pln_staging_directory', $journal);
-    }
-
-    /**
-     * Get the path to a deposit bag being processed.
-     *
-     * @param Deposit $deposit
-     * @return string
-     */
-    public final function getBagPath(Deposit $deposit) {
-        return $this->getProcessingDir($deposit->getJournal())
-                . '/'
-                . $deposit->getDepositUuid();
     }
 
     /**
@@ -147,27 +79,6 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
         $this->addOption(
                 'force', 'f', InputOption::VALUE_NONE, 'Force the processing state to be updated'
         );
-    }
-
-    /**
-     * Check the permissions of a path, make sure it exists and is writeable.
-     * Returns true if the directory exists and is writeable.
-     *
-     * @param string $path
-     * @return boolean
-     */
-    protected function checkPerms($path) {
-        try {
-            if (!$this->fs->exists($path)) {
-                $this->logger->warning("Creating directory {$path}");
-                $this->fs->mkdir($path);
-            }
-        } catch (IOExceptionInterface $e) {
-            $this->logger->error("Error creating directory {$path}");
-            $this->logger->error($e);
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -226,8 +137,6 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
 
         /** @var DepositRepository */
         $repo = $this->em->getRepository('AppBundle:Deposit');
-
-        $this->checkPerms($this->depositDir);
 
         $deposits = $repo->findByState($this->processingState());
         $count = count($deposits);

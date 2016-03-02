@@ -2,6 +2,7 @@
 
 namespace AppBundle\Services;
 
+use AppBundle\Entity\Deposit;
 use AppBundle\Entity\Journal;
 use Monolog\Logger;
 use Symfony\Component\Filesystem\Filesystem;
@@ -125,6 +126,11 @@ class FilePaths {
 		}
 		return $path;
     }
+	
+	public final function getHarvestFile(Deposit $deposit) {
+		$path = $this->getHarvestDir($deposit->getJournal());
+		return realpath($path . '/' . $deposit->getFileName());
+	}
 
     /**
      * Get the processing directory.
@@ -140,6 +146,11 @@ class FilePaths {
 		}
 		return $path;
     }
+	
+	public function getProcessingBagPath(Deposit $deposit) {
+		$path = $this->getProcessingDir($deposit->getJournal());
+		return $path . '/' . $deposit->getDepositUuid();
+	}
 
     /**
      * Get the staging directory for processed deposits.
@@ -155,6 +166,11 @@ class FilePaths {
 		}
 		return $path;
     }
+	
+	public final function getStagingBagPath(Deposit $deposit) {
+		$path = $this->getStagingDir($deposit->getJournal());
+		return $path . '/' . $deposit->getFileName();
+	}
     
     /**
      * Get the path to the onix feed XML file.

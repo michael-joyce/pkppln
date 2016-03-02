@@ -18,25 +18,8 @@ class ReserializeBagCommand extends AbstractProcessingCmd {
         $this->setDescription('Reserialize the deposit bag.');
         parent::configure();
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function processDeposit(Deposit $deposit) {
-        $extractedPath = $this->getBagPath($deposit);
-        $this->logger->info("Reserializing {$extractedPath}");
-
-        $temp = tempnam(sys_get_temp_dir(), 'deposit_processing_log');
-        if (file_exists($temp)) {
-            unlink($temp);
-        }
-        file_put_contents($temp, $deposit->getProcessingLog());
-        $bag = new BagIt($extractedPath);
-        $bag->addFile($temp, 'data/processing-log.txt');
-        $dir = $this->getStagingDir($deposit->getJournal());
-        if (!$this->checkPerms($dir)) {
-            return false;
-        }
+	
+	protected function addMetadata(BagIt $bag, Deposit $deposit) {
         $bag->setBagInfoData('External-Identifier', $deposit->getDepositUuid());        
         $bag->setBagInfoData('PKP-PLN-Deposit-UUID', $deposit->getDepositUuid());
         $bag->setBagInfoData('PKP-PLN-Deposit-Received', $deposit->getReceived()->format('c'));
@@ -55,13 +38,33 @@ class ReserializeBagCommand extends AbstractProcessingCmd {
 		foreach($deposit->getLicense() as $key => $value) {
 			$bag->setBagInfoData('PKP-PLN-' . $key, $value);
 		}
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function processDeposit(Deposit $deposit) {
+        $extractedPath = $this->filePaths->getProcessingBagPath($deposit);		
+        $this->logger->info("Reserializing {$extractedPath}");
+
+        $temp = tempnam(sys_get_temp_dir(), 'deposit_processing_log');
+        if (file_exists($temp)) {
+            unlink($temp);
+        }
+        file_put_contents($temp, $deposit->getProcessingLog());
 		
-        $bag->update();        
-        $path = $this->getStagingDir($deposit->getJournal()) . '/' . $deposit->getDepositUuid() . '.zip';
+        $bag = new BagIt($extractedPath);
+        $bag->addFile($temp, 'data/processing-log.txt');		
+		$this->addMetadata($bag, $deposit);
+        $bag->update();
+		
+        $path = $this->filePaths->getStagingBagPath($deposit);
+		
         if(file_exists($path)) {
             $this->logger->warning("{$path} already exists. Removing it.");
             unlink($path);
         }
+		
         $bag->package($path, 'zip');
         $deposit->setPackagePath($path);
         $deposit->setPackageSize(filesize($path));

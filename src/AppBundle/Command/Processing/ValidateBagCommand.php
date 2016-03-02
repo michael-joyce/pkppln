@@ -27,11 +27,8 @@ class ValidateBagCommand extends AbstractProcessingCmd {
      * {@inheritDoc}
      */
     protected function processDeposit(Deposit $deposit) {
-        $journal = $deposit->getJournal();
-
-        $harvestedPath = $this->getHarvestDir($journal) . '/' . $deposit->getFileName();
-        $extractedPath = $this->getBagPath($deposit);
-
+        $harvestedPath = $this->filePaths->getHarvestFile($deposit);
+        $extractedPath = $this->filePaths->getProcessingBagPath($deposit);
         $this->logger->info("Processing {$harvestedPath}");
 
         if (!$this->fs->exists($harvestedPath)) {
@@ -45,22 +42,18 @@ class ValidateBagCommand extends AbstractProcessingCmd {
             return false;
         }
 
-        $this->checkPerms($extractedPath);
         $this->logger->info("Extracting to {$extractedPath}");
 
-        $temp = tempnam(sys_get_temp_dir(), '');
-        if(file_exists($temp)) { unlink($temp);}
-        mkdir($temp);
-
-        if($zipFile->extractTo($temp) === false) {
-            $this->logger->error("Cannot extract to {$temp} "  . $zipFile->getStatusString());
-            return false;
-        }
         if(file_exists($extractedPath)) {
             $this->logger->warning("{$extractedPath} is not empty. Removing it.");
             $this->fs->remove($extractedPath);
         }
-        rename($temp . '/' . $deposit->getDepositUuid(), $extractedPath);        
+		// dirname() is neccessary here - extractTo will create one layer too many 
+		// directories otherwise.
+        if($zipFile->extractTo(dirname($extractedPath)) === false) {
+            $this->logger->error("Cannot extract to {$extractedPath} "  . $zipFile->getStatusString());
+            return false;
+        }
         $this->logger->info("Validating {$extractedPath}");
 
         $bag = new BagIt($extractedPath);

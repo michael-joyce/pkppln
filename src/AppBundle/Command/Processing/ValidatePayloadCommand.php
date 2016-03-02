@@ -22,10 +22,7 @@ class ValidatePayloadCommand extends AbstractProcessingCmd {
      * {@inheritDoc}
      */
     protected function processDeposit(Deposit $deposit) {
-        $journal = $deposit->getJournal();
-
-        $dir = $this->getHarvestDir($journal);
-        $depositPath = $dir . '/' . $deposit->getFileName();
+        $depositPath = $this->filePaths->getHarvestFile($deposit);
 
         if( ! $this->fs->exists($depositPath)) {
             $this->logger->error("Deposit file {$depositPath} does not exist");            

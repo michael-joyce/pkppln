@@ -86,24 +86,24 @@ class VirusCheckCommand extends AbstractProcessingCmd {
         }
         $xp = new DOMXPath($dom);
         $clean = true;
-        foreach ($xp->query('//embed') as $em) {
+        foreach ($xp->query('//embed') as $embedded) {
             /** @var DOMNamedNodeMap */
-            $attrs = $em->attributes;
+            $attrs = $embedded->attributes;
             if (!$attrs) {
                 $this->logger->error("No attributes found on embed element.");
             }
             $filename = $attrs->getNamedItem('filename')->nodeValue;
             $this->logger->info("Scanning $filename");
-            $path = tempnam(sys_get_temp_dir(), 'pln-vs-');
+            $tmpPath = tempnam(sys_get_temp_dir(), 'pln-vs-');
 			$fs = new Filesystem();
-			$fs->dumpFile($path, base64_decode($em->nodeValue));
-            if (!$this->scan($path)) {
+			$fs->dumpFile($tmpPath, base64_decode($embedded->nodeValue));
+            if (!$this->scan($tmpPath)) {
                 $clean = false;
                 $report .= "{$filename} - virus detected\n";
             } else {
                 $report .= "{$filename} - clean\n";
             }
-			$fs->remove($path);
+			$fs->remove($tmpPath);
         }
         return $clean;
     }
@@ -112,12 +112,11 @@ class VirusCheckCommand extends AbstractProcessingCmd {
      * {@inheritDoc}
      */
     protected function processDeposit(Deposit $deposit) {
-        $extractedPath = $this->getBagPath($deposit);
+        $extractedPath = $this->filePaths->getProcessingBagPath($deposit);
         $clean = true;
         $report = "";
 
         $this->logger->info("Checking {$extractedPath} for viruses.");
-        // first scan the whole bag.
         $result = $this->scanner->scan([$extractedPath]);
         
         $report .= "Scanned bag files for viruses.\n";

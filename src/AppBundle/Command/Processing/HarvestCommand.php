@@ -132,7 +132,7 @@ class HarvestCommand extends AbstractProcessingCmd {
         // deposits report their sizes in 1000-byte units.
         $harvestSize *= 1000;
         $this->logger->notice("Harvest expected to consume {$harvestSize} bytes.");
-        $harvestPath = $this->getHarvestDir();
+        $harvestPath = $this->filePaths->getHarvestDir();
 
         $remaining = (disk_free_space($harvestPath) - $harvestSize) / disk_total_space($harvestPath);
         if($remaining < 0.10) {
@@ -160,10 +160,7 @@ class HarvestCommand extends AbstractProcessingCmd {
         $deposit->setFileType($response->getHeader('Content-Type'));
 
         $journal = $deposit->getJournal();
-        $dir = $this->getHarvestDir($journal);
-        if (!$this->checkPerms($dir)) {
-            return false;
-        }
+        $dir = $this->filePaths->getHarvestDir($journal);
         $filePath = $dir . '/' . $deposit->getFileName();
         if (!$this->writeDeposit($filePath, $data)) {
             return false;
