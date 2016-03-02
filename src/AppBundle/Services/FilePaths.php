@@ -169,7 +169,7 @@ class FilePaths {
 	
 	public final function getStagingBagPath(Deposit $deposit) {
 		$path = $this->getStagingDir($deposit->getJournal());
-		return $path . '/' . $deposit->getFileName();
+		return $path . '/' . $deposit->getDepositUuid() . '.zip';
 	}
     
     /**
