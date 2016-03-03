@@ -7,8 +7,6 @@ parameters:
     database_name:     symfony
     database_user:     root
     database_password: ~
-    # You should uncomment this if you want use pdo_sqlite
-    # database_path: "%kernel.root_dir%/data.db3"
 
     mailer_transport:  smtp
     mailer_host:       127.0.0.1
@@ -23,14 +21,11 @@ parameters:
     pln_uploadChecksumType: SHA-1
     pln_defaultLocale: en-US
 
+	# All deposits to the PLN will use the same journal name, to enable the
+	# LOCKSS subscription manager.
     pln_journal_name: PKP PLN Deposits from OJS
 
-    # directories for deposit processing. Absolute directory/path or
-    # a path relative to the Symfony install.
-    pln_harvest_directory: data/received
-    pln_staging_directory: data/staged
-    pln_processing_directory: data/processing
-
+	# File path where data will be stored and processed.
     pln_data_dir: data
 
     # path to clamdscan

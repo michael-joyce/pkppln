@@ -47,7 +47,7 @@ services:
         
     sword_client:
         class: AppBundle\Services\SwordClient
-        arguments: ["%lockssomatic_sd_iri%", "%staging_server_uri%", "%staging_server_uuid%"]
+        arguments: ["%lockssomatic_sd_iri%", "%staging_server_uuid%"]
         calls:
             - [ setLogger, ["@monolog.logger.sword"]]
             - [ setTemplating, ["@templating"]]

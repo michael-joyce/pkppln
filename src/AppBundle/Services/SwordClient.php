@@ -11,6 +11,7 @@ use GuzzleHttp\Stream\Stream;
 use Monolog\Logger;
 use SimpleXMLElement;
 use Symfony\Bundle\TwigBundle\TwigEngine;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Router;
 
 /**
@@ -61,13 +62,6 @@ class SwordClient {
     private $colIri;
     
     /**
-     * BaseURI for the SWORD service.
-     *
-     * @var type 
-     */
-    private $baseUri;
-
-    /**
      * Mapping of prefix => URIs for XML namespaces.
      * 
      * @var Namespaces
@@ -101,12 +95,10 @@ class SwordClient {
      * Construct a sword client.
      * 
      * @param string $sdIri
-     * @param string $baseUri
      * @param string $serverUuid
      */
-    public function __construct($sdIri, $baseUri, $serverUuid) {
+    public function __construct($sdIri, $serverUuid) {
         $this->sdIri = $sdIri;
-        $this->baseUri = $baseUri;
         $this->serverUuid = $serverUuid;
         $this->logger = null;
         $this->namespaces = new Namespaces();
@@ -201,7 +193,7 @@ class SwordClient {
         $xml = $this->templating->render('AppBundle:SwordClient:deposit.xml.twig', array(
             'title' => 'Deposit from OJS',
             'deposit' => $deposit,
-            'baseUri' => $this->baseUri,
+            'baseUri' => $this->router->generate('home', array(), UrlGeneratorInterface::ABSOLUTE_URL),
             'plnJournalTitle' => $this->plnJournalTitle,
         ));
         try {
