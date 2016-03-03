@@ -74,7 +74,6 @@ class HealthCheckCommand extends ContainerAwareCommand {
         $notification = $this->templating->render('AppBundle:HealthCheck:notification.txt.twig', array(
             'journals' => $journals,
             'days' => $days,
-            'base_url' => $this->getContainer()->getParameter('staging_server_uri'),
         ));
         $mailer = $this->getContainer()->get('mailer');
         foreach ($users as $user) {

@@ -1,6 +1,6 @@
 This is an automated notification. 
 
-The following OJS Journals have not contacted the PKP PLN Staging Server in 
+The following OJS Journals have not contacted the PKP PLN Staging Server in more
 than {{ days }} days. 
 
 {% for journal in journals %}
@@ -16,4 +16,4 @@ than {{ days }} days.
 Please check with the journal and/or the publishers to see if the journal
 should be triggered.
 
-Journal status can be updated at {{ base_url }}.
+Journal status can be updated at {{ url('journal') }}.
