@@ -31,18 +31,21 @@
                 <td>{{ entity.comment }}</td>
             </tr>
             <tr>
-                <th>Journal</th>
-                <td>
-                    {% if journal %}
-                        <a href="{{ path('journal_show', {'id': journal.id}) }}">{{ journal }}</a>
-                    {% else %}
-                        (unknown)
-                    {% endif %}
-                </td>
-            <tr>
                 <th>Created</th>
                 <td>{{ entity.created|date('Y-m-d H:i:s') }}</td>
             </tr>
+			<tr>
+				<th>Journal</th>
+				<td>
+					{% if journal %}
+						<a href="{{ path('journal_show', {'id': journal.id}) }}">
+							{{journal.title}}
+						</a>
+					{% else %}
+						(unknown)
+					{% endif %}
+				</td>
+			</tr>
         </tbody>
     </table>
 {% endblock %}

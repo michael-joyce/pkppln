@@ -116,11 +116,16 @@ class WhitelistController extends Controller {
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Whitelist entity.');
         }
+		
+		$journal = $em->getRepository('AppBundle:Journal')->findOneBy(array(
+			'uuid' => $entity->getUuid()
+		));
 
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
             'entity' => $entity,
+			'journal' => $journal,
             'delete_form' => $deleteForm->createView(),
         );
     }

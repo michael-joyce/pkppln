@@ -74,6 +74,16 @@
                     </a>
                 </td>
             </tr>    
+			<tr>
+				<th>Permissions</th>
+				<td>
+					{% if blackwhitelist.isWhitelisted(entity.uuid) %}
+						Whitelisted
+					{% elseif blacklist.isBlacklisted(entity.uuid) %}
+						Blacklisted
+					{% endif %}				
+				</td>
+			</tr>
         </tbody>
     </table>
                         
