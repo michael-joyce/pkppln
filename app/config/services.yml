@@ -47,12 +47,13 @@ services:
         
     sword_client:
         class: AppBundle\Services\SwordClient
-        arguments: ["%lockssomatic_sd_iri%", "%staging_server_uuid%"]
+        arguments: ["%lockssomatic_sd_iri%", "%staging_server_uuid%", "%save_deposit_xml%"]
         calls:
             - [ setLogger, ["@monolog.logger.sword"]]
             - [ setTemplating, ["@templating"]]
             - [ setRouter, ["@router"]]
             - [ setPlnJournalTitle, ["%pln_journal_name%"]]
+            - [ setFilePaths, ["@filepaths"]]
 
     twig.extension.pcre:
         class: Jasny\Twig\PcreExtension

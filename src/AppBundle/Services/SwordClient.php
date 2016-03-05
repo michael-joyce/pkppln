@@ -90,18 +90,33 @@ class SwordClient {
      * @var type 
      */
     private $plnJournalTitle;
+	
+	/**
+	 * @var FilePaths
+	 */
+	private $filePaths;
+	
+	/**
+	 * If true, save the deposit XML in a file in the same directory as the 
+	 * serialized deposit bag.
+	 *
+	 * @var boolean
+	 */
+	private $saveDepositXml;
 
     /**
      * Construct a sword client.
      * 
      * @param string $sdIri
      * @param string $serverUuid
+	 * @param boolean $saveDepositXml
      */
-    public function __construct($sdIri, $serverUuid) {
+    public function __construct($sdIri, $serverUuid, $saveDepositXml) {
         $this->sdIri = $sdIri;
         $this->serverUuid = $serverUuid;
         $this->logger = null;
         $this->namespaces = new Namespaces();
+		$this->saveDepositXml = $saveDepositXml;
     }
     
     /**
@@ -139,6 +154,15 @@ class SwordClient {
     public function setRouter(Router $router) {
         $this->router = $router;
     }
+	
+	/**
+	 * Set the FilePaths service.
+	 * 
+	 * @param FilePaths $filePaths
+	 */
+	public function setFilePaths(FilePaths $filePaths) {
+		$this->filePaths = $filePaths;
+	}
 
     /**
      * Convenience method to log a message.
@@ -196,6 +220,10 @@ class SwordClient {
             'baseUri' => $this->router->generate('home', array(), UrlGeneratorInterface::ABSOLUTE_URL),
             'plnJournalTitle' => $this->plnJournalTitle,
         ));
+		if($this->saveDepositXml) {
+			$atomPath = $this->filePaths->getStagingDir($deposit->getJournal()) . '/' . $deposit->getDepositUuid() . '.xml';
+			file_put_contents($atomPath, $xml);
+		}
         try {
             $client = new Client();
             $request = $client->createRequest('POST', $this->colIri);

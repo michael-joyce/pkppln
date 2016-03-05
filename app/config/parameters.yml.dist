@@ -47,3 +47,7 @@ parameters:
     router.request_context.host: pkppln.dev
     router.request_context.scheme: http
     router.request_context.base_url: /web
+
+	# set to true to save the SWORD deposit document to the file system when
+	# creating a deposit in LOM.
+	save_deposit_xml: false

@@ -11,7 +11,7 @@
     </summary>
     <!-- @size is the file size in kB (1,000 bytes) -->
     <lom:content 
-        size="{{ deposit.packageSize / 1000 }}"
+        size="{{ (deposit.packageSize / 1000) | round(0, 'floor') }}"
         checksumType="{{ deposit.packageChecksumType }}"
         checksumValue="{{ deposit.checksumValue }}"
         pkp:volume="{{deposit.volume}}"
