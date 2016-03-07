@@ -20,6 +20,7 @@ class ReserializeBagCommand extends AbstractProcessingCmd {
     }
 	
 	protected function addMetadata(BagIt $bag, Deposit $deposit) {
+        $bag->bagInfoData = array(); // @todo this is very very bad. Once BagItPHP is updated it should be $bag->clearAllBagInfo();
         $bag->setBagInfoData('External-Identifier', $deposit->getDepositUuid());        
         $bag->setBagInfoData('PKP-PLN-Deposit-UUID', $deposit->getDepositUuid());
         $bag->setBagInfoData('PKP-PLN-Deposit-Received', $deposit->getReceived()->format('c'));

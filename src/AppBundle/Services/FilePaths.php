@@ -87,6 +87,9 @@ class FilePaths {
             $root = dirname($this->env);
             $path =  $root . '/' . $path;
         }
+        if( ! $this->fs->exists($path)) {
+            $this->fs->mkdir($path);
+        }
         return realpath($path);
     }
     
