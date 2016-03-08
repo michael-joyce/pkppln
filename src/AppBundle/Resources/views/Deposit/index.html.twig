@@ -40,6 +40,7 @@
 						<th>Journal</th>
 						<th>Volume</th>
 						<th>Issue</th>
+                                                <th>Size</th>
 						<th>Pubdate</th>
 						<th>State</th>
 						<th>Plnstate</th>
@@ -54,6 +55,7 @@
 							<td><a href="{{ path('journal_show', {'id': entity.journal.id}) }}">{{ entity.journal.title }}</a></td>
 							<td>{{ entity.volume }}</td>
 							<td>{{ entity.issue }}</td>
+                                                        <td>{{ entity.size }}</td>
 							<td>{{ entity.pubDate|date('Y-m-d') }}</td>
 							<td>{{ entity.state }}</td>
 							<td>{{ entity.plnState }}</td>
