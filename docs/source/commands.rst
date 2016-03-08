@@ -33,7 +33,7 @@ PLN Processing Commands
 -----------------------
 
 These commands should run periodically to keep data flowing through
-the PLN.
+the PLN. Deposits will be processed in the following order:
 
 .. toctree::
    :glob:
@@ -46,4 +46,3 @@ the PLN.
    commands/processing/validate-xml
    commands/processing/reserialize
    commands/processing/deposit
-   
