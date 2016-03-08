@@ -33,7 +33,9 @@ Contents:
    :maxdepth: 1
    :titlesonly:
 
+   install
    commands
+   
    
 
 

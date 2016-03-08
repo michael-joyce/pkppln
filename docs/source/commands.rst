@@ -17,7 +17,7 @@ The console and commands are self-documenting.
 Symfony includes a large number of commands for various purposes. Only
 the commands relevant to the PLN are described here.
 
-PLN Shell Commands
+PLN Utility Commands
 ------------------
 
 Shell commands are occasional-use utilities, meant to help correct problems.
@@ -32,9 +32,18 @@ Shell commands are occasional-use utilities, meant to help correct problems.
 PLN Processing Commands
 -----------------------
 
+These commands should run periodically to keep data flowing through
+the PLN.
+
 .. toctree::
    :glob:
    :titlesonly:
       
-   commands/processing/*
+   commands/processing/harvest
+   commands/processing/validate-payload
+   commands/processing/validate-bag
+   commands/processing/virus-scan
+   commands/processing/validate-xml
+   commands/processing/reserialize
+   commands/processing/deposit
    
