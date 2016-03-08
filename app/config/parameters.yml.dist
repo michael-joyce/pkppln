@@ -21,11 +21,11 @@ parameters:
     pln_uploadChecksumType: SHA-1
     pln_defaultLocale: en-US
 
-	# All deposits to the PLN will use the same journal name, to enable the
-	# LOCKSS subscription manager.
+    # All deposits to the PLN will use the same journal name, to enable the
+    # LOCKSS subscription manager.
     pln_journal_name: PKP PLN Deposits from OJS
 
-	# File path where data will be stored and processed.
+    # File path where data will be stored and processed.
     pln_data_dir: data
 
     # path to clamdscan
@@ -48,6 +48,6 @@ parameters:
     router.request_context.scheme: http
     router.request_context.base_url: /web
 
-	# set to true to save the SWORD deposit document to the file system when
-	# creating a deposit in LOM.
-	save_deposit_xml: false
+    # set to true to save the SWORD deposit document to the file system when
+    # creating a deposit in LOM.
+    save_deposit_xml: false
