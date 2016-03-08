@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Command;
+namespace AppBundle\Command\Shell;
 
 use AppBundle\Entity\Deposit;
 use AppBundle\Entity\DepositRepository;

@@ -152,6 +152,14 @@ class Deposit
     private $state;
     
     /**
+     * Comment on the deposit.
+     *
+     * @var string
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $comment;
+    
+    /**
      * Stae of the deposit in LOCKSSOMatic or the PLN.
      *
      * @var string
@@ -512,6 +520,16 @@ class Deposit
     public function getPlnState()
     {
         return $this->plnState;
+    }
+    
+    public function setComment($comment) {
+        $this->comment = $comment;
+        
+        return $this;
+    }
+    
+    public function getComment() {
+        return $this->comment;
     }
 
     /**

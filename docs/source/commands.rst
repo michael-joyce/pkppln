@@ -17,12 +17,24 @@ The console and commands are self-documenting.
 Symfony includes a large number of commands for various purposes. Only
 the commands relevant to the PLN are described here.
 
-PLN Commands
-------------
+PLN Shell Commands
+------------------
+
+Shell commands are occasional-use utilities, meant to help correct problems.
 
 .. toctree::
    :glob:
    :titlesonly:
       
-   commands/*
+   commands/shell/*
+   
+
+PLN Processing Commands
+-----------------------
+
+.. toctree::
+   :glob:
+   :titlesonly:
+      
+   commands/processing/*
    

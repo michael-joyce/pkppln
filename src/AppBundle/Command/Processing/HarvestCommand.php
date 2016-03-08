@@ -44,7 +44,7 @@ class HarvestCommand extends AbstractProcessingCmd {
         } catch(IOException $ex) {
             $this->logger->error("Cannot write data to {$path}.");
             $this->logger->error($ex->getMessage());
-            return false;
+            throw $ex;
         }
         return true;
     }
@@ -59,26 +59,19 @@ class HarvestCommand extends AbstractProcessingCmd {
     protected function fetchDeposit($url, $expected) {
         $client = new Client();
         try {
-            $head = $client->head($url);
-            $size = $head->getHeader('Content-Length');
-            $expectedSize = $expected * 1000;
-            // @todo this set of comparisons doesn't seem right.
-            if($head->getStatusCode() === 200 || $size === null || $size === '') {
-                if(abs($expectedSize - $size) / $size > self::FILE_SIZE_THRESHOLD) {
-                    throw new Exception("Expected file size {$expectedSize} is not close to reported size {$size}");
-                }
-            } else {
-                $this->logger->warning("Cannot check deposit {$url} file size without downloading.");
-            }
-
-            $response = $client->get($url);
+            $response = $client->get($url, array(
+				'headers' => array(
+					'User-Agent' => 'PkpPlnBot 1.0; http://pkp.sfu.ca',
+					'Accept' => 'application/xml,text/xml,*/*;q=0.1'
+				),                
+            ));
             $this->logger->info("Harvest {$url} - {$response->getStatusCode()} - {$response->getHeader('Content-Length')}");
         } catch (Exception $e) {
             $this->logger->error($e);
             if ($e->hasResponse()) {
                 $this->logger->error($e->getResponse()->getStatusCode() . ' ' . $this->logger->error($e->getResponse()->getReasonPhrase()));
             }
-            return false;
+            throw $e;
         }
         return $response;
     }
@@ -93,7 +86,12 @@ class HarvestCommand extends AbstractProcessingCmd {
     protected function checkSize($deposit) {
         $client = new Client();
         try {
-            $head = $client->head($deposit->getUrl());
+            $head = $client->head($deposit->getUrl(), array(
+				'headers' => array(
+					'User-Agent' => 'PkpPlnBot 1.0; http://pkp.sfu.ca',
+					'Accept' => 'application/xml,text/xml,*/*;q=0.1'
+				),                                
+            ));
             if($head->getStatusCode() !== 200) {
                 throw new Exception("HTTP HEAD request cannot check file size: HTTP {$head->getStatusCode()} - {$head->getReasonPhrase()} - {$deposit->getUrl()}");
             }
@@ -102,7 +100,7 @@ class HarvestCommand extends AbstractProcessingCmd {
                 throw new Exception("HTTP HEAD response does not include file size - {$deposit->getUrl()}");
             }
             $expectedSize = $deposit->getSize() * 1000;
-            if(abs($expectedSize - $size) / $size > 0.02) {
+            if(abs($expectedSize - $size) / $size > self::FILE_SIZE_THRESHOLD) {
                 throw new Exception("Expected file size {$expectedSize} is not close to reported size {$size} - {$deposit->getUrl()}");
             }
         } catch(RequestException $e) {
@@ -127,7 +125,6 @@ class HarvestCommand extends AbstractProcessingCmd {
         $harvestSize = 0;
         foreach($deposits as $deposit) {
             $harvestSize += $deposit->getSize();
-            $this->checkSize($deposit);
         }
         // deposits report their sizes in 1000-byte units.
         $harvestSize *= 1000;
@@ -152,6 +149,7 @@ class HarvestCommand extends AbstractProcessingCmd {
      */
     protected function processDeposit(Deposit $deposit) {
 		$this->logger->notice("harvest - {$deposit->getDepositUuid()}");
+        $this->checkSize($deposit);
         $response = $this->fetchDeposit($deposit->getUrl(), $deposit->getSize());
         if ($response === false) {            
             return false;

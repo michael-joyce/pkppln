@@ -46,13 +46,14 @@
             </tr>
             <tr>
                 <th>License</th>
-                <td><dl class='dl-horizontal'>
-					{% for key, value in entity.license %}
-						<dt>{{ key }}</dt>
-						<dd>{{ value }}</dd>
-					{% endfor %}
-					</dl>
-				</td>
+                <td>
+                    <dl class='dl-horizontal'>
+                        {% for key, value in entity.license %}
+                                <dt>{{ key }}</dt>
+                                <dd>{{ value }}</dd>
+                        {% endfor %}
+                    </dl>
+                </td>
             </tr>
             <tr>
                 <th>Checksum type</th>
@@ -73,6 +74,10 @@
             <tr>
                 <th>Processing State</th>
                 <td>{{ entity.state }}</td>
+            </tr>
+            <tr>
+                <th>Comment</th>
+                <td> {{ entity.comment|nl2br }} </td>
             </tr>
             <tr>
                 <th>LOCKSS PLN state</th>

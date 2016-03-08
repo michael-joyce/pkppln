@@ -1,11 +1,10 @@
 <?php
 
-namespace AppBundle\Command;
+namespace AppBundle\Command\Shell;
 
 use AppBundle\Entity\DepositRepository;
 use Monolog\Registry;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -14,7 +13,7 @@ use Symfony\Component\HttpKernel\Tests\Logger;
 /**
  * Reset the processing status for one deposit.
  */
-class ResetDepositCommand extends ContainerAwareCommand {
+class SummarizeDepositsCommand extends ContainerAwareCommand {
 
     /**
      * @var Registry
@@ -41,14 +40,8 @@ class ResetDepositCommand extends ContainerAwareCommand {
      * {@inheritDoc}
      */
     public function configure() {
-        $this->setName('pln:reset');
-        $this->setDescription('Reset deposits.');
-        $this->addArgument(
-                'state', InputArgument::REQUIRED, 'New state for the deposit(s)'
-        );
-        $this->addArgument(
-                'deposit', InputArgument::IS_ARRAY, 'Deposit UUID(s) to process'
-        );
+        $this->setName('pln:summary');
+        $this->setDescription('Summarize deposits.');
     }
 
     /**
@@ -58,21 +51,13 @@ class ResetDepositCommand extends ContainerAwareCommand {
 
         /** @var DepositRepository $repo */
         $repo = $this->em->getRepository('AppBundle:Deposit');
-
-        $state = $input->getArgument('state');
-        $uuids = $input->getArgument('deposit');
-		$deposits = array();
-		if(count($uuids) > 0) {
-			$deposits = $repo->findBy(array('deposit_uuid' => $deposits));
-		} else {
-			$deposits = $repo->findAll();
+		$summary = $repo->stateSummary();
+		$count = 0;
+		foreach($summary as $row) {
+			$output->writeln(sprintf("%6d - %s", $row['ct'], $row['state']));
+			$count += $row['ct'];
 		}
-		$this->logger->notice("mangling " . count($deposits));
-        foreach($deposits as $deposit) {
-            $this->logger->notice("Setting {$deposit->getDepositUuid()} to {$state}");
-            $deposit->setState($state);
-        }
-        $this->em->flush();
+		$output->writeln(sprintf("%6d - total", $count));
     }
 
 }

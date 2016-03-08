@@ -4,7 +4,6 @@ namespace AppBundle\Command\Processing;
 
 use AppBundle\Entity\Deposit;
 use AppBundle\Entity\DepositRepository;
-use AppBundle\Entity\Journal;
 use AppBundle\Services\FilePaths;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Exception;
@@ -15,7 +14,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Dump\Container;
-use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -124,6 +122,15 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
     protected function preExecute() {
         // do nothing, let subclasses override if needed.
     }
+    
+    /**
+     * @return Deposit[]
+     */
+    public final function getDeposits() {
+        $repo = $this->em->getRepository('AppBundle:Deposit');
+        $deposits = $repo->findByState($this->processingState());
+        return $deposits;
+    }
 
     /**
      * Execute the command. Get all the deposits needing to be harvested. Each
@@ -134,11 +141,7 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      */
     protected final function execute(InputInterface $input, OutputInterface $output) {
         $this->preExecute();
-
-        /** @var DepositRepository */
-        $repo = $this->em->getRepository('AppBundle:Deposit');
-
-        $deposits = $repo->findByState($this->processingState());
+        $deposits = $this->getDeposits();
         $count = count($deposits);
 
         $this->logger->info("Processing {$count} deposits.");
@@ -153,6 +156,8 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
 			} catch(Exception $e) {
 				$errorMsg = $e->getMessage();
 				$this->logger->error($errorMsg);
+                $deposit->setState($deposit->getState() . '-error');
+                $deposit->setComment($e->getMessage());
 			}
 			
             if ($input->getOption('dry-run')) {

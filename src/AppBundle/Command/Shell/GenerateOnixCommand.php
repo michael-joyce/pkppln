@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Command;
+namespace AppBundle\Command\Shell;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Monolog\Logger;
