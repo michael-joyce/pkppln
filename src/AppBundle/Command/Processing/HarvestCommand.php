@@ -2,10 +2,11 @@
 
 namespace AppBundle\Command\Processing;
 
-use Exception;
 use AppBundle\Entity\Deposit;
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Message\Response;
 use Symfony\Component\Filesystem\Exception\IOException;
 
 /**
@@ -34,13 +35,22 @@ class HarvestCommand extends AbstractProcessingCmd {
      * success and false on failure.
      *
      * @param string $path
-     * @param string $data
+     * @param Response $response
      * @return boolean
      */
-    protected function writeDeposit($path, $data) {
+    protected function writeDeposit($path, Response $response) {
         $this->logger->info("Writing deposit to {$path}");
         try {
-            $this->fs->dumpFile($path, $data);
+            $fh = fopen($path, 'wb');
+            $body = $response->getBody();
+            if($fh === false) {
+                throw new IOException("Cannot open {$path} for write.");
+            }
+            // 64k chunks.
+            while($bytes = $body->read(64*1024)) {
+                fwrite($fh, $bytes);
+            }
+            fclose($fh);
         } catch(IOException $ex) {
             $this->logger->error("Cannot write data to {$path}.");
             $this->logger->error($ex->getMessage());
@@ -54,7 +64,7 @@ class HarvestCommand extends AbstractProcessingCmd {
      * on failure.
      *
      * @param string $url
-     * @return false on failure, or a Guzzle Response on success.
+     * @return Response|false
      */
     protected function fetchDeposit($url, $expected) {
         $client = new Client();
@@ -154,13 +164,12 @@ class HarvestCommand extends AbstractProcessingCmd {
         if ($response === false) {            
             return false;
         }
-        $data = $response->getBody();
         $deposit->setFileType($response->getHeader('Content-Type'));
 
         $journal = $deposit->getJournal();
         $dir = $this->filePaths->getHarvestDir($journal);
         $filePath = $dir . '/' . $deposit->getFileName();
-        if (!$this->writeDeposit($filePath, $data)) {
+        if (!$this->writeDeposit($filePath, $response)) {
             return false;
         }
         return true;
