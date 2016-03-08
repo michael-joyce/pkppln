@@ -80,6 +80,7 @@ class VirusCheckCommand extends AbstractProcessingCmd {
      */
     protected function scanEmbeddedData($path, &$report) {
         $dom = new DOMDocument();
+        $fs = new Filesystem();
         $valid = $dom->load($path, LIBXML_COMPACT | LIBXML_PARSEHUGE);
         if( ! $valid) {
             throw new Exception("{$path} is not well-formed XML" );
@@ -95,8 +96,15 @@ class VirusCheckCommand extends AbstractProcessingCmd {
             $filename = $attrs->getNamedItem('filename')->nodeValue;
             $this->logger->info("Scanning $filename");
             $tmpPath = tempnam(sys_get_temp_dir(), 'pln-vs-');
-			$fs = new Filesystem();
-			$fs->dumpFile($tmpPath, base64_decode($embedded->nodeValue));
+            $fh = fopen($tmpPath, 'wb');            
+            if( ! $fh) {
+                throw new Exception("Cannot open {$tmpPath} for write.");
+            }
+            $chunkSize = 1024 * 1024; // 1MB chunks.
+            for($offset = 0; $offset < strlen($embedded->nodeValue); $offset += $chunkSize) {
+                $encoded = substr($embedded->nodeValue, $offset, $chunkSize);
+                fwrite($fh, base64_decode($encoded));
+            }
             if (!$this->scan($tmpPath)) {
                 $clean = false;
                 $report .= "{$filename} - virus detected\n";
