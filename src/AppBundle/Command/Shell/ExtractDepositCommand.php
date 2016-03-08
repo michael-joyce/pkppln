@@ -74,6 +74,7 @@ class ExtractDepositCommand extends ContainerAwareCommand {
         if( ! $fs->exists($path)) {
             $fs->mkdir($path);
         }
+        ini_set('memory_limit', '128M');
         
         $dom = new DOMDocument();
         $valid = $dom->load($file, LIBXML_COMPACT | LIBXML_PARSEHUGE);
@@ -109,12 +110,13 @@ class ExtractDepositCommand extends ContainerAwareCommand {
             $tmpName = basename($tmpPath);
             $output->writeln("Extracting {$filename} as {$path}{$tmpName}{$ext}.");
             
-            $chunkSize = 1024*1024; // 1mb blocks;.
+            $chunkSize = 1024 * 1024; // 1MB chunks.
             $fh = fopen($tmpPath, 'wb');
-            for($offset = 0; $offset < strlen($embedded->nodeValue); $offset += $chunkSize) {
+            $offset = 0;
+            while(($chunk = substr($embedded->nodeValue, $offset, $chunkSize))) {
+                fwrite($fh, base64_decode($chunk));
+                $offset += $chunkSize;
                 $output->write('.');
-                $encoded =  substr($embedded->nodeValue, $offset, $chunkSize);
-                fwrite($fh, base64_decode($encoded));
             }
             $output->writeln('');
             fclose($fh);

@@ -101,9 +101,10 @@ class VirusCheckCommand extends AbstractProcessingCmd {
                 throw new Exception("Cannot open {$tmpPath} for write.");
             }
             $chunkSize = 1024 * 1024; // 1MB chunks.
-            for($offset = 0; $offset < strlen($embedded->nodeValue); $offset += $chunkSize) {
-                $encoded = substr($embedded->nodeValue, $offset, $chunkSize);
-                fwrite($fh, base64_decode($encoded));
+            $offset = 0;
+            while(($chunk = substr($embedded->nodeValue, $offset, $chunkSize))) {
+                fwrite($fh, base64_decode($chunk));
+                $offset += $chunkSize;
             }
             if (!$this->scan($tmpPath)) {
                 $clean = false;
