@@ -117,15 +117,8 @@ class ExtractDepositCommand extends ContainerAwareCommand {
 				$end = $offset+$chunkSize;
 				$chunk = $xp->evaluate("substring(./text(), {$offset}, {$chunkSize})", $embedded);				
                 fwrite($fh, base64_decode($chunk));
-				
-				fflush($fh);
-				gc_collect_cycles();
-				$memory = sprintf('%dM', memory_get_usage() / (1024 * 1024));
-				$available = ini_get('memory_limit');
-				$output->writeln("{$memory} of {$available}");
-
 				$offset = $end;
-                //$output->write('.');
+                $output->write('.');
             }
             $output->writeln('');
             fclose($fh);

@@ -105,7 +105,7 @@ class VirusCheckCommand extends AbstractProcessingCmd {
             $offset = 1; // xpath string offsets start at 1, not zero.
             while($offset < $length) {
 				$end = $offset+$chunkSize;
-				$chunk = $xp->evaluate("substring(./text(), {$offset}, {$end})", $embedded);				
+				$chunk = $xp->evaluate("substring(./text(), {$offset}, {$chunkSize})", $embedded);				
                 fwrite($fh, base64_decode($chunk));
                 $offset = $end;
 			}
