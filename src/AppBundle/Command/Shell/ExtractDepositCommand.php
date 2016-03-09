@@ -110,12 +110,15 @@ class ExtractDepositCommand extends ContainerAwareCommand {
             $tmpName = basename($tmpPath);
             $output->writeln("Extracting {$filename} as {$path}{$tmpName}{$ext}.");
             
-            $chunkSize = 1024 * 1024; // 1MB chunks.
             $fh = fopen($tmpPath, 'wb');
-            $offset = 0;
-            while(($chunk = substr($embedded->nodeValue, $offset, $chunkSize))) {
+            $chunkSize = 1024 * 1024; // 1MB chunks.
+			$length = $xp->evaluate('string-length(./text())', $embedded);			
+            $offset = 1; // xpath string offsets start at 1, not zero.
+            while($offset < $length) {
+				$end = $offset+$chunkSize;
+				$chunk = $xp->evaluate("substring(./text(), {$offset}, {$end})", $embedded);				
                 fwrite($fh, base64_decode($chunk));
-                $offset += $chunkSize;
+                $offset = $end;
                 $output->write('.');
             }
             $output->writeln('');
