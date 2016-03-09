@@ -81,7 +81,7 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
      * {@inheritDoc}
      */
     public function processingState() {
-        return "virus-checked";
+        return "bag-validated";
     }
 
     /**

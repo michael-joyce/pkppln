@@ -34,8 +34,8 @@ class RunAllCommand extends ContainerAwareCommand {
             'pln:harvest',
             'pln:validate-payload',
             'pln:validate-bag',
-            'pln:virus-scan',
             'pln:validate-xml',
+            'pln:virus-scan',
             'pln:reserialize',
             'pln:deposit',
         );

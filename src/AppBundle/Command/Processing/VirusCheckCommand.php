@@ -101,11 +101,14 @@ class VirusCheckCommand extends AbstractProcessingCmd {
                 throw new Exception("Cannot open {$tmpPath} for write.");
             }
             $chunkSize = 1024 * 1024; // 1MB chunks.
-            $offset = 0;
-            while(($chunk = substr($embedded->nodeValue, $offset, $chunkSize))) {
+			$length = $xp->evaluate('string-length(./text())', $embedded);			
+            $offset = 1; // xpath string offsets start at 1, not zero.
+            while($offset < $length) {
+				$end = $offset+$chunkSize;
+				$chunk = $xp->evaluate("substring(./text(), {$offset}, {$end})", $embedded);				
                 fwrite($fh, base64_decode($chunk));
-                $offset += $chunkSize;
-            }
+                $offset = $end;
+			}
             if (!$this->scan($tmpPath)) {
                 $clean = false;
                 $report .= "{$filename} - virus detected\n";
@@ -166,7 +169,7 @@ class VirusCheckCommand extends AbstractProcessingCmd {
      * {@inheritDoc}
      */
     public function processingState() {
-        return "bag-validated";
+        return "xml-validated";
     }
 
     /**
