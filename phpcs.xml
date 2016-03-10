@@ -12,6 +12,7 @@
 
   <rule ref="PSR2">
     <exclude name="PSR2.Classes.ClassDeclaration.OpenBraceNewLine"/>
+    <exclude name="PSR2.ControlStructures.ElseIfDeclaration.NotAllowed"/>
   </rule>
 
   <rule ref="Squiz">
@@ -20,7 +21,7 @@
   
   <rule ref="Generic.Commenting.Todo.CommentFound">
     <message>Please review this TODO comment: %s</message>
-    <severity>3</severity>
+    <severity phpcbf-only="true">0</severity>
   </rule>
   
 </ruleset>
