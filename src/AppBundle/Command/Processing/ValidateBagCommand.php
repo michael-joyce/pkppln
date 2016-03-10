@@ -95,5 +95,4 @@ class ValidateBagCommand extends AbstractProcessingCmd {
     public function successLogMessage() {
         return "Bag checksum validation succeeded.";
     }
-
 }

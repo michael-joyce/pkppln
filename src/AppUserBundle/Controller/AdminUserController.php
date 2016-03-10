@@ -289,5 +289,4 @@ class AdminUserController extends Controller
 			'form' => $form->createView()
 		);		
 	}
-	
 }

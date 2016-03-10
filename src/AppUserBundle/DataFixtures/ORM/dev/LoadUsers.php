@@ -40,5 +40,4 @@ class LoadUsers extends AbstractDataFixture {
     protected function getEnvironments() {
         return array('dev');
     }
-
 }

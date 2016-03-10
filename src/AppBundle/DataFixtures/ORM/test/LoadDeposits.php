@@ -49,5 +49,4 @@ class LoadDeposits extends AbstractDataFixture implements OrderedFixtureInterfac
     protected function getEnvironments() {
         return array('test');
     }
-
 }

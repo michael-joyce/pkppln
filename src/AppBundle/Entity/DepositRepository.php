@@ -50,5 +50,4 @@ class DepositRepository extends EntityRepository
 		$qb->setParameter('q', '%' . strtoupper($q) . '%');
 		return $qb->getQuery()->getResult();
 	}
-    
 }

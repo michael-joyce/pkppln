@@ -46,7 +46,10 @@ class HealthCheckCommand extends ContainerAwareCommand {
         $this->setName('pln:health:check');
         $this->setDescription('Find journals that have gone silent.');
         $this->addOption(
-                'dry-run', 'd', InputOption::VALUE_NONE, 'Do not update journal status'
+            'dry-run',
+            'd',
+            InputOption::VALUE_NONE,
+            'Do not update journal status'
         );
         parent::configure();
     }
@@ -157,5 +160,4 @@ class HealthCheckCommand extends ContainerAwareCommand {
             $em->flush();
         }
     }
-
 }

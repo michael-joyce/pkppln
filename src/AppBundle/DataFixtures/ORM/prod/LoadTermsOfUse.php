@@ -54,5 +54,4 @@ class LoadTermsOfUse extends AbstractDataFixture {
     protected function getEnvironments() {
         return array('prod');
     }
-
 }

@@ -42,7 +42,9 @@ class JournalController extends Controller {
 
         $paginator = $this->get('knp_paginator');
         $entities = $paginator->paginate(
-                $query, $request->query->getInt('page', 1), 25
+            $query,
+            $request->query->getInt('page', 1),
+            25
         );
         $statuses = $repo->statusSummary();
 
@@ -77,7 +79,9 @@ class JournalController extends Controller {
             $results = $repo->search($q);
 
             $entities = $paginator->paginate(
-                    $results, $request->query->getInt('page', 1), 25
+                $results,
+                $request->query->getInt('page', 1),
+                25
             );
         }
 
@@ -121,7 +125,7 @@ class JournalController extends Controller {
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('AppBundle:Journal')->find($id);
         $status = $request->query->get('status');
-        if( ! $status) {
+        if(! $status) {
             $this->addFlash("error", "The journal's status has not been changed.");
         } else {
             $entity->setStatus($status);
@@ -152,7 +156,7 @@ class JournalController extends Controller {
 		
 		try {
 			$result = $this->container->get('ping')->ping($entity);
-            if( ! $result->hasXml() || $result->hasError()) {
+            if(! $result->hasXml() || $result->hasError()) {
                 $this->addFlash('warning', 'The ping did not complete. ' . $ping->getError());
             }
 			return array(
@@ -187,7 +191,9 @@ class JournalController extends Controller {
                 ->setParameter('journal', $journal);
         $paginator = $this->get('knp_paginator');
         $entities = $paginator->paginate(
-                $qb, $request->query->getInt('page', 1), 25
+            $qb,
+            $request->query->getInt('page', 1),
+            25
         );
 
 
@@ -196,5 +202,4 @@ class JournalController extends Controller {
             'entities' => $entities,
         );
     }
-
 }

@@ -44,5 +44,4 @@ class PasswordType extends AbstractType {
     public function getName() {
         return 'appbundle_user_password';
     }
-
 }

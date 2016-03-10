@@ -60,7 +60,7 @@ class DefaultController extends Controller {
         }
         $path = $this->get('filepaths')->getStagingBagPath($deposit);
         $fs = new Filesystem();
-        if( ! $fs->exists($path)) {
+        if(! $fs->exists($path)) {
             throw new NotFoundHttpException("{$journalUuid}/{$depositUuid}.zip does not exist.");
         }
         return new BinaryFileResponse($path);
@@ -96,7 +96,7 @@ class DefaultController extends Controller {
     public function onyxFeedAction() {
         $path = $this->container->get('filepaths')->getOnixPath();
         $fs = new Filesystem();
-        if( ! $fs->exists($path)) {
+        if(! $fs->exists($path)) {
             $this->container->get('logger')->critical("The ONIX-PH file could not be found at {$path}");
             throw new NotFoundHttpException("The ONIX-PH file could not be found.");
         }
@@ -126,5 +126,4 @@ class DefaultController extends Controller {
         $terms = $repo->getTerms();
         return array('terms' => $terms);
     }
-
 }

@@ -99,5 +99,4 @@ class DtdValidator {
     public function clearErrors() {
         $this->errors = array();
     }
-
 }

@@ -134,5 +134,4 @@ class TermsOfUseListener {
     public function preRemove(LifecycleEventArgs $args) {
         $this->saveHistory($args, 'delete');
     }
-
 }

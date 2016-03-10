@@ -82,8 +82,8 @@ class VirusCheckCommand extends AbstractProcessingCmd {
         $dom = new DOMDocument();
         $fs = new Filesystem();
         $valid = $dom->load($path, LIBXML_COMPACT | LIBXML_PARSEHUGE);
-        if( ! $valid) {
-            throw new Exception("{$path} is not well-formed XML" );
+        if(! $valid) {
+            throw new Exception("{$path} is not well-formed XML");
         }
         $xp = new DOMXPath($dom);
         $clean = true;
@@ -97,7 +97,7 @@ class VirusCheckCommand extends AbstractProcessingCmd {
             $this->logger->info("Scanning $filename");
             $tmpPath = tempnam(sys_get_temp_dir(), 'pln-vs-');
             $fh = fopen($tmpPath, 'wb');            
-            if( ! $fh) {
+            if(! $fh) {
                 throw new Exception("Cannot open {$tmpPath} for write.");
             }
             $chunkSize = 1024 * 1024; // 1MB chunks.
@@ -185,5 +185,4 @@ class VirusCheckCommand extends AbstractProcessingCmd {
     public function successLogMessage() {
         return "Virus check passed. No infections found.";
     }
-
 }

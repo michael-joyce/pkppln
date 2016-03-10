@@ -83,11 +83,11 @@ class FilePaths {
      */
     protected function rootPath() {
         $path = $this->baseDir;
-        if ( ! $this->fs->isAbsolutePath($path)) {
+        if (! $this->fs->isAbsolutePath($path)) {
             $root = dirname($this->env);
             $path =  $root . '/' . $path;
         }
-        if( ! $this->fs->exists($path)) {
+        if(! $this->fs->exists($path)) {
             $this->fs->mkdir($path);
         }
         return realpath($path);
@@ -105,7 +105,7 @@ class FilePaths {
         if(substr($dirname, -1) !== '/') {
             $path .= '/';
         }
-        if( ! $this->fs->exists($path)) {
+        if(! $this->fs->exists($path)) {
             $this->fs->mkdir($path);
         }
         if($journal !== null) {
@@ -121,16 +121,16 @@ class FilePaths {
      * @param Journal $journal
      * @return string
      */
-    public final function getHarvestDir(Journal $journal = null) {
+    final public function getHarvestDir(Journal $journal = null) {
         $path = $this->absolutePath('received', $journal);
-		if( ! $this->fs->exists($path)) {
+		if(! $this->fs->exists($path)) {
             $this->logger->notice("Creating directory {$path}");
 			$this->fs->mkdir($path);
 		}
 		return $path;
     }
 	
-	public final function getHarvestFile(Deposit $deposit) {
+	final public function getHarvestFile(Deposit $deposit) {
 		$path = $this->getHarvestDir($deposit->getJournal());
 		return realpath($path . '/' . $deposit->getFileName());
 	}
@@ -141,9 +141,9 @@ class FilePaths {
      * @param Journal $journal
      * @return string
      */
-    public final function getProcessingDir(Journal $journal) {
+    final public function getProcessingDir(Journal $journal) {
         $path = $this->absolutePath('processing', $journal);
-		if( ! $this->fs->exists($path)) {
+		if(! $this->fs->exists($path)) {
             $this->logger->notice("Creating directory {$path}");
 			$this->fs->mkdir($path);
 		}
@@ -161,16 +161,16 @@ class FilePaths {
      * @param Journal $journal
      * @return string
      */
-    public final function getStagingDir(Journal $journal) {
+    final public function getStagingDir(Journal $journal) {
         $path = $this->absolutePath('staged', $journal);
-		if( ! $this->fs->exists($path)) {
+		if(! $this->fs->exists($path)) {
             $this->logger->notice("Creating directory {$path}");
 			$this->fs->mkdir($path);
 		}
 		return $path;
     }
 	
-	public final function getStagingBagPath(Deposit $deposit) {
+	final public function getStagingBagPath(Deposit $deposit) {
 		$path = $this->getStagingDir($deposit->getJournal());
 		return $path . '/' . $deposit->getDepositUuid() . '.zip';
 	}

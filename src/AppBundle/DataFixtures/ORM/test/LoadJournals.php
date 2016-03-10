@@ -43,5 +43,4 @@ class LoadJournals extends AbstractDataFixture implements OrderedFixtureInterfac
     protected function getEnvironments() {
         return array('test');
     }
-
 }

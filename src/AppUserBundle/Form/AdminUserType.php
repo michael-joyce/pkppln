@@ -59,5 +59,4 @@ class AdminUserType extends AbstractType {
     public function getName() {
         return 'appbundle_user';
     }
-
 }

@@ -28,7 +28,9 @@ class TermOfUseHistoryController extends Controller {
         $query = $em->createQuery($dql);
         $paginator = $this->get('knp_paginator');
         $entities = $paginator->paginate(
-                $query, $request->query->getInt('page', 1), 25
+            $query,
+            $request->query->getInt('page', 1),
+            25
         );
 
         return array(
@@ -53,12 +55,13 @@ class TermOfUseHistoryController extends Controller {
 
         $paginator = $this->get('knp_paginator');
         $entities = $paginator->paginate(
-                $query, $request->query->getInt('page', 1), 25
+            $query,
+            $request->query->getInt('page', 1),
+            25
         );
 
         return array(
             'entities' => $entities,
         );
     }
-
 }

@@ -97,5 +97,4 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
     public function successLogMessage() {
         return "XML validation succeeded.";
     }
-
 }

@@ -71,7 +71,7 @@ class ExtractDepositCommand extends ContainerAwareCommand {
         if(substr($path, -1, 1) !== '/') {
             $path .= '/';
         }
-        if( ! $fs->exists($path)) {
+        if(! $fs->exists($path)) {
             $fs->mkdir($path);
         }
         ini_set('memory_limit', '128M');
@@ -86,12 +86,12 @@ class ExtractDepositCommand extends ContainerAwareCommand {
         foreach ($xp->query('//embed') as $embedded) {
             /** @var DOMNamedNodeMap */
             $attrs = $embedded->attributes;
-            if( ! $attrs) {
+            if(! $attrs) {
                 $output->writeln("Embedded element has no attributes. Skipping.");
                 continue;
             }
             $filename = $attrs->getNamedItem('filename')->nodeValue;
-            if( ! $filename) {
+            if(! $filename) {
                 $output->writeln("Embedded element has no file name. Skipping.");
                 continue;
             }
@@ -127,5 +127,4 @@ class ExtractDepositCommand extends ContainerAwareCommand {
             }
         }
     }
-
 }

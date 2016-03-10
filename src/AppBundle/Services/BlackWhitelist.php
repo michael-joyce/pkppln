@@ -33,8 +33,7 @@ class BlackWhitelist {
     public function isWhitelisted($uuid) {
         $repo = $this->em->getRepository('AppBundle:Whitelist');
         return $repo->findOneBy(array(
-            'uuid' => strtoupper($uuid))
-        ) !== null;
+            'uuid' => strtoupper($uuid))) !== null;
     }
 
     /**
@@ -46,8 +45,6 @@ class BlackWhitelist {
     public function isBlacklisted($uuid) {
         $repo = $this->em->getRepository('AppBundle:Blacklist');
         return $repo->findOneBy(array(
-            'uuid' => strtoupper($uuid))
-        ) !== null;
+            'uuid' => strtoupper($uuid))) !== null;
     }
-
 }
