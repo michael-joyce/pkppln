@@ -303,6 +303,7 @@ class SwordController extends Controller {
                 break;
             case 'deposited':
                 $processingState = 'sent';
+				break;
             default:
                 $processingState = 'unknown';
                 $logger->critical('Deposit ' . $deposit->getId() . ' is in unknown processing state ' . $deposit->getState());

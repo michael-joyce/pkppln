@@ -18,9 +18,9 @@
     <exclude name="Squiz"/>
   </rule>
   
-  <!-- <rule ref="Generic.Commenting.Todo.CommentFound"> -->
-  <!--   <message>Please review this TODO comment: %s</message> -->
-  <!--   <severity>3</severity> -->
-  <!-- </rule>  -->
+  <rule ref="Generic.Commenting.Todo.CommentFound">
+    <message>Please review this TODO comment: %s</message>
+    <severity>3</severity>
+  </rule>
   
 </ruleset>
