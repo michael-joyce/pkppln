@@ -92,7 +92,7 @@ class ReserializeBagCommand extends AbstractProcessingCmd {
      * {@inheritDoc}
      */
     public function processingState() {
-        return "xml-validated";
+        return "virus-checked";
     }
 
     /**
