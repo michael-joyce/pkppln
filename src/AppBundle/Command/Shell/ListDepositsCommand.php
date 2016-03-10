@@ -44,7 +44,9 @@ class ListDepositsCommand extends ContainerAwareCommand {
         $this->setName('pln:list');
         $this->setDescription('List deposits.');
         $this->addArgument(
-                'state', InputArgument::REQUIRED, 'List deposits in this state'
+            'state',
+            InputArgument::REQUIRED,
+            'List deposits in this state'
         );
     }
 
@@ -62,5 +64,4 @@ class ListDepositsCommand extends ContainerAwareCommand {
 			$output->writeln("{$deposit->getJournal()->getUuid()}/{$deposit->getDepositUuid()}");
         }
     }
-
 }

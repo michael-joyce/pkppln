@@ -36,7 +36,9 @@ class DepositController extends Controller {
 		
         $paginator = $this->get('knp_paginator');
         $entities = $paginator->paginate(
-                $query, $request->query->getInt('page', 1), 25
+            $query,
+            $request->query->getInt('page', 1),
+            25
         );
 		$states = $repo->stateSummary();
 
@@ -65,9 +67,9 @@ class DepositController extends Controller {
 			$results = $repo->search($q);
 	        $paginator = $this->get('knp_paginator');
 			$entities = $paginator->paginate(
-					$results, 
-					$request->query->getInt('page', 1), 
-					25
+                $results, 
+                $request->query->getInt('page', 1), 
+                25
 			);
 		}
 		return array(
@@ -97,5 +99,4 @@ class DepositController extends Controller {
             'entity' => $entity,
         );
     }
-
 }

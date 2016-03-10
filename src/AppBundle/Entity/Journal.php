@@ -464,5 +464,4 @@ class Journal {
     public function __toString() {
         return $this->title;
     }
-
 }

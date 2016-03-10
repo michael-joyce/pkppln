@@ -24,7 +24,7 @@ class ValidatePayloadCommand extends AbstractProcessingCmd {
     protected function processDeposit(Deposit $deposit) {
         $depositPath = $this->filePaths->getHarvestFile($deposit);
 
-        if( ! $this->fs->exists($depositPath)) {
+        if(! $this->fs->exists($depositPath)) {
             $this->logger->error("Deposit file {$depositPath} does not exist");            
             return false;
         }
@@ -79,5 +79,4 @@ class ValidatePayloadCommand extends AbstractProcessingCmd {
     public function successLogMessage() {
         return "Payload checksum validation succeeded.";
     }
-
 }

@@ -27,7 +27,7 @@ abstract class AbstractDataFixture extends AbstractFixture implements ContainerA
      * Check if the class should load data, and then load it via the overridden
      * doLoad() method.
      */
-    public final function load(ObjectManager $em)
+    final public function load(ObjectManager $em)
     {
         /** @var KernelInterface $kernel */
         $kernel = $this->container->get('kernel');

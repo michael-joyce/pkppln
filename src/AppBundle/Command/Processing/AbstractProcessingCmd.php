@@ -72,10 +72,16 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      */
     protected function configure() {
         $this->addOption(
-                'dry-run', 'd', InputOption::VALUE_NONE, 'Do not update processing status'
+            'dry-run',
+            'd',
+            InputOption::VALUE_NONE,
+            'Do not update processing status'
         );
         $this->addOption(
-                'force', 'f', InputOption::VALUE_NONE, 'Force the processing state to be updated'
+            'force',
+            'f',
+            InputOption::VALUE_NONE,
+            'Force the processing state to be updated'
         );
     }
 
@@ -126,7 +132,7 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
     /**
      * @return Deposit[]
      */
-    public final function getDeposits() {
+    final public function getDeposits() {
         $repo = $this->em->getRepository('AppBundle:Deposit');
         $deposits = $repo->findByState($this->processingState());
         return $deposits;
@@ -139,7 +145,7 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      * @param InputInterface $input
      * @param OutputInterface $output
      */
-    protected final function execute(InputInterface $input, OutputInterface $output) {
+    final protected function execute(InputInterface $input, OutputInterface $output) {
         $this->preExecute();
         $deposits = $this->getDeposits();
         $count = count($deposits);
@@ -180,5 +186,4 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
 			$this->em->flush($deposit);
         }
     }
-
 }

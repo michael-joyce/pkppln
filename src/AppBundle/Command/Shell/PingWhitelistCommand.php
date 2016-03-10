@@ -43,7 +43,10 @@ class PingWhitelistCommand extends ContainerAwareCommand {
         $this->setDescription('Find journals running a sufficiently new version of OJS and whitelist them.');
         $this->addArgument('minVersion', InputArgument::OPTIONAL, "Minimum version required to whitelist.", self::DEFAULT_VERSION);
         $this->addOption(
-                'dry-run', 'd', InputOption::VALUE_NONE, 'Do not update the whitelist - report only.'
+            'dry-run',
+            'd',
+            InputOption::VALUE_NONE,
+            'Do not update the whitelist - report only.'
         );
         parent::configure();
     }
@@ -102,7 +105,7 @@ class PingWhitelistCommand extends ContainerAwareCommand {
 				$output->writeln("{$fmt}/{$count} - {$response->getHttpStatus()} - - {$journal->getUrl()} - {$url} -  {$response->getError()}");
 				continue;
 			}
-            if( ! $response->getOjsRelease()) {
+            if(! $response->getOjsRelease()) {
     			$output->writeln("{$fmt}/{$count} - {$response->getHttpStatus()} - no version number - {$journal->getUrl()} - {$url}");
                 continue;
             }
@@ -121,5 +124,4 @@ class PingWhitelistCommand extends ContainerAwareCommand {
             $em->flush();
         }
     }
-
 }

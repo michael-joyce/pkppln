@@ -88,7 +88,8 @@ class SwordExceptionListener {
         $this->logger->critical($exception->getMessage() . ' from ' . $this->requestStack->getCurrentRequest()->getClientIp());
 
         $response = $this->templating->renderResponse(
-                'AppBundle:Sword:error.xml.twig', array('error' => $exception)
+            'AppBundle:Sword:error.xml.twig',
+            array('error' => $exception)
         );
         $response->headers->set('Content-Type', 'text/xml');
         $response->setStatusCode($exception->getStatusCode());
@@ -104,5 +105,4 @@ class SwordExceptionListener {
     public function onKernelController(FilterControllerEvent $event) {
         $this->controller = $event->getController();
     }
-
 }

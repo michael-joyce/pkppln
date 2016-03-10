@@ -59,7 +59,7 @@ class GenerateOnixCommand extends ContainerAwareCommand {
      */
     protected function execute(InputInterface $input, OutputInterface $output) {
         $file = $input->getArgument('file');
-        if( ! $file) {
+        if(! $file) {
             $fp = $this->getContainer()->get('filepaths');
             $file = $fp->getOnixPath();
         }
@@ -71,5 +71,4 @@ class GenerateOnixCommand extends ContainerAwareCommand {
         fwrite($fh, $onix);
         fclose($fh);
     }
-
 }

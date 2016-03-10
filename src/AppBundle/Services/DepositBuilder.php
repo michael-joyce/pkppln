@@ -94,10 +94,12 @@ class DepositBuilder {
      */
     public function buildDepositReceiptUrl(Deposit $deposit) {
         return $this->router->getGenerator()->generate(
-            "statement", array(
+            "statement",
+            array(
                 'journal_uuid' => $deposit->getJournal()->getUuid(),
                 'deposit_uuid' => $deposit->getDepositUuid(),
-            ), UrlGeneratorInterface::ABSOLUTE_URL
+            ),
+            UrlGeneratorInterface::ABSOLUTE_URL
         );
     }
 	
@@ -154,5 +156,4 @@ class DepositBuilder {
         $this->em->flush();
         return $deposit;
     }
-
 }

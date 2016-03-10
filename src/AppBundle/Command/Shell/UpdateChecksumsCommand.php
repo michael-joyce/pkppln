@@ -53,7 +53,10 @@ class UpdateChecksumsCommand extends ContainerAwareCommand {
 		$this->setName('pln:update-checksums');
 		$this->setDescription('Update checksums.');
         $this->addOption(
-			'dry-run', 'd', InputOption::VALUE_NONE, 'Do not update checksum.'
+			'dry-run',
+            'd',
+            InputOption::VALUE_NONE,
+            'Do not update checksum.'
         );
 	}
 
@@ -90,5 +93,4 @@ class UpdateChecksumsCommand extends ContainerAwareCommand {
 			$this->em->flush();
 		}
 	}
-
 }

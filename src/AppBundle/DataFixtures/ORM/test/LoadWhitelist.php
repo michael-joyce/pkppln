@@ -29,5 +29,4 @@ class LoadWhitelist extends AbstractDataFixture {
     protected function getEnvironments() {
         return array('test');
     }
-
 }

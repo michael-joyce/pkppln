@@ -257,5 +257,4 @@ class SwordClient {
     public function statement(Deposit $deposit) {
         
     }
-
 }

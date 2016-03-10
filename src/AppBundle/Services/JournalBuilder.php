@@ -103,5 +103,4 @@ class JournalBuilder {
         $this->em->flush($journal);
         return $journal;
     }
-	
 }

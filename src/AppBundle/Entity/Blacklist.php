@@ -148,5 +148,4 @@ class Blacklist {
     public function __toString() {
         return $this->uuid;
     }
-
 }

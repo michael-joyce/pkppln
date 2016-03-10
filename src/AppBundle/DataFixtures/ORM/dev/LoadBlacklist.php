@@ -29,5 +29,4 @@ class LoadBlacklist extends AbstractDataFixture {
     protected function getEnvironments() {
         return array('dev');
     }
-
 }

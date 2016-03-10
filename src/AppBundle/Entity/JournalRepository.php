@@ -24,12 +24,14 @@ class JournalRepository extends EntityRepository {
         $qb->where(
             $qb->expr()->like(
                 new Func(
-                    'CONCAT', array(
+                    'CONCAT',
+                    array(
                         'j.title', 
                         'j.issn', 
                         'j.url', 
                         'j.email', 
-                        'j.publisherName')),
+                    'j.publisherName')
+                ),
                 "'%$q%'"
             )
         );
@@ -94,5 +96,4 @@ class JournalRepository extends EntityRepository {
         $qb->setParameter('dt', $dt);
         return $qb->getQUery()->getResult();
     }
-
 }

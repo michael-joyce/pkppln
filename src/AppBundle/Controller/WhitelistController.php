@@ -31,7 +31,9 @@ class WhitelistController extends Controller {
         $query = $em->createQuery($dql);
         $paginator = $this->get('knp_paginator');
         $entities = $paginator->paginate(
-                $query, $request->query->getInt('page', 1), 25
+            $query,
+            $request->query->getInt('page', 1),
+            25
         );
 
 
@@ -242,5 +244,4 @@ class WhitelistController extends Controller {
                         ->getForm()
         ;
     }
-
 }

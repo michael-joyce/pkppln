@@ -34,7 +34,10 @@ class HealthReminderCommand extends ContainerAwareCommand {
         $this->setName('pln:health:reminder');
         $this->setDescription('Remind admins about silent journals.');
         $this->addOption(
-                'dry-run', 'd', InputOption::VALUE_NONE, 'Do not update journal status'
+            'dry-run',
+            'd',
+            InputOption::VALUE_NONE,
+            'Do not update journal status'
         );
         parent::configure();
     }
@@ -107,5 +110,4 @@ class HealthReminderCommand extends ContainerAwareCommand {
             $em->flush();
         }
     }
-
 }

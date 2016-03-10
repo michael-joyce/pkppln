@@ -301,5 +301,4 @@ class TermOfUseController extends Controller {
                         ->getForm()
         ;
     }
-
 }

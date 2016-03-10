@@ -59,5 +59,4 @@ class Ping {
 			throw $e;
 		}
 	}
-	
 }

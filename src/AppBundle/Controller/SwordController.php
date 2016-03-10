@@ -220,7 +220,7 @@ class SwordController extends Controller {
         }
 		
 		$logger->notice("create deposit - {$request->getClientIp()} - {$journal_uuid} - {$acceptingLog}");
-		if( ! $accepting) {
+		if(! $accepting) {
 			throw new SwordException(400, "Not authorized to create deposits.");
 		}
 		
@@ -237,7 +237,10 @@ class SwordController extends Controller {
         /** @var Response */
         $response = $this->statementAction($request, $journal->getUuid(), $deposit->getDepositUuid());
         $response->headers->set(
-                'Location', $deposit->getDepositReceipt(), true);
+            'Location',
+            $deposit->getDepositReceipt(),
+            true
+        );
         $response->setStatusCode(Response::HTTP_CREATED);
 
         return $response;
@@ -259,7 +262,7 @@ class SwordController extends Controller {
         }
 		
 		$logger->notice("statement - {$request->getClientIp()} - {$journal_uuid} - {$acceptingLog}");
-		if( ! $accepting) {
+		if(! $accepting) {
 			throw new SwordException(400, "Not authorized to request statements.");
 		}
 		
@@ -300,6 +303,7 @@ class SwordController extends Controller {
                 break;
             case 'deposited':
                 $processingState = 'sent';
+				break;
             default:
                 $processingState = 'unknown';
                 $logger->critical('Deposit ' . $deposit->getId() . ' is in unknown processing state ' . $deposit->getState());
@@ -337,7 +341,7 @@ class SwordController extends Controller {
         }
 		
 		$logger->notice("edit deposit - {$request->getClientIp()} - {$journal_uuid} - {$acceptingLog}");
-		if( ! $accepting) {
+		if(! $accepting) {
 			throw new SwordException(400, "Not authorized to edit deposits.");
 		}
 
@@ -366,11 +370,12 @@ class SwordController extends Controller {
         /** @var Response */
         $response = $this->statementAction($request, $journal_uuid, $deposit_uuid);
         $response->headers->set(
-                'Location', $deposit->getDepositReceipt(), true
+            'Location',
+            $deposit->getDepositReceipt(),
+            true
         );
         $response->setStatusCode(Response::HTTP_CREATED);
 
         return $response;
     }
-
 }

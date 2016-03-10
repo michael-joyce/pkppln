@@ -59,5 +59,4 @@ class SummarizeDepositsCommand extends ContainerAwareCommand {
 		}
 		$output->writeln(sprintf("%6d - total", $count));
     }
-
 }

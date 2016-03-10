@@ -101,5 +101,4 @@ class ReserializeBagCommand extends AbstractProcessingCmd {
     public function successLogMessage() {
         return "Bag Reserialize succeeded.";
     }
-
 }

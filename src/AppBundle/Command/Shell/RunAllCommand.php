@@ -19,7 +19,10 @@ class RunAllCommand extends ContainerAwareCommand {
         $this->setName('pln:run-all');
         $this->setDescription('Run all processing commands.');
         $this->addOption(
-                'force', 'f', InputOption::VALUE_NONE, 'Force the processing state to be updated'
+            'force',
+            'f',
+            InputOption::VALUE_NONE,
+            'Force the processing state to be updated'
         );
         parent::configure();
     }

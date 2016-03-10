@@ -44,10 +44,14 @@ class ResetDepositCommand extends ContainerAwareCommand {
         $this->setName('pln:reset');
         $this->setDescription('Reset deposits.');
         $this->addArgument(
-                'state', InputArgument::REQUIRED, 'New state for the deposit(s)'
+            'state',
+            InputArgument::REQUIRED,
+            'New state for the deposit(s)'
         );
         $this->addArgument(
-                'deposit', InputArgument::IS_ARRAY, 'Deposit UUID(s) to process'
+            'deposit',
+            InputArgument::IS_ARRAY,
+            'Deposit UUID(s) to process'
         );
     }
 
@@ -74,5 +78,4 @@ class ResetDepositCommand extends ContainerAwareCommand {
         }
         $this->em->flush();
     }
-
 }
