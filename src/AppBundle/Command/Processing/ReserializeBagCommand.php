@@ -33,6 +33,7 @@ class ReserializeBagCommand extends AbstractProcessingCmd {
         $bag->setBagInfoData('PKP-PLN-Journal-Title', $journal->getTitle());
         $bag->setBagInfoData('PKP-PLN-Journal-ISSN', $journal->getIssn());
         $bag->setBagInfoData('PKP-PLN-Journal-URL', $journal->getUrl());
+		$bag->setBagInfoData('PKP-PLN-Journal-Email', $journal->getEmail());
         $bag->setBagInfoData('PKP-PLN-Publisher-Name', $journal->getPublisherName());
         $bag->setBagInfoData('PKP-PLN-Publisher-URL', $journal->getPublisherUrl());
 
