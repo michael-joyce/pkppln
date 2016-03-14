@@ -6,6 +6,9 @@
 
 {{ "{% block pageheader %}"}}
     <h1>{{ entity }} List</h1>
+    <p class="count">
+        Displaying {{ entities|length }} records of {{ entities.getTotalItemCount }} total.
+    </p>
 {{ "{% endblock %}"}}
 
 {{ "{% block body -%}" }}
