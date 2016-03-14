@@ -56,7 +56,10 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
                 $changes += strlen($buffer) - strlen($filtered);
                 fwrite($out, $filtered);
             }
-            $report .= basename($filename) . " contains {$changes} invalid UTF-8 characters, which have been removed.\n";
+            $report .= basename($filename) . " contains {$changes} invalid UTF-8 characters, which have been removed with " 
+                    . ICONV_IMPL . ' version ' . ICONV_VERSION 
+                    . " in PHP " . PHP_VERSION . "\n";
+            
             $report .= basename($filteredFilename) . " will be validated.\n";
             $dom->load($filteredFilename);
         }
