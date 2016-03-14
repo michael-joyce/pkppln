@@ -238,7 +238,10 @@ class Journal {
      */
     public function getTitle()
     {
-        return $this->title;
+        if($this->title) {
+            return $this->title;
+        }
+        return '(untitled)';
     }
 
     /**

@@ -25,6 +25,10 @@
                 <td>{{ entity.deposituuid }}</td>
             </tr>
             <tr>
+                <th>Journal</th>
+                <td><a href="{{ path('journal_show', {'id': entity.journal.id}) }}">{{ entity.journal.title }}</a></td>
+            </tr>
+            <tr>
                 <th>Received</th>
                 <td>{{ entity.received|date('Y-m-d H:i:s') }}</td>
             </tr>
