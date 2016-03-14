@@ -22,6 +22,7 @@
                         <li class='list-group-item'><a href="{{path('deposit', { 'state': state.state })}}">{{ state.state|preg_replace('/([a-z])([A-Z])/', '$1 $2') }}</a><span class='badge'>{{state.ct}}</span></li>
                             {% endfor %}
                     <li class='list-group-item'><a href="{{path('deposit')}}">All Deposits</a></li>
+                    <li class='list-group-item'><a href='{{ path('deposit', {'errors': 1}) }}'>Errors</a></li>
                 </ul>
             </div>
         </div>
@@ -62,7 +63,7 @@
                             <td>{{ entity.size }}</td>
                             <td>{{ entity.pubDate|date('Y-m-d') }}</td>
                             <td>{{ entity.state }}</td>
-                            <td>{{ entity.errorLog | length }}</td>
+                            <td>{{ entity.errorCount }}</td>
                             <td>{{ entity.plnState }}</td>
                         </tr>
                     {% endfor %}

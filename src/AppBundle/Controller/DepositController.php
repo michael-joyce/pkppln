@@ -31,6 +31,10 @@ class DepositController extends Controller {
 			$qb->where('e.state = :state');
 			$qb->setParameter('state', $state);
 		}
+        $errors = $request->query->get('errors');
+        if($errors !== null) {
+            $qb->where('e.errorCount <> 0');
+        }
 		$qb->orderBy('e.id');
 		$query = $qb->getQuery();
 		
