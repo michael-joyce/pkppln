@@ -132,7 +132,7 @@ class FilePaths {
 	
 	final public function getHarvestFile(Deposit $deposit) {
 		$path = $this->getHarvestDir($deposit->getJournal());
-		return realpath($path . '/' . $deposit->getFileName());
+		return $path . '/' . $deposit->getFileName();
 	}
 
     /**

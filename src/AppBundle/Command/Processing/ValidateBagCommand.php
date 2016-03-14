@@ -32,14 +32,12 @@ class ValidateBagCommand extends AbstractProcessingCmd {
         $this->logger->info("Processing {$harvestedPath}");
 
         if (!$this->fs->exists($harvestedPath)) {
-            $this->logger->error("Deposit file {$harvestedPath} does not exist");
-            return false;
+            throw new Exception("Deposit file {$harvestedPath} does not exist");
         }
 
         $zipFile = new ZipArchive();
         if($zipFile->open($harvestedPath) === false) {
-            $this->logger->error("Cannot open {$harvestedPath}: " . $zipFile->getStatusString());
-            return false;
+            throw new Exception("Cannot open {$harvestedPath}: " . $zipFile->getStatusString());
         }
 
         $this->logger->info("Extracting to {$extractedPath}");
@@ -51,8 +49,7 @@ class ValidateBagCommand extends AbstractProcessingCmd {
 		// dirname() is neccessary here - extractTo will create one layer too many 
 		// directories otherwise.
         if($zipFile->extractTo(dirname($extractedPath)) === false) {
-            $this->logger->error("Cannot extract to {$extractedPath} "  . $zipFile->getStatusString());
-            return false;
+            throw new Exception("Cannot extract to {$extractedPath} "  . $zipFile->getStatusString());
         }
         $this->logger->info("Validating {$extractedPath}");
 
@@ -61,8 +58,9 @@ class ValidateBagCommand extends AbstractProcessingCmd {
 
         if(count($bag->getBagErrors()) > 0) {
             foreach($bag->getBagErrors() as $error) {
-                $this->logger->error("Bagit validation error for {$error[0]} - {$error[1]}");
+                $deposit->addErrorLog("Bagit validation error for {$error[0]} - {$error[1]}");
             }
+            $this->logger->warning("BagIt validation failed for {$deposit->getDepositUuid()}");
             return false;
         }
         return true;
@@ -94,5 +92,9 @@ class ValidateBagCommand extends AbstractProcessingCmd {
      */
     public function successLogMessage() {
         return "Bag checksum validation succeeded.";
+    }
+
+    public function errorState() {
+        return "bag-error";
     }
 }

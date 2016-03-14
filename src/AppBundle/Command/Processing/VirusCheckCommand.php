@@ -73,14 +73,16 @@ class VirusCheckCommand extends AbstractProcessingCmd {
      * @return DOMDocument
      * @param string $filename
      */
-    private function loadXml($filename, &$report) {
+    private function loadXml(Deposit $deposit, $filename, &$report) {
         $dom = new DOMDocument();
         try {
             $dom->load($filename);
         } catch (Exception $ex) {
             if(strpos($ex->getMessage(), 'Input is not proper UTF-8') === false) {
-                // not a fixable error.
-                throw $ex;
+                $deposit->addErrorLog('XML file ' . basename($filename) . ' is not parseable, and cannot be scanned for viruses: ' . $ex->getMessage());
+                $report .= $ex->getMessage();
+                $report .= "\nCannot scan for viruses.\n";
+                return null;
             }
             $filteredFilename = "{$filename}-filtered.xml";
             $report .= basename($filename) . " contains invalid UTF-8 characters and will not be scanned for viruses.\n";
@@ -99,10 +101,13 @@ class VirusCheckCommand extends AbstractProcessingCmd {
      * @param string $report
      * @return boolean
      */
-    protected function scanEmbeddedData($path, &$report) {
+    protected function scanEmbeddedData(Deposit $deposit, $path, &$report) {
         $fs = new Filesystem();
 
-        $dom = $this->loadXml($path, $report);        
+        $dom = $this->loadXml($deposit, $path, $report);
+        if($dom === null) {
+            return false;
+        }
         $xp = new DOMXPath($dom);
         
         $clean = true;
@@ -163,14 +168,8 @@ class VirusCheckCommand extends AbstractProcessingCmd {
                 continue;
             }
             $this->logger->info("Scanning {$filename} for embedded viruses.");
-            try {
-                if (!$this->scanEmbeddedData($filename, $report)) {
-                    $clean = false;
-                }
-            } catch (Exception $e) {
+            if (!$this->scanEmbeddedData($deposit, $filename, $report)) {
                 $clean = false;
-                $this->logger->error("{$filename} is not valid XML.");
-                $report .= "{$filename} is not valid XML.";
             }
         }
         $deposit->addToProcessingLog($report);
@@ -203,5 +202,9 @@ class VirusCheckCommand extends AbstractProcessingCmd {
      */
     public function successLogMessage() {
         return "Virus check passed. No infections found.";
+    }
+
+    public function errorState() {
+        return "virus-error";
     }
 }

@@ -7,7 +7,6 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Message\Response;
-use Symfony\Component\Filesystem\Exception\IOException;
 
 /**
  * Harvest a deposit from a journal. Attempts to check file sizes via HTTP HEAD
@@ -20,6 +19,22 @@ class HarvestCommand extends AbstractProcessingCmd {
      * as reported in the deposit. Threshold = 0.02 is 2%.
      */
     const FILE_SIZE_THRESHOLD = 0.02;
+    
+    /**
+     * @var Client
+     */
+    private $client;
+    
+    public function __construct($name = null) {
+        parent::__construct($name);
+        $this->client = new Client(
+            array('default' => array(
+                'headers' => array(
+                    'User-Agent' => 'PkpPlnBot 1.0; http://pkp.sfu.ca',
+                    'Accept' => 'application/xml,text/xml,*/*;q=0.1'
+            )))
+        );
+    }
     
     /**
      * {@inheritDoc}
@@ -43,17 +58,13 @@ class HarvestCommand extends AbstractProcessingCmd {
         try {
             $fh = fopen($path, 'wb');
             $body = $response->getBody();
-            if($fh === false) {
-                throw new IOException("Cannot open {$path} for write.");
-            }
             // 64k chunks.
             while($bytes = $body->read(64*1024)) {
                 fwrite($fh, $bytes);
             }
             fclose($fh);
-        } catch(IOException $ex) {
+        } catch(Exception $ex) {
             $this->logger->error("Cannot write data to {$path}.");
-            $this->logger->error($ex->getMessage());
             throw $ex;
         }
         return true;
@@ -67,14 +78,8 @@ class HarvestCommand extends AbstractProcessingCmd {
      * @return Response|false
      */
     protected function fetchDeposit($url, $expected) {
-        $client = new Client();
         try {
-            $response = $client->get($url, array(
-				'headers' => array(
-					'User-Agent' => 'PkpPlnBot 1.0; http://pkp.sfu.ca',
-					'Accept' => 'application/xml,text/xml,*/*;q=0.1'
-				),                
-            ));
+            $response = $this->client->get($url);
             $this->logger->info("Harvest {$url} - {$response->getStatusCode()} - {$response->getHeader('Content-Length')}");
         } catch (Exception $e) {
             $this->logger->error($e);
@@ -93,15 +98,9 @@ class HarvestCommand extends AbstractProcessingCmd {
      * @param type $deposit
      * @throws Exception
      */
-    protected function checkSize($deposit) {
-        $client = new Client();
+    protected function checkSize(Deposit $deposit) {
         try {
-            $head = $client->head($deposit->getUrl(), array(
-				'headers' => array(
-					'User-Agent' => 'PkpPlnBot 1.0; http://pkp.sfu.ca',
-					'Accept' => 'application/xml,text/xml,*/*;q=0.1'
-				),                                
-            ));
+            $head = $this->client->head($deposit->getUrl());
             if($head->getStatusCode() !== 200) {
                 throw new Exception("HTTP HEAD request cannot check file size: HTTP {$head->getStatusCode()} - {$head->getReasonPhrase()} - {$deposit->getUrl()}");
             }
@@ -111,7 +110,7 @@ class HarvestCommand extends AbstractProcessingCmd {
             }
             $expectedSize = $deposit->getSize() * 1000;
             if(abs($expectedSize - $size) / $size > self::FILE_SIZE_THRESHOLD) {
-                throw new Exception("Expected file size {$expectedSize} is not close to reported size {$size} - {$deposit->getUrl()}");
+                $deposit->addErrorLog("Expected file size {$expectedSize} is not close to reported size {$size}");
             }
         } catch(RequestException $e) {
 			$response = $e->getResponse();
@@ -120,7 +119,7 @@ class HarvestCommand extends AbstractProcessingCmd {
 			} else {
 	            $this->logger->critical($e->getMessage());
 			}
-            //throw $e;
+            throw $e;
         }
 
     }
@@ -147,7 +146,6 @@ class HarvestCommand extends AbstractProcessingCmd {
             $p = round($remaining * 100, 1);
             throw new Exception("Harvest would leave {$p}% disk space remaining.");
         }
-
     }
 
     /**
@@ -161,18 +159,9 @@ class HarvestCommand extends AbstractProcessingCmd {
 		$this->logger->notice("harvest - {$deposit->getDepositUuid()}");
         $this->checkSize($deposit);
         $response = $this->fetchDeposit($deposit->getUrl(), $deposit->getSize());
-        if ($response === false) {            
-            return false;
-        }
         $deposit->setFileType($response->getHeader('Content-Type'));
-
-        $journal = $deposit->getJournal();
-        $dir = $this->filePaths->getHarvestDir($journal);
-        $filePath = $dir . '/' . $deposit->getFileName();
-        if (!$this->writeDeposit($filePath, $response)) {
-            return false;
-        }
-        return true;
+        $filePath = $this->filePaths->getHarvestFile($deposit);
+        return $this->writeDeposit($filePath, $response);
     }
 
     /**
@@ -180,6 +169,10 @@ class HarvestCommand extends AbstractProcessingCmd {
      */
     public function nextState() {
         return "harvested";
+    }
+    
+    public function errorState() {
+        return "harvest-error";
     }
 
     /**

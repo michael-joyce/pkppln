@@ -72,16 +72,16 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      */
     protected function configure() {
         $this->addOption(
+            'retry', 
+            'r', 
+            InputOption::VALUE_NONE, 
+            'Retry failed deposits'
+        );
+        $this->addOption(
             'dry-run',
             'd',
             InputOption::VALUE_NONE,
             'Do not update processing status'
-        );
-        $this->addOption(
-            'force',
-            'f',
-            InputOption::VALUE_NONE,
-            'Force the processing state to be updated'
         );
     }
 
@@ -111,6 +111,11 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      * Successfully processed deposits will be given this state.
      */
     abstract function nextState();
+    
+    /**
+     * Deposits which generate errors will be given this state.
+     */
+    abstract function errorState();
 
     /**
      * Successfully processed deposits will be given this log message.
@@ -132,9 +137,13 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
     /**
      * @return Deposit[]
      */
-    final public function getDeposits() {
+    final public function getDeposits($retry = false) {
         $repo = $this->em->getRepository('AppBundle:Deposit');
-        $deposits = $repo->findByState($this->processingState());
+        if($retry) {
+            $deposits = $repo->findByState($this->errorState());
+        } else {
+            $deposits = $repo->findByState($this->processingState());
+        }
         return $deposits;
     }
 
@@ -147,41 +156,33 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      */
     final protected function execute(InputInterface $input, OutputInterface $output) {
         $this->preExecute();
-        $deposits = $this->getDeposits();
+        $deposits = $this->getDeposits($input->getOption('retry'));
         $count = count($deposits);
 
         $this->logger->info("Processing {$count} deposits.");
         $this->preprocessDeposits($deposits);
 
         foreach ($deposits as $deposit) {
-            /** @var $deposit Deposit */
-			$errorMsg = null;
-			$result = false;
 			try {
 				$result = $this->processDeposit($deposit);
 			} catch(Exception $e) {
-				$errorMsg = $e->getMessage();
-				$this->logger->error($errorMsg);
-                $deposit->setState($deposit->getState() . '-error');
-                $deposit->setComment($e->getMessage());
+				$this->logger->error(get_class($e) . $e->getMessage());
+                $deposit->setState($this->errorState());
+                $deposit->addToProcessingLog($this->failureLogMessage());
+                $deposit->addErrorLog(get_class($e) . $e->getMessage());
+                $this->em->flush($deposit);
+                continue;
 			}
 			
             if ($input->getOption('dry-run')) {
                 continue;
             }
+            
+            $deposit->setState($this->nextState());
             if ($result) {
-                $deposit->setState($this->nextState());
                 $deposit->addToProcessingLog($this->successLogMessage());
-				$this->em->flush($deposit);
-                continue;
-            }
-            $deposit->addToProcessingLog($this->failureLogMessage());
-			if($errorMsg !== null) {
-				$deposit->addToProcessingLog($errorMsg);
-			}
-            if ($input->getOption('force')) {
-                $deposit->setState($this->nextState());
-                $deposit->addToProcessingLog("Ignoring error.");
+            } else {
+                $deposit->addToProcessingLog($this->failureLogMessage());
             }
 			$this->em->flush($deposit);
         }

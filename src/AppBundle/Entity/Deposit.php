@@ -152,13 +152,12 @@ class Deposit
     private $state;
     
     /**
-     * Comment on the deposit.
      *
-     * @var string
-     * @ORM\Column(type="text", nullable=true)
+     * @var array
+     * @ORM\Column(type="array", nullable=false)
      */
-    private $comment;
-    
+    private $errorLog;
+
     /**
      * Stae of the deposit in LOCKSSOMatic or the PLN.
      *
@@ -218,9 +217,6 @@ class Deposit
     /**
      * Processing log for this deposit.
      * 
-     * @todo should this be refactored into an array, maybe of ProcessingLog
-     * objects?
-     *
      * @var string
      * @ORM\Column(type="text")
      */
@@ -234,6 +230,7 @@ class Deposit
 		$this->received = new DateTime();
 		$this->processingLog = '';
 		$this->state = "depositedByJournal";
+        $this->errorLog = array();
     }
 
     /**
@@ -812,5 +809,33 @@ class Deposit
         $this->processingLog = $processingLog;
 
         return $this;
+    }
+
+    /**
+     * Set errorLog
+     *
+     * @param array $errorLog
+     * @return Deposit
+     */
+    public function setErrorLog($errorLog)
+    {
+        $this->errorLog = $errorLog;
+
+        return $this;
+    }
+    
+    public function addErrorLog($error) {
+        $this->errorLog[] = $error;
+        return $this;
+    }
+
+    /**
+     * Get errorLog
+     *
+     * @return array 
+     */
+    public function getErrorLog()
+    {
+        return $this->errorLog;
     }
 }

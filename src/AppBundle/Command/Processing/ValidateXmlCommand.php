@@ -37,14 +37,16 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
      * @return DOMDocument
      * @param string $filename
      */
-    private function loadXml($filename, &$report) {
+    private function loadXml(Deposit $deposit, $filename, &$report) {
         $dom = new DOMDocument();
         try {
             $dom->load($filename);
         } catch (Exception $ex) {
             if(strpos($ex->getMessage(), 'Input is not proper UTF-8') === false) {
-                // not a fixable error.
-                throw $ex;
+                $deposit->addErrorLog('XML file ' . basename($filename) . ' is not parseable: ' . $ex->getMessage());
+                $report .= $ex->getMessage();
+                $report .= "\nCannot validate XML.\n";
+                return null;
             }
             $filteredFilename = "{$filename}-filtered.xml";
             $in = fopen($filename, 'rb');
@@ -82,15 +84,16 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
                 continue;
             }
             $basename = basename($filename);
-            $dom = $this->loadXml($filename, $report);
-
+            $dom = $this->loadXml($deposit, $filename, $report);
+            if($dom === null) {
+                $valid = false;
+                continue;
+            }
             /** @var DtdValidator */
             $validator = $this->container->get('dtdvalidator');
             $validator->validate($dom);
             if ($validator->hasErrors()) {
-                // We do not require strict validation right now, because the 
-                // export from OJS < 2.4.8.1 may not be valid.
-                // $valid = false;
+                $deposit->addErrorLog("{$basename} - XML Validation failed.");
                 $this->logErrors($validator);
                 $report .= "{$basename} validation failed.\n";
                 foreach ($validator->getErrors() as $error) {
@@ -130,5 +133,9 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
      */
     public function successLogMessage() {
         return "XML validation succeeded.";
+    }
+
+    public function errorState() {
+        return "xml-error";
     }
 }

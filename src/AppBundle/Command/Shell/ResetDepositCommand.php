@@ -2,11 +2,14 @@
 
 namespace AppBundle\Command\Shell;
 
+use AppBundle\Entity\Deposit;
 use AppBundle\Entity\DepositRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Monolog\Registry;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Tests\Logger;
@@ -43,6 +46,7 @@ class ResetDepositCommand extends ContainerAwareCommand {
     public function configure() {
         $this->setName('pln:reset');
         $this->setDescription('Reset deposits.');
+        $this->addOption('clear', 'c', InputOption::VALUE_NONE, 'Clear error log and processing log for deposit.');
         $this->addArgument(
             'state',
             InputArgument::REQUIRED,
@@ -54,27 +58,35 @@ class ResetDepositCommand extends ContainerAwareCommand {
             'Deposit UUID(s) to process'
         );
     }
+    
+    /**
+     * @return Deposit[]|ArrayCollection
+     */
+    protected function getDeposits($uuids = array()) {
+        $repo = $this->em->getRepository('AppBundle:Deposit');
+		$deposits = array();
+		if(count($uuids) > 0) {
+			$deposits = $repo->findBy(array('depositUuid' => $uuids));
+		} else {
+			$deposits = $repo->findAll();
+		}
+        return $deposits;
+    }
 
     /**
      * {@inheritDoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output) {
-
-        /** @var DepositRepository $repo */
-        $repo = $this->em->getRepository('AppBundle:Deposit');
-
         $state = $input->getArgument('state');
         $uuids = $input->getArgument('deposit');
-		$deposits = array();
-		if(count($uuids) > 0) {
-			$deposits = $repo->findBy(array('deposit_uuid' => $deposits));
-		} else {
-			$deposits = $repo->findAll();
-		}
-		$this->logger->notice("mangling " . count($deposits));
+        $deposits = $this->getDeposits($uuids);
         foreach($deposits as $deposit) {
             $this->logger->notice("Setting {$deposit->getDepositUuid()} to {$state}");
             $deposit->setState($state);
+            if($input->getOption('clear')) {
+                $deposit->setErrorLog(array());
+                $deposit->setProcessingLog('');
+            }
         }
         $this->em->flush();
     }

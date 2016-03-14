@@ -80,9 +80,18 @@
                 <td>{{ entity.state }}</td>
             </tr>
             <tr>
-                <th>Comment</th>
-                <td> {{ entity.comment|nl2br }} </td>
-            </tr>
+                <th>Processing Errors</th>
+                <td>
+                    {% if entity.errorLog | length == 0 %}
+                        None
+                    {% else %}
+                        <ol>
+                            {% for error in entity.errorLog %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ol>
+                    {% endif %}
+                </td>
             <tr>
                 <th>LOCKSS PLN state</th>
                 <td>{{ entity.plnState }}</td>

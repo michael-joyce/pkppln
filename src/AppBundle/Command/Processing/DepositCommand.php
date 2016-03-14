@@ -64,4 +64,8 @@ class DepositCommand extends AbstractProcessingCmd {
     public function successLogMessage() {
         return "Deposit to Lockssomatic succeeded.";
     }
+
+    public function errorState() {
+        return "deposit-error";
+    }
 }

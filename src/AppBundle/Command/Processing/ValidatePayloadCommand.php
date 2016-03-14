@@ -25,8 +25,7 @@ class ValidatePayloadCommand extends AbstractProcessingCmd {
         $depositPath = $this->filePaths->getHarvestFile($deposit);
 
         if(! $this->fs->exists($depositPath)) {
-            $this->logger->error("Deposit file {$depositPath} does not exist");            
-            return false;
+            throw new Exception("Cannot find deposit bag {$depositPath}");
         }
 
         $checksumValue = null;
@@ -39,12 +38,11 @@ class ValidatePayloadCommand extends AbstractProcessingCmd {
                 $checksumValue = md5_file($depositPath);
                 break;
             default:
-                $this->logger->error("Deposit checksum type {$deposit->getChecksumType()} unknown.");
-                return false;
+                throw new Exception("Deposit checksum type {$deposit->getChecksumType()} unknown.");
         }
         if(strtoupper($checksumValue) !== $deposit->getChecksumValue()) {
-            $this->logger->error("Deposit file {$depositPath} checksum does not match.");
-			$this->logger->error("{$deposit->getChecksumType()} Expected {$deposit->getChecksumValue()} != Actual " . strtoupper($checksumValue));
+            $deposit->addErrorLog("Deposit checksum does not match. Expected {$deposit->getChecksumValue()} != Actual " . strtoupper($checksumValue));
+            $this->logger->warning("Deposit checksum does not match.");
             return false;
         }
 
@@ -78,5 +76,9 @@ class ValidatePayloadCommand extends AbstractProcessingCmd {
      */
     public function successLogMessage() {
         return "Payload checksum validation succeeded.";
+    }
+
+    public function errorState() {
+        return "payload-error";
     }
 }
