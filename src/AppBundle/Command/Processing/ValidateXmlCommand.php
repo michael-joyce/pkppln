@@ -2,6 +2,7 @@
 
 namespace AppBundle\Command\Processing;
 
+use Exception;
 use AppBundle\Entity\Deposit;
 use AppBundle\Services\DtdValidator;
 use BagIt;
@@ -31,6 +32,36 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
             $this->logger->error(implode(':', array($error['file'], $error['line'], $error['message'])));
         }
     }
+    
+    /**
+     * @return DOMDocument
+     * @param string $filename
+     */
+    private function loadXml($filename, &$report) {
+        $dom = new DOMDocument();
+        try {
+            $dom->load($filename);
+        } catch (Exception $ex) {
+            if(strpos($ex->getMessage(), 'Input is not proper UTF-8') === false) {
+                // not a fixable error.
+                throw $ex;
+            }
+            $filteredFilename = "{$filename}-filtered.xml";
+            $in = fopen($filename, 'rb');
+            $out = fopen($filteredFilename, 'wb');
+            $blockSize = 64 * 1024; // 64k blocks
+            $changes = 0;
+            while($buffer = fread($in, $blockSize)) {
+                $filtered = iconv('UTF-8', 'UTF-8//IGNORE', $buffer);
+                $changes += strlen($buffer) - strlen($filtered);
+                fwrite($out, $filtered);
+            }
+            $report .= basename($filename) . " contains {$changes} invalid UTF-8 characters, which have been removed.\n";
+            $report .= basename($filteredFilename) . " will be validated.\n";
+            $dom->load($filteredFilename);
+        }
+        return $dom;
+    }
 
     /**
      * {@inheritDoc}
@@ -48,8 +79,8 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
                 continue;
             }
             $basename = basename($filename);
-            $dom = new DOMDocument();
-            $dom->load($filename, LIBXML_COMPACT | LIBXML_PARSEHUGE);
+            $dom = $this->loadXml($filename, $report);
+
             /** @var DtdValidator */
             $validator = $this->container->get('dtdvalidator');
             $validator->validate($dom);

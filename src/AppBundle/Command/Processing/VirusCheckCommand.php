@@ -70,6 +70,27 @@ class VirusCheckCommand extends AbstractProcessingCmd {
     }
 
     /**
+     * @return DOMDocument
+     * @param string $filename
+     */
+    private function loadXml($filename, &$report) {
+        $dom = new DOMDocument();
+        try {
+            $dom->load($filename);
+        } catch (Exception $ex) {
+            if(strpos($ex->getMessage(), 'Input is not proper UTF-8') === false) {
+                // not a fixable error.
+                throw $ex;
+            }
+            $filteredFilename = "{$filename}-filtered.xml";
+            $report .= basename($filename) . " contains invalid UTF-8 characters and will not be scanned for viruses.\n";
+            $report .= basename($filteredFilename) . " will be scanned for viruses.\n";
+            $dom->load($filteredFilename);
+        }
+        return $dom;
+    }
+
+    /**
      * OJS export XML files may contain embedded media (images, PDFs, other
      * files) which need to be extracted and scanned. Scan results will be
      * appended to $report.
@@ -79,13 +100,11 @@ class VirusCheckCommand extends AbstractProcessingCmd {
      * @return boolean
      */
     protected function scanEmbeddedData($path, &$report) {
-        $dom = new DOMDocument();
         $fs = new Filesystem();
-        $valid = $dom->load($path, LIBXML_COMPACT | LIBXML_PARSEHUGE);
-        if(! $valid) {
-            throw new Exception("{$path} is not well-formed XML");
-        }
+
+        $dom = $this->loadXml($path, $report);        
         $xp = new DOMXPath($dom);
+        
         $clean = true;
         foreach ($xp->query('//embed') as $embedded) {
             /** @var DOMNamedNodeMap */
