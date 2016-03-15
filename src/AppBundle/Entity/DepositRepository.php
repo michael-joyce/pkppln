@@ -50,4 +50,11 @@ class DepositRepository extends EntityRepository
 		$qb->setParameter('q', '%' . strtoupper($q) . '%');
 		return $qb->getQuery()->getResult();
 	}
+    
+    public function findNew($limit = 5) {
+        $qb = $this->createQueryBuilder('d');
+        $qb->orderBy('d.id', 'DESC');
+        $qb->setMaxResults($limit);
+        return $qb->getQuery()->getResult();
+    }
 }

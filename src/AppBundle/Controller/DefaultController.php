@@ -27,9 +27,17 @@ class DefaultController extends Controller {
      */
     public function indexAction() {
         $em = $this->container->get('doctrine');
-        $terms = $em->getRepository('AppBundle:TermOfUse')->getTerms();
-        return $this->render('AppBundle:Default:index.html.twig', array(
-            'terms' => $terms,
+        if( ! $this->getUser()->hasRole('ROLE_USER')) {        
+            return $this->render('AppBundle:Default:indexAnon.html.twig');
+        }
+        
+        $journalRepo = $em->getRepository('AppBundle:Journal');
+        $depositRepo = $em->getRepository('AppBundle:Deposit');
+        return $this->render('AppBundle:Default:indexUser.html.twig', array(
+            'journals_new' => $journalRepo->findNew(),
+            'journal_summary' => $journalRepo->statusSummary(),
+            'deposits_new' => $depositRepo->findNew(),
+            'deposit_summary' => $depositRepo->stateSummary(),
         ));
     }
 
