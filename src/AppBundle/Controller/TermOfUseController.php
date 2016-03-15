@@ -28,8 +28,10 @@ class TermOfUseController extends Controller {
      */
     public function indexAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
+        $entities = $em->getRepository('AppBundle:TermOfUse')->getTerms();
 
         return array(
+            'entities' => $entities,
         );
     }
 
