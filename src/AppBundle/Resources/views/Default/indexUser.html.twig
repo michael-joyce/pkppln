@@ -77,7 +77,7 @@
                         <ul class='list-group'>
                             {% for status in deposit_summary %}
                                 <li class='list-group-item'>
-                                    <a href="{{path('deposit', { 'status': status.state })}}">{{ status.state }}</a><span class='badge'>{{status.ct}}</span>
+                                    <a href="{{path('deposit', { 'state': status.state })}}">{{ status.state }}</a><span class='badge'>{{status.ct}}</span>
                                 </li>
                             {% endfor %}
                         </ul>
