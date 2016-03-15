@@ -27,7 +27,8 @@ class DefaultController extends Controller {
      */
     public function indexAction() {
         $em = $this->container->get('doctrine');
-        if( ! $this->getUser()->hasRole('ROLE_USER')) {        
+        $user = $this->getUser();
+        if( !$user || !$this->getUser()->hasRole('ROLE_USER')) {        
             return $this->render('AppBundle:Default:indexAnon.html.twig');
         }
         
