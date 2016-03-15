@@ -79,7 +79,7 @@
 				<td>
 					{% if blackwhitelist.isWhitelisted(entity.uuid) %}
 						Whitelisted
-					{% elseif blacklist.isBlacklisted(entity.uuid) %}
+					{% elseif blackwhitelist.isBlacklisted(entity.uuid) %}
 						Blacklisted
 					{% endif %}				
 				</td>

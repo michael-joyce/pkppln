@@ -2,9 +2,9 @@
 
 namespace AppBundle\Controller;
 
-use Exception;
 use DateTime;
 use Doctrine\ORM\EntityManager;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -158,7 +158,13 @@ class JournalController extends Controller {
 			$result = $this->container->get('ping')->ping($entity);
             if(! $result->hasXml() || $result->hasError()) {
                 $this->addFlash('warning', 'The ping did not complete. ' . $ping->getError());
+                return $this->redirect($this->generateUrl('journal_show', array(
+                    'id' => $id
+                )));
             }
+            $entity->setContacted(new DateTime());
+            $entity->setTitle($result->getJournalTitle());
+            $em->flush($entity);
 			return array(
 				'entity' => $entity,
 				'ping' => $result,
