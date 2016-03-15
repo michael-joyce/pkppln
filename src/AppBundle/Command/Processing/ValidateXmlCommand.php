@@ -40,7 +40,7 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
     private function loadXml(Deposit $deposit, $filename, &$report) {
         $dom = new DOMDocument();
         try {
-            $dom->load($filename);
+            $dom->load($filename, LIBXML_COMPACT | LIBXML_PARSEHUGE);
         } catch (Exception $ex) {
             if(strpos($ex->getMessage(), 'Input is not proper UTF-8') === false) {
                 $deposit->addErrorLog('XML file ' . basename($filename) . ' is not parseable: ' . $ex->getMessage());
@@ -63,7 +63,7 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
                     . " in PHP " . PHP_VERSION . "\n";
             
             $report .= basename($filteredFilename) . " will be validated.\n";
-            $dom->load($filteredFilename);
+            $dom->load($filteredFilename, LIBXML_COMPACT | LIBXML_PARSEHUGE);
         }
         return $dom;
     }

@@ -76,7 +76,7 @@ class VirusCheckCommand extends AbstractProcessingCmd {
     private function loadXml(Deposit $deposit, $filename, &$report) {
         $dom = new DOMDocument();
         try {
-            $dom->load($filename);
+            $dom->load($filename, LIBXML_COMPACT | LIBXML_PARSEHUGE);
         } catch (Exception $ex) {
             if(strpos($ex->getMessage(), 'Input is not proper UTF-8') === false) {
                 $deposit->addErrorLog('XML file ' . basename($filename) . ' is not parseable, and cannot be scanned for viruses: ' . $ex->getMessage());
@@ -87,7 +87,7 @@ class VirusCheckCommand extends AbstractProcessingCmd {
             $filteredFilename = "{$filename}-filtered.xml";
             $report .= basename($filename) . " contains invalid UTF-8 characters and will not be scanned for viruses.\n";
             $report .= basename($filteredFilename) . " will be scanned for viruses.\n";
-            $dom->load($filteredFilename);
+            $dom->load($filteredFilename, LIBXML_COMPACT | LIBXML_PARSEHUGE);
         }
         return $dom;
     }
