@@ -4,6 +4,7 @@ namespace AppBundle\Command\Processing;
 
 use AppBundle\Entity\Deposit;
 use AppBundle\Services\SwordClient;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Send a fully processed deposit to LOCKSSOMatic.
@@ -13,12 +14,27 @@ use AppBundle\Services\SwordClient;
 class DepositCommand extends AbstractProcessingCmd {
 
     /**
+     * @var SwordClient
+     */
+    private $client;
+    
+    public function __construct($name = null) {
+        parent::__construct($name);
+    }
+    
+    /**
      * {@inheritDoc}
      */
     protected function configure() {
         $this->setName('pln:deposit');
         $this->setDescription('Send deposits to LockssOMatic.');
         parent::configure();
+    }
+    
+    public function setContainer(ContainerInterface $container = null) {
+        parent::setContainer($container);
+        $this->client = $container->get('sword_client');
+        $this->client->setLogger($this->logger);
     }
 
     /**
@@ -29,12 +45,8 @@ class DepositCommand extends AbstractProcessingCmd {
      * @return type
      */
     protected function processDeposit(Deposit $deposit) {
-        /**
-         * @var SwordClient
-         */
-        $client = $this->container->get('sword_client');
-        $client->setLogger($this->logger);
-        return $client->createDeposit($deposit);            
+        $this->logger->notice("Sending deposit {$deposit->getDepositUuid()}");
+        return $this->client->createDeposit($deposit);            
     }
 
     /**
