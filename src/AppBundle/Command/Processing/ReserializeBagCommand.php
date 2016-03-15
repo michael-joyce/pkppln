@@ -54,12 +54,12 @@ class ReserializeBagCommand extends AbstractProcessingCmd {
             unlink($temp);
         }
         file_put_contents($temp, $deposit->getProcessingLog());
-        unlink($temp);
 		
         $bag = new BagIt($extractedPath);
         $bag->addFile($temp, 'data/processing-log.txt');		
 		$this->addMetadata($bag, $deposit);
         $bag->update();
+        unlink($temp);
 		
         $path = $this->filePaths->getStagingBagPath($deposit);
 		
