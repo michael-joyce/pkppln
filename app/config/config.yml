@@ -117,7 +117,7 @@ swiftmailer:
     spool:     { type: memory }
 
 monolog:
-    channels: ['sword', 'processing']
+    channels: ['sword', 'processing', 'lockss']
     handlers:
         sword:
             type: stream
@@ -128,6 +128,11 @@ monolog:
             type: stream
             channels: ['processing']
             path: "%kernel.logs_dir%/processing.log"
+            level: notice
+        lockss:
+            type: stream
+            channels: ['lockss']
+            path: "%kernel.logs_dir%/lockss.log"
             level: notice
 
 fos_user:

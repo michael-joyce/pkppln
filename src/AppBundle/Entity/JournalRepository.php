@@ -99,7 +99,6 @@ class JournalRepository extends EntityRepository {
     
     public function findNew($limit = 5) {
         $qb = $this->createQueryBuilder('e');
-        $qb->where("e.status = 'new'");
         $qb->orderBy('e.id', 'DESC');
         $qb->setMaxResults($limit);
         return $qb->getQuery()->getResult();

@@ -33,6 +33,7 @@ security:
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/feeds, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/fetch, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/permission, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, role: ROLE_ADMIN }
         - { path: ^/$, role: IS_AUTHENTICATED_ANONYMOUSLY }

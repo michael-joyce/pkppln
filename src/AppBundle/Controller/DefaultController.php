@@ -47,7 +47,8 @@ class DefaultController extends Controller {
      * 
      * @Route("/permission", name="lockss_permission")
      */
-    public function permissionAction() {
+    public function permissionAction(Request $request) {
+		$this->get('monolog.logger.lockss')->notice("permission - {$request->getClientIp()}");		
         $response = new Response(self::PERMISSION_STMT, Response::HTTP_OK, array(
             'content-type' => 'text/plain'
         ));
@@ -61,6 +62,7 @@ class DefaultController extends Controller {
      * @param Request $request
      */
     public function fetchAction(Request $request, $journalUuid, $depositUuid) {
+		$this->get('monolog.logger.lockss')->notice("fetch - {$request->getClientIp()} - {$journalUuid} - {$depositUuid}");		
         $em = $this->container->get('doctrine');
         $journal = $em->getRepository('AppBundle:Journal')->findOneBy(array('uuid' => $journalUuid));
         $deposit = $em->getRepository('AppBundle:Deposit')->findOneBy(array('depositUuid' => $depositUuid));
