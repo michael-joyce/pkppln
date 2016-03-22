@@ -24,6 +24,7 @@
                                 <li class='list-group-item'>
                                     <a href='{{ path('journal_show', {'id': journal.id}) }}'>{{journal.title}}</a><br/>
                                     <a href='{{ journal.url }}'>{{journal.url}}</a><br/>
+                                    Contacted {{ journal.contacted|date }}
                                 </li>
                             {% endfor %}
                         </ul>                        
@@ -42,7 +43,7 @@
                                     <a href='{{ path('deposit_show', {'id': deposit.id}) }}'>
                                         {{deposit.journal.title}} vol. {{ deposit.volume }} no. {{ deposit.issue }}
                                     </a><br/>
-                                    Published {{ deposit.pubDate|date('D, d M Y') }}
+                                    Published {{ deposit.pubDate|date('D, d M Y') }}, Received {{ deposit.received|date }}
                                 </li>
                             {% endfor %}
                         </ul>                        
