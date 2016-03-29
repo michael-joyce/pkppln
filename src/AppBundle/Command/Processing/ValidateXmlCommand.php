@@ -29,7 +29,7 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
      */
     private function logErrors(DtdValidator $validator) {
         foreach ($validator->getErrors() as $error) {
-            $this->logger->error(implode(':', array($error['file'], $error['line'], $error['message'])));
+            $this->logger->warning(implode(':', array($error['file'], $error['line'], $error['message'])));
         }
     }
     
