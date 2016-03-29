@@ -41,6 +41,7 @@ twig:
         blackwhitelist: "@blackwhitelist"
         pln_accepting: "%pln_accepting%"
         pln_maxUploadSize: "%pln_maxUploadSize%"
+        pln_maxAuSize: "%pln_maxAuSize%"
         pln_uploadChecksumType: "%pln_uploadChecksumType%"
 
 # Assetic Configuration

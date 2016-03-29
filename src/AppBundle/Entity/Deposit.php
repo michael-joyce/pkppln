@@ -35,6 +35,16 @@ class Deposit
      * @ORM\JoinColumn(name="journal_id", referencedColumnName="id")
      */
     private $journal;
+    
+    /**
+     * The AuContainer that holds this deposit.
+     *
+     * @var AuContainer
+     * 
+     * @ORM\ManyToOne(targetEntity="AuContainer", inversedBy="deposits")
+     * @ORM\JoinColumn(name="au_container_id", referencedColumnName="id", nullable=true)
+     */
+    private $auContainer;
 	
     /**
      * Serialized list of licensing terms as reported in the ATOM deposit.
@@ -859,5 +869,28 @@ class Deposit
     public function getErrorLog()
     {
         return $this->errorLog;
+    }
+
+    /**
+     * Set auContainer
+     *
+     * @param AuContainer $auContainer
+     * @return Deposit
+     */
+    public function setAuContainer(AuContainer $auContainer = null)
+    {
+        $this->auContainer = $auContainer;
+
+        return $this;
+    }
+
+    /**
+     * Get auContainer
+     *
+     * @return AuContainer 
+     */
+    public function getAuContainer()
+    {
+        return $this->auContainer;
     }
 }

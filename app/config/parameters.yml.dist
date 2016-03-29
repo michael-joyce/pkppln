@@ -17,7 +17,13 @@ parameters:
     secret:            ThisTokenIsNotSoSecretChangeIt
 
     pln_accepting: false
-    pln_maxUploadSize: 1000
+    
+    # maximum deposit file size, in kb
+    pln_maxUploadSize: 1000000
+
+    # maximum AU size, in kb
+    pln_maxAuSize: 100000000
+
     pln_uploadChecksumType: SHA-1
     pln_defaultLocale: en-US
 

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Command\Processing;
 
+use AppBundle\Entity\AuContainer;
 use AppBundle\Entity\Deposit;
 use BagIt;
 
@@ -70,9 +71,21 @@ class ReserializeBagCommand extends AbstractProcessingCmd {
 		
         $bag->package($path, 'zip');
         $deposit->setPackagePath($path);
-        $deposit->setPackageSize(filesize($path));
+        $deposit->setPackageSize(floor(filesize($path) / 1000)); // bytes to kb.
         $deposit->setPackageChecksumType('sha1');
         $deposit->setPackageChecksumValue(hash_file('sha1', $path));
+        
+        $auContainer = $this->em->getRepository('AppBundle:AuContainer')->getOpenContainer();
+        if($auContainer === null) {
+            $auContainer = new AuContainer();
+            $this->em->persist($auContainer);
+        }
+        $deposit->setAuContainer($auContainer);
+        $auContainer->addDeposit($deposit);
+        if($auContainer->getSize() > $this->container->getParameter('pln_maxAuSize')) {
+            $auContainer->setOpen(false);
+            $this->em->flush($auContainer);
+        }
         return true;
     }
 

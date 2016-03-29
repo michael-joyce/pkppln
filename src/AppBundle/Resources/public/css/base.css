@@ -47,3 +47,7 @@ td.td-changeset {
 table.changeset {
     margin-bottom: 0;
 }
+
+.uuid {
+    font-family: monospace;
+}
