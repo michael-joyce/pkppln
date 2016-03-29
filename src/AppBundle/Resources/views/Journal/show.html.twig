@@ -40,6 +40,10 @@
                 <td>{{ entity.title }}</td>
             </tr>
             <tr>
+                <th>OJS Version</th>
+                <td>{{ entity.ojsVersion }}</td>
+            </tr>
+            <tr>
                 <th>Issn</th>
                 <td>{{ entity.issn }}</td>
             </tr>
@@ -47,9 +51,14 @@
                 <th>Url</th>
                 <td><a href="{{ entity.url }}">{{ entity.url|preg_replace('~/~', '/&#8203;')|raw }}</a></td>
             </tr>
-			<tr>
-				<th>Ping Url</th>
-				<td><a href="{{ entity.gatewayUrl }}">{{entity.gatewayUrl|preg_replace('~/~', '/&#8203;')|raw }}</a></td>
+            <tr>
+                <th>Ping Url</th>
+                <td><a href="{{ entity.gatewayUrl }}">{{entity.gatewayUrl|preg_replace('~/~', '/&#8203;')|raw }}</a></td>
+            </tr>
+            <tr>
+                <th>Service Document</th>
+                <td><a href="{{ url('service_document', {'On-Behalf-Of': entity.uuid, 'Journal-Url': entity.url} ) }}">XML</a></td>
+            </tr>
             <tr>
                 <th>Status</th>
                 <td>{{ entity.status }}</td>
@@ -74,19 +83,19 @@
                     </a>
                 </td>
             </tr>    
-			<tr>
-				<th>Permissions</th>
-				<td>
-					{% if blackwhitelist.isWhitelisted(entity.uuid) %}
-						Whitelisted
-					{% elseif blackwhitelist.isBlacklisted(entity.uuid) %}
-						Blacklisted
-					{% endif %}				
-				</td>
-			</tr>
+            <tr>
+                <th>Permissions</th>
+                <td>
+                    {% if blackwhitelist.isWhitelisted(entity.uuid) %}
+                        Whitelisted
+                    {% elseif blackwhitelist.isBlacklisted(entity.uuid) %}
+                        Blacklisted
+                    {% endif %}				
+                </td>
+            </tr>
         </tbody>
     </table>
-                        
+
     {% if entity.status == 'unhealthy' %}
         <p>This journal has not contacted the PLN in quite some time. You can update its status:<br/>
             <a class='btn btn-default' href="{{ path('journal_status', {'id': entity.id, 'status': 'healthy'}) }}">Healthy</a>
@@ -94,5 +103,5 @@
             <a class='btn btn-default' href="{{ path('journal_status', {'id': entity.id, 'status': 'dead'}) }}">Dead (do not trigger)</a>
         </p>
     {% endif %}
-                        
+
 {% endblock %}

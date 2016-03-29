@@ -51,3 +51,9 @@ parameters:
     # set to true to save the SWORD deposit document to the file system when
     # creating a deposit in LOM.
     save_deposit_xml: false
+
+    # customize the network message.
+    min_ojs_version: 2.4.8.0
+    network_accepting: The PKP PLN can accept deposits from this journal.
+    network_oldojs: This journal must be running OJS 2.4.8 to make deposits to the PKP PLN.
+    network_default: The PKP PLN does not know about this journal yet.

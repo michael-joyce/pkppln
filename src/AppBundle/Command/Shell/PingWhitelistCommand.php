@@ -20,11 +20,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class PingWhitelistCommand extends ContainerAwareCommand {
 
-	/**
-	 * Default version to require
-	 */
-	const DEFAULT_VERSION = '2.4.8.0';
-	
     /**
      * @var Logger
      */
@@ -41,12 +36,18 @@ class PingWhitelistCommand extends ContainerAwareCommand {
     protected function configure() {
         $this->setName('pln:ping-whitelist');
         $this->setDescription('Find journals running a sufficiently new version of OJS and whitelist them.');
-        $this->addArgument('minVersion', InputArgument::OPTIONAL, "Minimum version required to whitelist.", self::DEFAULT_VERSION);
+        $this->addArgument('minVersion', InputArgument::OPTIONAL, "Minimum version required to whitelist.");
         $this->addOption(
             'dry-run',
             'd',
             InputOption::VALUE_NONE,
             'Do not update the whitelist - report only.'
+        );
+        $this->addOption(
+            'all',
+            'a',
+            InputOption::VALUE_NONE,
+            'Ping all journals, including whitelisted/blacklisted.'
         );
         parent::configure();
     }
@@ -74,9 +75,14 @@ class PingWhitelistCommand extends ContainerAwareCommand {
 		$router = $this->getContainer()->get('router');
 		$bwlist = $this->getContainer()->get('blackwhitelist');
 		$ping = $this->getContainer()->get('ping');
-		
+        
         $journals = $em->getRepository('AppBundle:Journal')->findAll();
         $minVersion = $input->getArgument('minVersion');
+        if( ! $minVersion) {
+            $minVersion = $this->getContainer()->getParameter('min_ojs_version');
+        }
+		$all = $input->getOption('all');
+        
         $count = count($journals);
         $i = 0;
         
@@ -86,11 +92,11 @@ class PingWhitelistCommand extends ContainerAwareCommand {
 			
             $url = $router->generate('journal_show', array('id' => $journal->getId()), UrlGeneratorInterface::ABSOLUTE_URL);
 			$uuid = $journal->getUuid();
-			if($bwlist->isWhitelisted($uuid)) {
+			if(!$all && $bwlist->isWhitelisted($uuid)) {
 				$output->writeln("{$fmt}/{$count} - skipped (whitelisted) - - {$journal->getUrl()}");
 				continue;
 			}
-			if($bwlist->isBlacklisted($uuid)) {
+			if(!$all && $bwlist->isBlacklisted($uuid)) {
 				$output->writeln("{$fmt}/{$count} - skipped (blacklisted) - - {$journal->getUrl()}");
 				continue;
 			}

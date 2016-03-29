@@ -53,6 +53,14 @@ class Journal {
      * @ORM\Column(type="datetime", nullable=false)
      */
     private $contacted;
+    
+    /**
+     * OJS version powering the journal.
+     *
+     * @var string
+     * @ORM\Column(type="string", nullable=true, length=12)
+     */
+    private $ojsVersion;
 
     /**
      * When the journal manager was notified.
@@ -466,5 +474,28 @@ class Journal {
      */
     public function __toString() {
         return $this->title;
+    }
+
+    /**
+     * Set ojsVersion
+     *
+     * @param string $ojsVersion
+     * @return Journal
+     */
+    public function setOjsVersion($ojsVersion)
+    {
+        $this->ojsVersion = $ojsVersion;
+
+        return $this;
+    }
+
+    /**
+     * Get ojsVersion
+     *
+     * @return string 
+     */
+    public function getOjsVersion()
+    {
+        return $this->ojsVersion;
     }
 }

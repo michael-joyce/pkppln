@@ -8,11 +8,7 @@
     <sword:maxUploadSize>{{ pln_maxUploadSize }}</sword:maxUploadSize>
     <pkp:uploadChecksumType>{{ pln_uploadChecksumType }}</pkp:uploadChecksumType>
     
-    {% if accepting == true %}
-        <pkp:pln_accepting is_accepting="Yes">The PKP PLN is currently accepting deposits.</pkp:pln_accepting>
-    {% else %}
-        <pkp:pln_accepting is_accepting="No">The PKP PLN is currently in pilot phase and is only accepting deposits from members of the pilot.</pkp:pln_accepting>
-    {% endif %}
+    <pkp:pln_accepting is_accepting="{{ accepting }}">{{ message }}</pkp:pln_accepting>
 
     <pkp:terms_of_use>
         {% for term in terms %}

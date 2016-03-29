@@ -116,6 +116,7 @@ class SwordController extends Controller {
      * 
      * @param string $uuid
      * @param string $url
+     * @return Journal
      */
 	private function journalContact($uuid, $url) {
 		$em = $this->getDoctrine()->getManager();
@@ -140,6 +141,7 @@ class SwordController extends Controller {
 			$journal->setStatus('healthy');
 		}
         $em->flush($journal);
+        return $journal;
 	}
 	
     /**
@@ -156,6 +158,16 @@ class SwordController extends Controller {
         $terms = $repo->getTerms();
 		return $terms;
 	}
+    
+    private function getNetworkMessage(Journal $journal) {
+        if($journal->getOjsVersion() === null) {
+            return $this->container->getParameter('network_default');
+        }
+        if(version_compare($journal->getOjsVersion(), $this->container->getParameter('min_ojs_version'), '>=')) {
+            return $this->container->getParameter('network_accepting');
+        }
+        return $this->container->getParameter('network_oldojs');
+    }
 
     /**
      * Return a SWORD service document for a journal. Requires On-Behalf-Of
@@ -185,12 +197,13 @@ class SwordController extends Controller {
 			throw new SwordException(400, "Missing Journal-Url header for {$obh}");
         }
 		
-		$this->journalContact($obh, $journalUrl);
-		
+		$journal = $this->journalContact($obh, $journalUrl);
+        
         /** @var Response */
         $response = $this->render("AppBundle:Sword:serviceDocument.xml.twig", array(
             "onBehalfOf" => $obh,
-            "accepting" => $accepting,
+            "accepting" => $accepting ? 'Yes' : 'No',
+            'message' => $this->getNetworkMessage($journal),
             "colIri" => $this->generateUrl(
                 "create_deposit", 
 				array("journal_uuid" => $obh), 

@@ -73,6 +73,7 @@ services:
     ping:
         class: AppBundle\Services\Ping
         calls:
+            - [ setManager, ["@doctrine"]]
             - [ setLogger, ["@monolog.logger" ]]
 
     filepaths:

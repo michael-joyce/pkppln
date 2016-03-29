@@ -41,6 +41,7 @@
                         <th>Title</th>
                         <th>Contacted</th>
                         <th>Status</th>
+                        <th>OJS</th>
                         <th>Url</th>
                     </tr>
                 </thead>
@@ -50,6 +51,7 @@
                             <td><a href="{{ path('journal_show', { 'id': entity.id }) }}">{{ entity.title }}</a></td>
                             <td>{% if entity.contacted %}{{ entity.contacted|date('Y-m-d H:i:s') }}{% endif %}</td>
                             <td>{{ entity.status }}</td>
+                            <td>{{ entity.ojsVersion }}</td>
                             <td><a href="{{ entity.url }}">{{ entity.url|preg_replace('~/~', '/&#8203;')|raw }}asdsa</a></td>
                         </tr>
                     {% endfor %}

@@ -4,6 +4,9 @@ namespace AppBundle\Services;
 
 use AppBundle\Entity\Journal;
 use AppBundle\Utility\PingResult;
+use DateTime;
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\ORM\EntityManager;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
@@ -16,9 +19,23 @@ use Monolog\Logger;
 class Ping {
 
     /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
      * @var Logger
      */
     private $logger;
+
+    /**
+     * Set the ORM thing.
+     * 
+     * @param Registry $registry
+     */
+    public function setManager(Registry $registry) {
+        $this->em = $registry->getManager();
+    }
 
     /**
      * Set the service logger.
@@ -47,6 +64,10 @@ class Ping {
 				),
 			));
 			$pingResponse = new PingResult($response);
+            $journal->setContacted(new DateTime());
+            $journal->setTitle($pingResponse->getJournalTitle());
+            $journal->setOjsVersion($pingResponse->getOjsRelease());
+            $this->em->flush($journal);
 			return $pingResponse;
 		} catch (RequestException $e) {
             if ($e->hasResponse()) {
