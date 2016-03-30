@@ -39,7 +39,7 @@
                     <ul class="nav navbar-nav">
                         <li class="active"><a href="{{ path('home') }}">Home</a></li>
 
-                        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                        {% if app.user is not null and is_granted("IS_AUTHENTICATED_REMEMBERED") %}
 
                             <li><a href="{{ path('termofuse') }}">Terms of Use</a></li>
                             <li class="dropdown">
@@ -54,7 +54,7 @@
 
                             <li><a href="{{ path('deposit') }}">Deposits</a></li>
 
-                            {% if is_granted("ROLE_ADMIN") %}
+                            {% if app.user is not null and is_granted("ROLE_ADMIN") %}
                                 <li>
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Users <span class="caret"></span></a>
                                     <ul class="dropdown-menu">
@@ -68,7 +68,7 @@
 
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                        {% if app.user is not null and is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                             <li>
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                                     {{ app.user.username }} <span class="caret"></span>
