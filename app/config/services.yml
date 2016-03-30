@@ -82,3 +82,9 @@ services:
             - [ setBaseDir, ["%pln_data_dir%"]]
             - [ setLogger, ["@monolog.logger" ]]
             - [ setKernelEnv, ["%kernel.root_dir%"]]
+
+    twig.extension.text:
+        class: Twig_Extensions_Extension_Text
+        tags:
+            - { name: twig.extension }
+ 

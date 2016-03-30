@@ -22,6 +22,7 @@ class AppKernel extends Kernel
             new CL\Bundle\TissueBundle\CLTissueBundle(),
             new Bmatzner\JQueryUIBundle\BmatznerJQueryUIBundle(),
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
+			new Ivory\CKEditorBundle\IvoryCKEditorBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

@@ -35,8 +35,11 @@ security:
         - { path: ^/fetch, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/permission, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/register, role: ROLE_ADMIN }
+        - { path: ^/docs, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/onix.xml$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        
         - { path: ^/, role: ROLE_USER }
+        
+        - { path: ^/register, role: ROLE_ADMIN }
         - { path: ^/admin/, role: ROLE_ADMIN }

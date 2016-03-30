@@ -34,7 +34,9 @@
         "cleentfaar/tissue-bundle": "*",
         "jasny/twig-extensions": "~1.0",
         "bmatzner/jquery-ui-bundle": "^1.10",
-        "knplabs/knp-paginator-bundle": "^2.4"
+        "knplabs/knp-paginator-bundle": "^2.4",
+        "egeloen/ckeditor-bundle": "^4.0",
+        "twig/extensions": "^1.3"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3",

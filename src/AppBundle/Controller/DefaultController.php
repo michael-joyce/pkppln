@@ -41,6 +41,35 @@ class DefaultController extends Controller {
             'deposit_summary' => $depositRepo->stateSummary(),
         ));
     }
+	
+	/**
+	 * @param string $path
+	 * @Route("/docs/{path}", name="doc_view")
+	 * @Template()
+	 */
+	public function docsViewAction($path) {
+        $em = $this->container->get('doctrine');
+        $user = $this->getUser();
+		$doc = $em->getRepository('AppBundle:Document')->findOneBy(array(
+			'path' => $path
+		));
+		if( ! $doc) {
+			// 404
+		}
+		return array('doc' => $doc);
+	}
+
+	/**
+	 * @Route("/docs", name="doc_list")
+	 * @Template()
+	 */
+	// Must be after docsViewAction()
+	public function docsListAction() {
+        $em = $this->container->get('doctrine');
+        $user = $this->getUser();
+		$docs = $em->getRepository('AppBundle:Document')->findAll();
+		return array('docs' => $docs);
+	}
 
     /**
      * Return the permission statement for LOCKSS.
