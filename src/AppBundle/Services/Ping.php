@@ -64,10 +64,12 @@ class Ping {
 				),
 			));
 			$pingResponse = new PingResult($response);
-            $journal->setContacted(new DateTime());
-            $journal->setTitle($pingResponse->getJournalTitle());
-            $journal->setOjsVersion($pingResponse->getOjsRelease());
-            $this->em->flush($journal);
+			if($pingResponse->hasXml() && !$pingResponse->hasError()) {
+				$journal->setContacted(new DateTime());
+				$journal->setTitle($pingResponse->getJournalTitle());
+				$journal->setOjsVersion($pingResponse->getOjsRelease());
+				$this->em->flush($journal);
+			}
 			return $pingResponse;
 		} catch (RequestException $e) {
             if ($e->hasResponse()) {
