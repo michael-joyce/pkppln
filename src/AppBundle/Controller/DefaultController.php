@@ -54,7 +54,7 @@ class DefaultController extends Controller {
 			'path' => $path
 		));
 		if( ! $doc) {
-			// 404
+			throw new NotFoundHttpException("The requested page {$path} could not be found.");
 		}
 		return array('doc' => $doc);
 	}
@@ -66,7 +66,6 @@ class DefaultController extends Controller {
 	// Must be after docsViewAction()
 	public function docsListAction() {
         $em = $this->container->get('doctrine');
-        $user = $this->getUser();
 		$docs = $em->getRepository('AppBundle:Document')->findAll();
 		return array('docs' => $docs);
 	}

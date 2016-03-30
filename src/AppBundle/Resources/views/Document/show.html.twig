@@ -26,6 +26,9 @@
                 <th>Title</th>
                 <td>{{ entity.title }}</td>
             </tr>
+			<tr>
+				<th>Public URL</th>
+				<td><a href="{{ url('doc_view', {'path': entity.path}) }}">{{ url('doc_view', {'path': entity.path}) }}</a></td>
             <tr>
                 <th>Path</th>
                 <td>{{ entity.path }}</td>
