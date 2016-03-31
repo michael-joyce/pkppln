@@ -3,6 +3,7 @@
 namespace AppBundle\Command\Processing;
 
 use AppBundle\Entity\Deposit;
+use Exception;
 
 /**
  * Validate the size and checksum of a downloaded deposit.

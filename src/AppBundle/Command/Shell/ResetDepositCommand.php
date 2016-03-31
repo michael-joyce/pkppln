@@ -85,7 +85,11 @@ class ResetDepositCommand extends ContainerAwareCommand {
             $deposit->setState($state);
             if($input->getOption('clear')) {
                 $deposit->setErrorLog(array());
+                $deposit->setPackageSize(null);
+                $deposit->setPlnState(null);
                 $deposit->setProcessingLog('');
+                $deposit->addToProcessingLog("Deposit reset.");
+                $deposit->setAuContainer(null);
             }
         }
         $this->em->flush();

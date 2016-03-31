@@ -166,7 +166,7 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
 			try {
 				$result = $this->processDeposit($deposit);
 			} catch(Exception $e) {
-				$this->logger->error(get_class($e) . $e->getMessage());
+				$this->logger->error($e->getMessage());
                 $deposit->setState($this->errorState());
                 $deposit->addToProcessingLog($this->failureLogMessage());
                 $deposit->addErrorLog(get_class($e) . $e->getMessage());
