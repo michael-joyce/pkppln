@@ -152,8 +152,12 @@ class PingResult {
      * 
      * @return string
      */
-	public function getJournalTitle() {
-		return $this->simpleQuery('/plnplugin/journalInfo/title');
+	public function getJournalTitle($default = null) {
+		$title = $this->simpleQuery('/plnplugin/journalInfo/title');
+		if($title === null) {
+			return $default;
+		}
+		return $title;
 	}
 	
     /**

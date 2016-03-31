@@ -24,8 +24,7 @@
         pkp:publisherUrl="{{deposit.journal.publisherUrl}}">
         {{ url('fetch', { 'journalUuid': deposit.journal.uuid, 'depositUuid': deposit.depositUuid }) }}
         <lom:property name="base_url" value="{{ url('home') }}" />
-        <lom:property name="permission_url" value="{{ url('lockss_permission') }}" />
+        <lom:property name="permission_url" value="{{ url('lockss_permission') }}" />0
         <lom:property name="container_number" value="{{ deposit.aucontainer.id }}"/>
-        <lom:property name="original_journal_title" value="{{ deposit.journal.title }}" />
     </lom:content>
 </entry>

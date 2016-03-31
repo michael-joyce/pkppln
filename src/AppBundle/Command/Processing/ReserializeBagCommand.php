@@ -71,7 +71,7 @@ class ReserializeBagCommand extends AbstractProcessingCmd {
 		
         $bag->package($path, 'zip');
         $deposit->setPackagePath($path);
-        $deposit->setPackageSize(floor(filesize($path) / 1000)); // bytes to kb.
+        $deposit->setPackageSize(ceil(filesize($path) / 1000)); // bytes to kb.
         $deposit->setPackageChecksumType('sha1');
         $deposit->setPackageChecksumValue(hash_file('sha1', $path));
         

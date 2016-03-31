@@ -58,15 +58,16 @@ class Ping {
 		$client = new Client();
 		try {
 			$response = $client->get($url, array(
+				'allow_redirects' => false,
 				'headers' => array(
 					'User-Agent' => 'PkpPlnBot 1.0; http://pkp.sfu.ca',
 					'Accept' => 'application/xml,text/xml,*/*;q=0.1'
 				),
 			));
 			$pingResponse = new PingResult($response);
-			if($pingResponse->hasXml() && !$pingResponse->hasError()) {
+			if($pingResponse->getHttpStatus() === 200) {
 				$journal->setContacted(new DateTime());
-				$journal->setTitle($pingResponse->getJournalTitle());
+				$journal->setTitle($pingResponse->getJournalTitle('(unknown title)'));
 				$journal->setOjsVersion($pingResponse->getOjsRelease());
 				$this->em->flush($journal);
 			}
