@@ -68,5 +68,4 @@ class AuContainerController extends Controller
             'openContainer' => $openContainer,
         );
     }
-    
 }

@@ -215,7 +215,8 @@ class SwordClient {
     public function createDeposit(Deposit $deposit) {
         $this->serviceDocument($deposit->getJournal());
         $xml = $this->templating->render('AppBundle:SwordClient:deposit.xml.twig', array(
-            'title' => 'Deposit from OJS',
+            'title' => 'Deposit from OJS part ' . $deposit->getAuContainer()->getId(),
+			'publisher' => 'Public Knowledge Project Staging Server',
             'deposit' => $deposit,
             'baseUri' => $this->router->generate('home', array(), UrlGeneratorInterface::ABSOLUTE_URL),
             'plnJournalTitle' => $this->plnJournalTitle,

@@ -28,7 +28,7 @@ class DefaultController extends Controller {
     public function indexAction() {
         $em = $this->container->get('doctrine');
         $user = $this->getUser();
-        if( !$user || !$this->getUser()->hasRole('ROLE_USER')) {        
+        if(!$user || !$this->getUser()->hasRole('ROLE_USER')) {        
             return $this->render('AppBundle:Default:indexAnon.html.twig');
         }
         
@@ -53,7 +53,7 @@ class DefaultController extends Controller {
 		$doc = $em->getRepository('AppBundle:Document')->findOneBy(array(
 			'path' => $path
 		));
-		if( ! $doc) {
+		if(! $doc) {
 			throw new NotFoundHttpException("The requested page {$path} could not be found.");
 		}
 		return array('doc' => $doc);

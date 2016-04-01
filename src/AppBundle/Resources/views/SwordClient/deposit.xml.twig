@@ -11,7 +11,7 @@
     </summary>
     <!-- @size is the file size in kB (1,000 bytes) -->
     <lom:content 
-        size="{{ (deposit.packageSize / 1000) | round(0, 'floor') }}"
+        size="{{ (deposit.packageSize) }}"
         checksumType="{{ deposit.packageChecksumType }}"
         checksumValue="{{ deposit.checksumValue }}"
         pkp:volume="{{deposit.volume}}"
@@ -20,11 +20,12 @@
         pkp:journalTitle="{{plnJournalTitle}}"
         pkp:journalUrl="{{deposit.journal.url}}"
         pkp:issn="{{deposit.journal.issn}}"
+		pkp:publisher="{{publisher}}"
         pkp:publisherName="{{deposit.journal.publisherName}}"
         pkp:publisherUrl="{{deposit.journal.publisherUrl}}">
         {{ url('fetch', { 'journalUuid': deposit.journal.uuid, 'depositUuid': deposit.depositUuid }) }}
         <lom:property name="base_url" value="{{ url('home') }}" />
-        <lom:property name="permission_url" value="{{ url('lockss_permission') }}" />0
+        <lom:property name="permission_url" value="{{ url('lockss_permission') }}" />
         <lom:property name="container_number" value="{{ deposit.aucontainer.id }}"/>
     </lom:content>
 </entry>

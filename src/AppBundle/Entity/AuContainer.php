@@ -118,5 +118,4 @@ class AuContainer {
     public function countDeposits() {
         return $this->deposits->count();
     }
-
 }

@@ -78,7 +78,7 @@ class PingWhitelistCommand extends ContainerAwareCommand {
         
         $journals = $em->getRepository('AppBundle:Journal')->findAll();
         $minVersion = $input->getArgument('minVersion');
-        if( ! $minVersion) {
+        if(! $minVersion) {
             $minVersion = $this->getContainer()->getParameter('min_ojs_version');
         }
 		$all = $input->getOption('all');
