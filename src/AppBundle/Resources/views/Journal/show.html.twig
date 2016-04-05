@@ -28,6 +28,10 @@
                 <td>{{ entity.contacted|date('Y-m-d H:i:s') }}</td>
             </tr>
             <tr>
+                <th>Terms Accepted</th>
+                <td>{% if entity.termsAccepted %}Yes{% else %}No{% endif %}</td>
+            </tr>
+            <tr>
                 <th>Notified</th>
                 <td>
                     {% if entity.notified %}

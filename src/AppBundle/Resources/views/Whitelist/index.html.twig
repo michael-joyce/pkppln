@@ -22,6 +22,7 @@
                 <th>Comment</th>
                 <th>Journal</th>
                 <th>Deposits</th>
+                <th>TOS</th>
                 <th>Created</th>
             </tr>
         </thead>
@@ -33,6 +34,7 @@
                 <td>{{ entity.comment }}</td>
                 <td>{% if journal is not null %}{{ journal.title }}{% endif %}</td>
                 <td>{% if journal is not null %}{{ journal.countDeposits() }}{% endif %}</td>
+                <td>{% if journal is not null %}{% if journal.termsAccepted %}Yes{% else %}No{% endif %}{% endif %}</td>
                 <td>{% if entity.created %}{{ entity.created|date('Y-m-d H:i:s') }}{% endif %}</td>
             </tr>
         {% endfor %}

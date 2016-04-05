@@ -69,6 +69,7 @@ class Ping {
 				$journal->setContacted(new DateTime());
 				$journal->setTitle($pingResponse->getJournalTitle('(unknown title)'));
 				$journal->setOjsVersion($pingResponse->getOjsRelease());
+                $journal->setTermsAccepted($pingResponse->areTermsAccepted() === 'yes');
 				$this->em->flush($journal);
 			}
 			return $pingResponse;

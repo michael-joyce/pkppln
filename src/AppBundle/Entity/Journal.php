@@ -104,6 +104,15 @@ class Journal {
      * @ORM\Column(type="string", nullable=false)
      */
     private $status = 'healthy';
+    
+    /**
+     * True if a ping reports that the journal manager has accepts the terms of 
+     * use.
+     *
+     * @var boolean
+     * @ORM\Column(type="boolean", nullable=false)
+     */
+    private $termsAccepted;
 
     /**
      * Email address to contact the journal manager.
@@ -145,6 +154,7 @@ class Journal {
     public function __construct() {
         $this->deposits = new ArrayCollection();
         $this->publisherName = '';
+        $this->termsAccepted = false;
     }
 
     /**
@@ -497,5 +507,28 @@ class Journal {
     public function getOjsVersion()
     {
         return $this->ojsVersion;
+    }
+
+    /**
+     * Set termsAccepted
+     *
+     * @param boolean $termsAccepted
+     * @return Journal
+     */
+    public function setTermsAccepted($termsAccepted)
+    {
+        $this->termsAccepted = $termsAccepted;
+
+        return $this;
+    }
+
+    /**
+     * Get termsAccepted
+     *
+     * @return boolean 
+     */
+    public function getTermsAccepted()
+    {
+        return $this->termsAccepted;
     }
 }
