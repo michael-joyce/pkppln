@@ -28,47 +28,47 @@ class DefaultController extends Controller {
     public function indexAction() {
         $em = $this->container->get('doctrine');
         $user = $this->getUser();
-        if(!$user || !$this->getUser()->hasRole('ROLE_USER')) {        
+        if (!$user || !$this->getUser()->hasRole('ROLE_USER')) {
             return $this->render('AppBundle:Default:indexAnon.html.twig');
         }
-        
+
         $journalRepo = $em->getRepository('AppBundle:Journal');
         $depositRepo = $em->getRepository('AppBundle:Deposit');
         return $this->render('AppBundle:Default:indexUser.html.twig', array(
-            'journals_new' => $journalRepo->findNew(),
-            'journal_summary' => $journalRepo->statusSummary(),
-            'deposits_new' => $depositRepo->findNew(),
-            'deposit_summary' => $depositRepo->stateSummary(),
+                'journals_new' => $journalRepo->findNew(),
+                'journal_summary' => $journalRepo->statusSummary(),
+                'deposits_new' => $depositRepo->findNew(),
+                'deposit_summary' => $depositRepo->stateSummary(),
         ));
     }
-	
-	/**
-	 * @param string $path
-	 * @Route("/docs/{path}", name="doc_view")
-	 * @Template()
-	 */
-	public function docsViewAction($path) {
+
+    /**
+     * @param string $path
+     * @Route("/docs/{path}", name="doc_view")
+     * @Template()
+     */
+    public function docsViewAction($path) {
         $em = $this->container->get('doctrine');
         $user = $this->getUser();
-		$doc = $em->getRepository('AppBundle:Document')->findOneBy(array(
-			'path' => $path
-		));
-		if(! $doc) {
-			throw new NotFoundHttpException("The requested page {$path} could not be found.");
-		}
-		return array('doc' => $doc);
-	}
+        $doc = $em->getRepository('AppBundle:Document')->findOneBy(array(
+            'path' => $path
+        ));
+        if (!$doc) {
+            throw new NotFoundHttpException("The requested page {$path} could not be found.");
+        }
+        return array('doc' => $doc);
+    }
 
-	/**
-	 * @Route("/docs", name="doc_list")
-	 * @Template()
-	 */
-	// Must be after docsViewAction()
-	public function docsListAction() {
+    /**
+     * @Route("/docs", name="doc_list")
+     * @Template()
+     */
+    // Must be after docsViewAction()
+    public function docsListAction() {
         $em = $this->container->get('doctrine');
-		$docs = $em->getRepository('AppBundle:Document')->findAll();
-		return array('docs' => $docs);
-	}
+        $docs = $em->getRepository('AppBundle:Document')->findAll();
+        return array('docs' => $docs);
+    }
 
     /**
      * Return the permission statement for LOCKSS.
@@ -76,7 +76,7 @@ class DefaultController extends Controller {
      * @Route("/permission", name="lockss_permission")
      */
     public function permissionAction(Request $request) {
-		$this->get('monolog.logger.lockss')->notice("permission - {$request->getClientIp()}");		
+        $this->get('monolog.logger.lockss')->notice("permission - {$request->getClientIp()}");
         $response = new Response(self::PERMISSION_STMT, Response::HTTP_OK, array(
             'content-type' => 'text/plain'
         ));
@@ -90,21 +90,21 @@ class DefaultController extends Controller {
      * @param Request $request
      */
     public function fetchAction(Request $request, $journalUuid, $depositUuid) {
-		$this->get('monolog.logger.lockss')->notice("fetch - {$request->getClientIp()} - {$journalUuid} - {$depositUuid}");		
+        $this->get('monolog.logger.lockss')->notice("fetch - {$request->getClientIp()} - {$journalUuid} - {$depositUuid}");
         $em = $this->container->get('doctrine');
         $journal = $em->getRepository('AppBundle:Journal')->findOneBy(array('uuid' => $journalUuid));
         $deposit = $em->getRepository('AppBundle:Deposit')->findOneBy(array('depositUuid' => $depositUuid));
-        if($deposit->getJournal()->getId() !== $journal->getId()) {
+        if ($deposit->getJournal()->getId() !== $journal->getId()) {
             throw new BadRequestHttpException("The requested Journal ID does not match the deposit's journal ID.");
         }
         $path = $this->get('filepaths')->getStagingBagPath($deposit);
         $fs = new Filesystem();
-        if(! $fs->exists($path)) {
+        if (!$fs->exists($path)) {
             throw new NotFoundHttpException("{$journalUuid}/{$depositUuid}.zip does not exist.");
         }
         return new BinaryFileResponse($path);
     }
-    
+
     /**
      * The ONIX-PH was hosted at /onix.xml which was a dumb thing. Redirect to
      * the proper URL at /feeds/onix.xml
@@ -115,11 +115,11 @@ class DefaultController extends Controller {
      */
     public function onyxRedirect() {
         return new RedirectResponse(
-            $this->generateUrl('onix', array('_format' => 'xml')), 
+            $this->generateUrl('onix', array('_format' => 'xml')),
             Response::HTTP_MOVED_PERMANENTLY
         );
     }
-    
+
     /**
      * Fetch the current ONYX-PH metadata file and serve it up. The file is big
      * and nasty. It isn't generated on the fly - there must be a cron tab to
@@ -135,7 +135,7 @@ class DefaultController extends Controller {
     public function onyxFeedAction() {
         $path = $this->container->get('filepaths')->getOnixPath();
         $fs = new Filesystem();
-        if(! $fs->exists($path)) {
+        if (!$fs->exists($path)) {
             $this->container->get('logger')->critical("The ONIX-PH file could not be found at {$path}");
             throw new NotFoundHttpException("The ONIX-PH file could not be found.");
         }

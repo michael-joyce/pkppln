@@ -20,14 +20,19 @@
             <tr>
                 <th>Uuid</th>
                 <th>Comment</th>
+                <th>Journal</th>
+                <th>Deposits</th>
                 <th>Created</th>
             </tr>
         </thead>
         <tbody>
         {% for entity in entities %}
+            {% set journal = repo.findOneBy({'uuid': entity.uuid}) %}
             <tr>
                 <td><a href="{{ path('whitelist_show', { 'id': entity.id }) }}">{{ entity.uuid }}</a></td>
                 <td>{{ entity.comment }}</td>
+                <td>{% if journal is not null %}{{ journal.title }}{% endif %}</td>
+                <td>{% if journal is not null %}{{ journal.countDeposits() }}{% endif %}</td>
                 <td>{% if entity.created %}{{ entity.created|date('Y-m-d H:i:s') }}{% endif %}</td>
             </tr>
         {% endfor %}

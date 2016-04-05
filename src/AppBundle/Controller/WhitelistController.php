@@ -35,10 +35,12 @@ class WhitelistController extends Controller {
             $request->query->getInt('page', 1),
             25
         );
+        $journalRepo = $em->getRepository('AppBundle:Journal');
 
 
         return array(
             'entities' => $entities,
+            'repo' => $journalRepo,
         );
     }
 
