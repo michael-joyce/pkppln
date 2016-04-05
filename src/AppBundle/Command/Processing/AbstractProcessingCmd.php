@@ -83,6 +83,12 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
             InputOption::VALUE_NONE,
             'Do not update processing status'
         );
+        $this->addOption(
+            'limit',
+            'l',
+            InputOption::VALUE_OPTIONAL,
+            'Only process $limit deposits.'
+        );
     }
 
     /**
@@ -157,6 +163,11 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
     final protected function execute(InputInterface $input, OutputInterface $output) {
         $this->preExecute();
         $deposits = $this->getDeposits($input->getOption('retry'));
+        
+        if($input->hasOption('limit')) {
+            $deposits = array_slice($deposits, 0, $input->getOption('limit'));
+        }
+        
         $count = count($deposits);
 
         $this->logger->info("Processing {$count} deposits.");

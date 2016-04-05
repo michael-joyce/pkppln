@@ -86,7 +86,7 @@ class VirusCheckCommand extends AbstractProcessingCmd {
             }
             $filteredFilename = "{$filename}-filtered.xml";
             $report .= basename($filename) . " contains invalid UTF-8 characters and will not be scanned for viruses.\n";
-            $report .= basename($filteredFilename) . " will be scanned for viruses.\n";
+            $report .= basename($filteredFilename) . " will be scanned for viruses instead.\n";
             $dom->load($filteredFilename, LIBXML_COMPACT | LIBXML_PARSEHUGE);
         }
         return $dom;

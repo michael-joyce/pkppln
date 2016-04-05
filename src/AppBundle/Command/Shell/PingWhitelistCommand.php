@@ -2,6 +2,7 @@
 
 namespace AppBundle\Command\Shell;
 
+use AppBundle\Entity\Journal;
 use AppBundle\Entity\Whitelist;
 use AppBundle\Services\Ping;
 use Exception;
@@ -76,6 +77,9 @@ class PingWhitelistCommand extends ContainerAwareCommand {
 		$bwlist = $this->getContainer()->get('blackwhitelist');
 		$ping = $this->getContainer()->get('ping');
         
+        /**
+         * @var Journal[] 
+         */
         $journals = $em->getRepository('AppBundle:Journal')->findAll();
         $minVersion = $input->getArgument('minVersion');
         if(! $minVersion) {
@@ -93,34 +97,37 @@ class PingWhitelistCommand extends ContainerAwareCommand {
             $url = $router->generate('journal_show', array('id' => $journal->getId()), UrlGeneratorInterface::ABSOLUTE_URL);
 			$uuid = $journal->getUuid();
 			if(!$all && $bwlist->isWhitelisted($uuid)) {
-				$output->writeln("{$fmt}/{$count} - skipped (whitelisted) - - {$journal->getUrl()}");
+				$this->logger->notice("{$fmt}/{$count} - skipped (whitelisted) - - {$journal->getUrl()}");
 				continue;
 			}
 			if(!$all && $bwlist->isBlacklisted($uuid)) {
-				$output->writeln("{$fmt}/{$count} - skipped (blacklisted) - - {$journal->getUrl()}");
+				$this->logger->notice("{$fmt}/{$count} - skipped (blacklisted) - - {$journal->getUrl()}");
 				continue;
 			}
 
 			try {
 				$response = $ping->ping($journal);
 			} catch (Exception $e) {
-                $output->writeln("{$fmt}/{$count} - HTTP ERROR: {$e->getMessage()} - {$journal->getUrl()} - {$url}");
+                $this->logger->error("Ping - HTTP ERROR: {$e->getMessage()} - {$journal->getUrl()} - {$url}");
 				continue;
 			}
 			if($response->getHttpStatus() !== 200) {
-				$output->writeln("{$fmt}/{$count} - {$response->getHttpStatus()} - - {$journal->getUrl()} - {$url} -  {$response->getError()}");
+				$this->logger->error("Ping - HTTP {$response->getHttpStatus()} - - {$journal->getUrl()} - {$url} - {$response->getError()}");
 				continue;
 			}
             if(! $response->getOjsRelease()) {
-    			$output->writeln("{$fmt}/{$count} - {$response->getHttpStatus()} - no version number - {$journal->getUrl()} - {$url}");
+    			$this->logger->warning("Ping - HTTP {$response->getHttpStatus()} - no version number found - {$journal->getUrl()} - {$url}");
                 continue;
             }
-			$output->writeln("{$fmt}/{$count} - {$response->getHttpStatus()} - {$response->getOjsRelease()} - {$journal->getUrl()} - {$url}");
+			$this->logger->notice("Ping - {$response->getHttpStatus()} - {$response->getOjsRelease()} - {$journal->getUrl()} - {$url}");
 			
             if(version_compare($response->getOjsRelease(), $minVersion, '<')) {
                 continue;
             }
             if($input->getOption('dry-run')) {
+                continue;
+            }
+            if($bwlist->isWhitelisted($uuid) || $bwlist->isBlacklisted($uuid)) {
                 continue;
             }
             $whitelist = new Whitelist();

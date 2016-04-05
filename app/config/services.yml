@@ -49,7 +49,7 @@ services:
         class: AppBundle\Services\SwordClient
         arguments: ["%lockssomatic_sd_iri%", "%staging_server_uuid%", "%save_deposit_xml%"]
         calls:
-            - [ setLogger, ["@monolog.logger.sword"]]
+            - [ setLogger, ["@monolog.logger.processing"]]
             - [ setTemplating, ["@templating"]]
             - [ setRouter, ["@router"]]
             - [ setPlnJournalTitle, ["%pln_journal_name%"]]

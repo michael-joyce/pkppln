@@ -43,7 +43,7 @@ class ValidatePayloadCommand extends AbstractProcessingCmd {
         }
         if(strtoupper($checksumValue) !== $deposit->getChecksumValue()) {
             $deposit->addErrorLog("Deposit checksum does not match. Expected {$deposit->getChecksumValue()} != Actual " . strtoupper($checksumValue));
-            $this->logger->warning("Deposit checksum does not match.");
+            $this->logger->warning("Deposit checksum does not match for deposit {$deposit->getDepositUuid()}");
             return false;
         }
 

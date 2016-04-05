@@ -24,6 +24,12 @@ class RunAllCommand extends ContainerAwareCommand {
             InputOption::VALUE_NONE,
             'Force the processing state to be updated'
         );
+        $this->addOption(
+            'limit',
+            'l',
+            InputOption::VALUE_OPTIONAL,
+            'Only process $limit deposits.'
+        );
         parent::configure();
     }
 

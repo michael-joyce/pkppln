@@ -80,11 +80,16 @@ class HarvestCommand extends AbstractProcessingCmd {
     protected function fetchDeposit($url, $expected) {
         try {
             $response = $this->client->get($url);
-            $this->logger->info("Harvest {$url} - {$response->getStatusCode()} - {$response->getHeader('Content-Length')}");
+            $this->logger->info("Harvest - {$url} - HTTP {$response->getStatusCode()} - {$response->getHeader('Content-Length')}");
+			if($response->getStatusCode() !== 200) {
+                $this->logger->error("Harvest - {$url} - HTTP {$response->getHttpStatus()} - {$url} - {$response->getError()}");
+			}
         } catch (Exception $e) {
             $this->logger->error($e);
             if ($e->hasResponse()) {
                 $this->logger->error($e->getResponse()->getStatusCode() . ' ' . $this->logger->error($e->getResponse()->getReasonPhrase()));
+            } else {
+                $this->logger->error("Harvest - {$url} - $e->getMessage()");
             }
             throw $e;
         }
@@ -111,6 +116,7 @@ class HarvestCommand extends AbstractProcessingCmd {
             $expectedSize = $deposit->getSize() * 1000;
             if(abs($expectedSize - $size) / $size > self::FILE_SIZE_THRESHOLD) {
                 $deposit->addErrorLog("Expected file size {$expectedSize} is not close to reported size {$size}");
+                $this->logger->warning("Harvest - {$url} - Expected file size {$expectedSize} is not close to reported size {$size}");
             }
         } catch(RequestException $e) {
 			$response = $e->getResponse();
@@ -144,6 +150,7 @@ class HarvestCommand extends AbstractProcessingCmd {
         if($remaining < 0.10) {
             // less than 10% remaining
             $p = round($remaining * 100, 1);
+            $this->logger->critical("Harvest - Harvest would leave less than {$p}% disk space remaining.");
             throw new Exception("Harvest would leave {$p}% disk space remaining.");
         }
     }
