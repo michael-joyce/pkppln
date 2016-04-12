@@ -98,11 +98,11 @@ class DepositBuilder {
             array(
                 'journal_uuid' => $deposit->getJournal()->getUuid(),
                 'deposit_uuid' => $deposit->getDepositUuid(),
-            ),
+                ),
             UrlGeneratorInterface::ABSOLUTE_URL
         );
     }
-	
+
     /**
      * Get the licensing info from the XML and add it to the deposit object.
      * 
@@ -111,12 +111,12 @@ class DepositBuilder {
      * @param Deposit $deposit
      * @param SimpleXMLElement $xml
      */
-	public function getLicensingInfo(Deposit $deposit, SimpleXMLElement $xml) {
-		$item = $xml->xpath('//pkp:license/node()');
-		foreach($item as $child) {
-			$deposit->addLicense($child->getName(), (string)$child);
-		}
-	}
+    public function getLicensingInfo(Deposit $deposit, SimpleXMLElement $xml) {
+        $item = $xml->xpath('//pkp:license/node()');
+        foreach ($item as $child) {
+            $deposit->addLicense($child->getName(), (string) $child);
+        }
+    }
 
     /**
      * Build a deposit from XML.
@@ -130,7 +130,12 @@ class DepositBuilder {
         $id = $this->getXmlValue($xml, '//atom:id');
         $deposit_uuid = substr($id, 9, 36);
 
-        $deposit = new Deposit();
+        $deposit = $this->em->getRepository('AppBundle:Deposit')->findOneBy(array(
+            'deposit_uuid' => $deposit_uuid,
+        ));
+        if (!$deposit) {
+            $deposit = new Deposit();
+        }
         $deposit->setAction($action);
         $deposit->setChecksumType($this->getXmlValue($xml, 'pkp:content/@checksumType'));
         $deposit->setChecksumValue($this->getXmlValue($xml, 'pkp:content/@checksumValue'));
@@ -143,13 +148,13 @@ class DepositBuilder {
         $deposit->setSize($this->getXmlValue($xml, 'pkp:content/@size'));
         $deposit->setUrl($this->getXmlValue($xml, 'pkp:content'));
         $deposit->setDepositReceipt($this->buildDepositReceiptUrl($deposit));
-        
-		$this->getLicensingInfo($deposit, $xml);
-		
-        if($action === 'add') {
+
+        $this->getLicensingInfo($deposit, $xml);
+
+        if ($action === 'add') {
             $deposit->addToProcessingLog("Deposit received.");
         } else {
-            $deposit->addToProcessingLog('Deposit edited.');
+            $deposit->addToProcessingLog('Deposit edited or reset by journal manager.');
         }
 
         $this->em->persist($deposit);

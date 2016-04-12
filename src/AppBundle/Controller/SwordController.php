@@ -244,7 +244,7 @@ class SwordController extends Controller {
 
         $xml = $this->parseXml($request->getContent());
 		$journal = $this->get('journalbuilder')->fromXml($xml, $journal_uuid);
-		$journal->setStatus('healthy');
+		$journal->setStatus('healthy');        
         $deposit = $this->get('depositbuilder')->fromXml($journal, $xml);
 
         /** @var Response */
