@@ -275,7 +275,8 @@ class SwordController extends Controller {
         }
 		
 		$logger->notice("statement - {$request->getClientIp()} - {$journal_uuid} - {$acceptingLog}");
-		if(! $accepting) {
+        
+		if(! $accepting && !$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
 			throw new SwordException(400, "Not authorized to request statements.");
 		}
 		

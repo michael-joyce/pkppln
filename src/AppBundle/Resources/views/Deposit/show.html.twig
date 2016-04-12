@@ -80,6 +80,10 @@
                 <td>{{ entity.state }}</td>
             </tr>
             <tr>
+                <th>Staging server deposit statement</th>
+                <td><a href="{{ path('statement', {'journal_uuid': entity.journal.uuid, 'deposit_uuid': entity.depositUuid }) }}">{{ path('statement', {'journal_uuid': entity.journal.uuid, 'deposit_uuid': entity.depositUuid })|preg_replace('~/~', '/&#8203;')|raw }}</a></td>
+            </tr>
+            <tr>
                 <th>Processing Errors</th>
                 <td>
                     {% if entity.errorLog | length == 0 %}
@@ -117,7 +121,7 @@
                 <td>{{ entity.depositDate|date('Y-m-d H:i:s') }}</td>
             </tr>
             <tr>
-                <th>Deposit receipt</th>
+                <th>LOCKSSOMatic Deposit receipt</th>
                 <td><a href="{{ entity.depositReceipt }}">{{ entity.depositReceipt|preg_replace('~/~', '/&#8203;')|raw }}</a></td>
             </tr>
             <tr>
