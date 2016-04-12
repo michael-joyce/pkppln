@@ -69,7 +69,7 @@ class Deposit
      * @var string
      * 
      * @Assert\Uuid
-     * @ORM\Column(type="string", length=36, nullable=false)
+     * @ORM\Column(type="string", length=36, nullable=false, unique=true)
      */
     private $depositUuid;
 
