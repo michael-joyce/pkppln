@@ -90,16 +90,23 @@ class DefaultController extends Controller {
      * @param Request $request
      */
     public function fetchAction(Request $request, $journalUuid, $depositUuid) {
-        $this->get('monolog.logger.lockss')->notice("fetch - {$request->getClientIp()} - {$journalUuid} - {$depositUuid}");
+		$logger = $this->get('monolog.logger.lockss');
+		$logger->notice("fetch - {$request->getClientIp()} - {$journalUuid} - {$depositUuid}");
         $em = $this->container->get('doctrine');
         $journal = $em->getRepository('AppBundle:Journal')->findOneBy(array('uuid' => $journalUuid));
         $deposit = $em->getRepository('AppBundle:Deposit')->findOneBy(array('depositUuid' => $depositUuid));
+		if( ! $deposit) {
+			$logger->error("fetch - 404 DEPOSIT NOT FOUND - {$request->getClientIp()} - {$journalUuid} - {$depositUuid}");
+            throw new NotFoundHttpException("{$journalUuid}/{$depositUuid}.zip does not exist.");
+		}
         if ($deposit->getJournal()->getId() !== $journal->getId()) {
+			$logger->error("fetch - 400 JOURNAL MISMATCH - {$request->getClientIp()} - {$journalUuid} - {$depositUuid}");
             throw new BadRequestHttpException("The requested Journal ID does not match the deposit's journal ID.");
         }
         $path = $this->get('filepaths')->getStagingBagPath($deposit);
         $fs = new Filesystem();
         if (!$fs->exists($path)) {
+			$logger->error("fetch - 404 PACKAGE NOT FOUND - {$request->getClientIp()} - {$journalUuid} - {$depositUuid}");
             throw new NotFoundHttpException("{$journalUuid}/{$depositUuid}.zip does not exist.");
         }
         return new BinaryFileResponse($path);
