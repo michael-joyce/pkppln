@@ -247,6 +247,15 @@ class SwordClient {
         $this->namespaces->registerNamespaces($responseXml);
         return true;
     }
+    
+    public function receipt(Deposit $deposit) {
+        $client = new Client();
+        $receiptRequest = $client->createRequest('GET', $deposit->getDepositReceipt());
+        $receiptResponse = $client->send($receiptRequest);
+        $receiptXml = new SimpleXMLElement($receiptResponse->getBody());
+        $this->namespaces->registerNamespaces($receiptXml);
+        return $receiptXml;
+    }
 
     /**
      * Fetch the SWORD statement.
@@ -256,6 +265,15 @@ class SwordClient {
      * @param Deposit $deposit
      */
     public function statement(Deposit $deposit) {
+        $receipt = $this->receipt($deposit);        
+        $statementUrl = $receipt->xpath('atom:link[@rel="http://purl.org/net/sword/terms/statement"]/@href')[0];
         
+        $client = new Client();
+        $statementRequest = $client->createRequest('GET', $statementUrl);
+        $statementResponse = $client->send($statementRequest);
+        $statementXml = new \SimpleXMLElement($statementResponse->getBody());
+        $this->namespaces->registerNamespaces($statementXml);
+        
+        return $statementXml;
     }
 }

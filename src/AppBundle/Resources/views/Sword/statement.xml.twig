@@ -1,12 +1,8 @@
 <atom:feed xmlns:sword="http://purl.org/net/sword/terms/"
            xmlns:atom="http://www.w3.org/2005/Atom"
            xmlns:pkp="http://pkp.sfu.ca/SWORD">
-    <atom:category scheme="http://purl.org/net/sword/terms/state" term="{{ plnState }}" label="PLN State">
-        {{ plnStateDesc }}
-    </atom:category>
-    <atom:category scheme="http://purl.org/net/sword/terms/state" term="{{ processingState }}" label="Processing State">
-        {{ processingStateDesc }}
-    </atom:category>
+    <atom:category scheme="http://purl.org/net/sword/terms/state" term="{% if deposit.state == 'complete' %}deposited{% else %}{{ deposit.state }}{% endif %}" label="Processing State"/>
+    <atom:category scheme="http://purl.org/net/sword/terms/state" term="{{ deposit.plnState }}" label="PLN State"/>
     <atom:entry>
         <atom:category scheme="http://purl.org/net/sword/terms/"
                        term="http://purl.org/net/sword/terms/originalDeposit" 

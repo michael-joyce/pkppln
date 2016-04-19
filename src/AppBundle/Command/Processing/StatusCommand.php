@@ -13,12 +13,17 @@ use Symfony\Component\Filesystem\Filesystem;
  * 
  * @see SwordClient
  */
-class DepositCommand extends AbstractProcessingCmd {
+class StatusCommand extends AbstractProcessingCmd {
 
     /**
      * @var SwordClient
      */
     private $client;
+    
+    /**
+     * @var boolean
+     */
+    private $cleanup;
     
     public function __construct($name = null) {
         parent::__construct($name);
@@ -28,13 +33,14 @@ class DepositCommand extends AbstractProcessingCmd {
      * {@inheritDoc}
      */
     protected function configure() {
-        $this->setName('pln:deposit');
-        $this->setDescription('Send deposits to LockssOMatic.');
+        $this->setName('pln:status');
+        $this->setDescription('Check the status of deposits in LOCKSSOMatic.');
         parent::configure();
     }
     
     public function setContainer(ContainerInterface $container = null) {
         parent::setContainer($container);
+        $this->cleanup = !$this->container->getParameter('remove_complete_deposits');
         $this->client = $container->get('sword_client');
         $this->client->setLogger($this->logger);
     }
@@ -47,39 +53,49 @@ class DepositCommand extends AbstractProcessingCmd {
      * @return type
      */
     protected function processDeposit(Deposit $deposit) {
-        $this->logger->notice("Sending deposit {$deposit->getDepositUuid()}");
-        return $this->client->createDeposit($deposit);            
+        $this->logger->notice("Checking deposit {$deposit->getDepositUuid()}");
+        $statement = $this->client->statement($deposit);
+        $status = (string)$statement->xpath('//atom:category[@scheme="http://purl.org/net/sword/terms/state"]/@term')[0];
+        $deposit->setPlnState($status);
+        if($status === 'agreement' && $this->cleanup) {
+            $this->logger->notice("Deposit complete. Removing processing files.");
+            $this->fs->remove(array(
+                $this->filePaths->getHarvestFile($deposit),
+                $this->filePaths->getProcessingBagPath($deposit),
+                $this->filePaths->getStagingBagPath($deposit)
+            ));
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     public function nextState() {
-        return "deposited";
+        return "complete";
     }
 
     /**
      * {@inheritDoc}
      */
     public function processingState() {
-        return "reserialized";
+        return "deposited";
     }
 
     /**
      * {@inheritDoc}
      */
     public function failureLogMessage() {
-        return "Deposit to Lockssomatic failed.";
+        return "Deposit status failed.";
     }
 
     /**
      * {@inheritDoc}
      */
     public function successLogMessage() {
-        return "Deposit to Lockssomatic succeeded.";
+        return "Deposit status succeeded.";
     }
 
     public function errorState() {
-        return "deposit-error";
+        return "status-error";
     }
 }

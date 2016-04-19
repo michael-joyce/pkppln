@@ -16,11 +16,11 @@ imports:
 monolog:
     handlers:
         main:
-            type:         fingers_crossed
+            type:         rotating_file
             action_level: error
             handler:      nested
         nested:
-            type:  stream
+            type:  rotating_file
             path:  "%kernel.logs_dir%/%kernel.environment%.log"
             level: debug
         console:
