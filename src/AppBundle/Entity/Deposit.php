@@ -261,7 +261,7 @@ class Deposit
     }
 
     /**
-     * Set deposit_uuid
+     * Set depositUuid
      *
      * @param string $depositUuid
      * @return Deposit
@@ -274,7 +274,7 @@ class Deposit
     }
 
     /**
-     * Get deposit_uuid
+     * Get depositUuid
      *
      * @return string 
      */

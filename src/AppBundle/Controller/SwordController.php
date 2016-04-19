@@ -368,7 +368,7 @@ class SwordController extends Controller {
         }
 
         /** @var Deposit $deposit */
-        $deposit = $em->getRepository('AppBundle:Deposit')->findOneBy(array('deposit_uuid' => $deposit_uuid));
+        $deposit = $em->getRepository('AppBundle:Deposit')->findOneBy(array('depositUuid' => $deposit_uuid));
         if ($deposit === null) {
             throw new SwordException(400, "Deposit UUID not found.");
         }

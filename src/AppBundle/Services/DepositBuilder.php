@@ -131,7 +131,7 @@ class DepositBuilder {
         $deposit_uuid = substr($id, 9, 36);
 
         $deposit = $this->em->getRepository('AppBundle:Deposit')->findOneBy(array(
-            'deposit_uuid' => $deposit_uuid,
+            'depositUuid' => $deposit_uuid,
         ));
         if (!$deposit) {
             $deposit = new Deposit();
