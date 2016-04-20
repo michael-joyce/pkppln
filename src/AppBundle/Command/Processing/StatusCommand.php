@@ -19,16 +19,16 @@ class StatusCommand extends AbstractProcessingCmd {
      * @var SwordClient
      */
     private $client;
-    
+
     /**
      * @var boolean
      */
     private $cleanup;
-    
+
     public function __construct($name = null) {
         parent::__construct($name);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -37,12 +37,25 @@ class StatusCommand extends AbstractProcessingCmd {
         $this->setDescription('Check the status of deposits in LOCKSSOMatic.');
         parent::configure();
     }
-    
+
     public function setContainer(ContainerInterface $container = null) {
         parent::setContainer($container);
         $this->cleanup = !$this->container->getParameter('remove_complete_deposits');
         $this->client = $container->get('sword_client');
         $this->client->setLogger($this->logger);
+    }
+
+    private function delTree($path) {
+        $directoryIterator = new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS);
+        $fileIterator = new RecursiveIteratorIterator($directoryIterator, RecursiveIteratorIterator::CHILD_FIRST);
+        foreach ($fileIterator as $file) {
+            if ($file->isDir()) {
+                rmdir($file->getRealPath());
+            } else {
+                unlink($file->getRealPath());
+            }
+        }
+        rmdir($path);
     }
 
     /**
@@ -55,16 +68,16 @@ class StatusCommand extends AbstractProcessingCmd {
     protected function processDeposit(Deposit $deposit) {
         $this->logger->notice("Checking deposit {$deposit->getDepositUuid()}");
         $statement = $this->client->statement($deposit);
-        $status = (string)$statement->xpath('//atom:category[@scheme="http://purl.org/net/sword/terms/state"]/@term')[0];
+        $status = (string) $statement->xpath('//atom:category[@scheme="http://purl.org/net/sword/terms/state"]/@term')[0];
         $deposit->setPlnState($status);
-        if($status === 'agreement' && $this->cleanup) {
-            $this->logger->notice("Deposit complete. Removing processing files.");
-            $this->fs->remove(array(
-                $this->filePaths->getHarvestFile($deposit),
-                $this->filePaths->getProcessingBagPath($deposit),
-                $this->filePaths->getStagingBagPath($deposit)
-            ));
+        if ($status === 'agreement' && $this->cleanup) {
+            $this->logger->notice("Deposit complete. Removing processing files for deposit {$deposit->getId()}.");
+            unlink($this->filePaths->getHarvestFile($deposit));
+            $this->deltree($this->filePaths->getProcessingBagPath($deposit));
+            unlink($this->filePaths->getStagingBagPath($deposit));
+            return true;
         }
+        return false;
     }
 
     /**
@@ -98,4 +111,5 @@ class StatusCommand extends AbstractProcessingCmd {
     public function errorState() {
         return "status-error";
     }
+
 }
