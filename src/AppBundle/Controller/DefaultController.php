@@ -95,7 +95,7 @@ class DefaultController extends Controller {
         $em = $this->container->get('doctrine');
         $journal = $em->getRepository('AppBundle:Journal')->findOneBy(array('uuid' => $journalUuid));
         $deposit = $em->getRepository('AppBundle:Deposit')->findOneBy(array('depositUuid' => $depositUuid));
-		if( ! $deposit) {
+		if(! $deposit) {
 			$logger->error("fetch - 404 DEPOSIT NOT FOUND - {$request->getClientIp()} - {$journalUuid} - {$depositUuid}");
             throw new NotFoundHttpException("{$journalUuid}/{$depositUuid}.zip does not exist.");
 		}

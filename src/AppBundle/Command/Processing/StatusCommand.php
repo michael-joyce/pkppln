@@ -111,5 +111,4 @@ class StatusCommand extends AbstractProcessingCmd {
     public function errorState() {
         return "status-error";
     }
-
 }
