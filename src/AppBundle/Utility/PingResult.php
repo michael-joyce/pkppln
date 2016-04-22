@@ -28,6 +28,11 @@ class PingResult {
 	 */
 	private $error;
 	
+	/**
+	 * @var string
+	 */
+	private $body;
+	
     /**
      * Construct a Ping response from an HTTP response.
      * 
@@ -37,6 +42,7 @@ class PingResult {
 		$this->status = $response->getStatusCode();
 		$this->error = null;
 		$this->xml = null;
+		$this->body = $response->getBody();
 		try {
 			$this->xml = $response->xml();
 		} catch (Exception $ex) {            
@@ -44,6 +50,13 @@ class PingResult {
 		} catch (XmlParseException $ex) {
 			$this->error = $ex->getMessage();
 		}
+	}
+	
+	public function getBody($stripTags = true) {
+		if($stripTags) {
+			return strip_tags($this->body);
+		}
+		return $this->body;
 	}
 	
     /**

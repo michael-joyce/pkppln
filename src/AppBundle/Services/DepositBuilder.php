@@ -75,7 +75,7 @@ class DepositBuilder {
      * @return string
      * @throws Exception
      */
-    protected function getXmlValue(SimpleXMLElement $xml, $xpath) {
+    public function getXmlValue(SimpleXMLElement $xml, $xpath) {
         $data = $xml->xpath($xpath);
         if (count($data) === 1) {
             return trim((string) $data[0]);

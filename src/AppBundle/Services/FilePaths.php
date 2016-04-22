@@ -62,6 +62,10 @@ class FilePaths {
     public function setKernelEnv($env) {
         $this->env = $env;
     }
+	
+	public function getBaseDir() {
+		return $this->baseDir;
+	}
     
     /**
      * Set the file system base directory.
@@ -81,13 +85,13 @@ class FilePaths {
      * 
      * @return string
      */
-    protected function rootPath() {
+    public function rootPath($mkdir = true) {
         $path = $this->baseDir;
         if (! $this->fs->isAbsolutePath($path)) {
             $root = dirname($this->env);
             $path =  $root . '/' . $path;
         }
-        if(! $this->fs->exists($path)) {
+        if(! $this->fs->exists($path) && $mkdir) {
             $this->fs->mkdir($path);
         }
         return realpath($path);

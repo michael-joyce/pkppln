@@ -36,7 +36,7 @@ abstract class AbstractTestCase extends BaseTestCase {
         $fixtures = $this->fixtures();
 		if(count($fixtures) > 0) {
 			$this->references = $this->loadFixtures($fixtures)->getReferenceRepository();
-			$this->em = $this->getContainer()->get('doctrine')->getManager();
 		}
+		$this->em = $this->getContainer()->get('doctrine')->getManager();
     }
 }

@@ -67,7 +67,7 @@ class JournalBuilder {
      * @return string|null
      * @throws Exception
      */
-    protected function getXmlValue(SimpleXMLElement $xml, $xpath) {
+    public function getXmlValue(SimpleXMLElement $xml, $xpath) {
         $data = $xml->xpath($xpath);
         if (count($data) === 1) {
             return (string) $data[0];
