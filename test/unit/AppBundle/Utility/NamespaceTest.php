@@ -34,5 +34,4 @@ class NamespaceTest extends PHPUnit_Framework_TestCase {
 		$nodes = $xml->xpath('/sword:root');
 		$this->assertEquals(1, count($nodes));
 	}
-	
 }

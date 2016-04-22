@@ -12,6 +12,17 @@ class AuContainerTest extends PHPUnit_Framework_TestCase {
 		$this->auContainer = new AuContainer();
 	}
 	
+	public function setOpenClosed() {
+		$this->auContainer->setOpen(false);
+		$this->assertEquals(false, $this->auContainer->getOpen());
+	}
+	
+	public function setClosedOpen() {
+		$this->auContainer->setOpen(false);
+		$this->auContainer->setOpen(true);
+		$this->assertEquals(false, $this->auContainer->getOpen());
+	}
+	
 	public function testGetSizeEmpty() {
 		$this->assertEquals(0, $this->auContainer->getSize());
 	}
@@ -50,6 +61,4 @@ class AuContainerTest extends PHPUnit_Framework_TestCase {
 		$this->auContainer->addDeposit($d2);
 		$this->assertEquals(2, $this->auContainer->countDeposits());
 	}
-	
-	
-	}
+}

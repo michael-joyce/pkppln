@@ -31,5 +31,4 @@ class BlacklistRepository extends EntityRepository {
 		$listed = $query->getResult();
 		return $listed;
 	}
-
 }

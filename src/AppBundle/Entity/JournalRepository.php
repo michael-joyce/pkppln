@@ -50,7 +50,7 @@ class JournalRepository extends EntityRepository {
      */
     public function findByStatus($status) {
         return $this->findBy(array(
-                'status' => $status,
+            'status' => $status,
         ));
     }
 
@@ -77,7 +77,6 @@ class JournalRepository extends EntityRepository {
         $dt = new DateTime("-{$days} day");
 
         $qb = $this->createQueryBuilder('e');
-        $qb->where("e.status = 'healthy'");
         $qb->andWhere('e.contacted < :dt');
         $qb->setParameter('dt', $dt);
         return $qb->getQuery()->getResult();
@@ -99,6 +98,13 @@ class JournalRepository extends EntityRepository {
         return $qb->getQUery()->getResult();
     }
     
+	/**
+	 * @todo This method should be called findRecent(). It does not find
+	 * journals with status=new.
+	 * 
+	 * @param type $limit
+	 * @return type
+	 */
     public function findNew($limit = 5) {
         $qb = $this->createQueryBuilder('e');
         $qb->orderBy('e.id', 'DESC');

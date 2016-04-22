@@ -78,5 +78,4 @@ class DepositTest extends PHPUnit_Framework_TestCase {
 		$this->deposit->setPackageChecksumValue($value);
 		$this->assertEquals($value, $this->deposit->getPackageChecksumValue());
 	}
-
 }

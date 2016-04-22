@@ -16,25 +16,37 @@ class LoadJournals extends AbstractDataFixture implements OrderedFixtureInterfac
      * {@inheritDoc}
      */
     public function getOrder() {
-        return 1;
+        return 1;		
     }
 
     /**
      * {@inheritDoc}
      */
     protected function doLoad(ObjectManager $manager) {
-        $journal = new Journal();
-        $journal->setEmail('test@example.com');
-        $journal->setIssn('1234-1234');
-        $journal->setPublisherName('Test Publisher');
-        $journal->setPublisherUrl('http://example.com');
-        $journal->setTitle('I J Testing');
-        $journal->setUrl('http://journal.example.com');
-        $journal->setStatus('healthy');
-        $journal->setUuid('c0a65967-32bd-4ee8-96de-c469743e563a');
-        $manager->persist($journal);
+        $j0 = new Journal();
+        $j0->setEmail('test@example.com');
+        $j0->setIssn('1234-1234');
+        $j0->setPublisherName('Test Publisher');
+        $j0->setPublisherUrl('http://example.com');
+        $j0->setTitle('I J Testing');
+        $j0->setUrl('http://journal.example.com');
+        $j0->setStatus('healthy');
+        $j0->setUuid('c0a65967-32bd-4ee8-96de-c469743e563a');
+        $manager->persist($j0);
+		
+        $j1 = new Journal();
+        $j1->setEmail('foo@bar.com');
+        $j1->setIssn('4321-4321');
+        $j1->setPublisherName('Orange Inc');
+        $j1->setPublisherUrl('http://orangula.dev');
+        $j1->setTitle('J Oranges');
+        $j1->setUrl('http://journal.orangula.dev');
+        $j1->setStatus('new');
+        $j1->setUuid('A556CBF2-B674-444F-87B7-23DEE36F013D');
+        $manager->persist($j1);
+		
         $manager->flush();
-        $this->setReference('journal', $journal);
+        $this->setReference('journal', $j0);
     }
 
     /**

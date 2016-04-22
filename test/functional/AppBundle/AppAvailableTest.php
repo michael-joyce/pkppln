@@ -21,5 +21,4 @@ class AppAvailableTest extends WebTestCase {
 			array('/'),
 		);
 	}
-	
 }

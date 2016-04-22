@@ -31,5 +31,4 @@ class WhitelistRepository extends EntityRepository {
 		$listed = $query->getResult();
 		return $listed;
 	}
-
 }

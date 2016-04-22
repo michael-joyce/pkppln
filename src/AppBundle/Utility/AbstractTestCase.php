@@ -10,7 +10,7 @@ use Liip\FunctionalTestBundle\Test\WebTestCase as BaseTestCase;
  * Thin wrapper around Liip\FunctionalTestBundle\Test\WebTestCase to preload
  * fixtures into the database.
  */
-class AbstractTestCase extends BaseTestCase {
+abstract class AbstractTestCase extends BaseTestCase {
 
     /**
      * @var ObjectManager
@@ -25,19 +25,18 @@ class AbstractTestCase extends BaseTestCase {
      */
     protected $references;
 
+	public function fixtures() {
+		return array();
+	}
+	
     /**
      * {@inheritDocs}
      */
     protected function setUp() {
-        $fixtures = array(
-            'AppBundle\DataFixtures\ORM\test\LoadBlacklist',
-            'AppBundle\DataFixtures\ORM\test\LoadDeposits',
-            'AppBundle\DataFixtures\ORM\test\LoadJournals',
-            'AppBundle\DataFixtures\ORM\test\LoadTermsOfUse',
-            'AppBundle\DataFixtures\ORM\test\LoadWhitelist',
-            'AppUserBundle\DataFixtures\ORM\test\LoadUsers',
-        );
-        $this->references = $this->loadFixtures($fixtures)->getReferenceRepository();
-        $this->em = $this->getContainer()->get('doctrine')->getManager();
+        $fixtures = $this->fixtures();
+		if(count($fixtures) > 0) {
+			$this->references = $this->loadFixtures($fixtures)->getReferenceRepository();
+			$this->em = $this->getContainer()->get('doctrine')->getManager();
+		}
     }
 }

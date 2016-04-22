@@ -17,8 +17,8 @@ class LoadTermsOfUse extends AbstractDataFixture {
     private $manager;
 
     private $terms = array(
-        [0, 'en-US', 'test.a', 'first term.'],
-        [1, 'en-US', 'test.b', 'second term.'],
+        [1, 'en-US', 'test.a', 'first term.'],
+        [0, 'en-US', 'test.b', 'second term.'],
         [2, 'en-US', 'test.c', 'third term.'],
     );
 
