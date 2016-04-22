@@ -12,6 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table()
  * @ORM\HasLifecycleCallbacks
  * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="BlacklistRepository")
  */
 class Blacklist {
 

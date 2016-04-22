@@ -27,10 +27,12 @@ class JournalRepository extends EntityRepository {
                     'CONCAT',
                     array(
                         'j.title', 
+						'j.uuid',
                         'j.issn', 
                         'j.url', 
                         'j.email', 
-                    'j.publisherName')
+						'j.publisherName'
+					)
                 ),
                 "'%$q%'"
             )

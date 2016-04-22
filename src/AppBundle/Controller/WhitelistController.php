@@ -105,6 +105,38 @@ class WhitelistController extends Controller {
         );
     }
 
+	/**
+	 * @Route("/search", name="whitelist_search")
+	 * @Method("GET")
+	 * @Template()
+	 * @param Request $request
+	 */
+	public function searchAction(Request $request) {
+		$em = $this->getDoctrine()->getManager();
+		$q = $request->query->get('q', '');
+		
+		$repo = $em->getRepository('AppBundle:Whitelist');
+        $paginator = $this->get('knp_paginator');
+
+        $entities = array();
+        $results = array();
+        if ($q !== '') {
+            $results = $repo->search($q);
+
+            $entities = $paginator->paginate(
+                $results,
+                $request->query->getInt('page', 1),
+                25
+            );
+        }
+
+        return array(
+            'q' => $q,
+            'count' => count($results),
+            'entities' => $entities
+        );
+	}
+
     /**
      * Finds and displays a Whitelist entity.
      *
