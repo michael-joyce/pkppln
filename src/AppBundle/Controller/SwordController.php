@@ -95,6 +95,7 @@ class SwordController extends Controller {
      * @return Journal
      */
 	private function journalContact($uuid, $url) {
+        $logger = $this->get('monolog.logger.sword');
 		$em = $this->getDoctrine()->getManager();
 		$journalRepo = $em->getRepository('AppBundle:Journal');
 		$journal = $journalRepo->findOneBy(array(
@@ -102,6 +103,9 @@ class SwordController extends Controller {
 		));
 		if($journal !== null) {
 			$journal->setTimestamp();
+			if($journal->getUrl() !== $url) {
+				$logger->warning("journal URL mismatch - {$uuid} - {$journal->getUrl()} - {$url}");
+			}
 		} else {
             $journal = new Journal();
             $journal->setUuid($uuid);
