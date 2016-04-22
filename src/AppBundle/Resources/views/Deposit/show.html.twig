@@ -81,7 +81,7 @@
             </tr>
             <tr>
                 <th>Staging server deposit statement</th>
-                <td><a href="{{ path('statement', {'journal_uuid': entity.journal.uuid, 'deposit_uuid': entity.depositUuid }) }}">{{ path('statement', {'journal_uuid': entity.journal.uuid, 'deposit_uuid': entity.depositUuid })|preg_replace('~/~', '/&#8203;')|raw }}</a></td>
+                <td><a href="{{ url('statement', {'journal_uuid': entity.journal.uuid, 'deposit_uuid': entity.depositUuid }) }}">{{ url('statement', {'journal_uuid': entity.journal.uuid, 'deposit_uuid': entity.depositUuid })|preg_replace('~/~', '/&#8203;')|raw }}</a></td>
             </tr>
             <tr>
                 <th>Processing Errors</th>

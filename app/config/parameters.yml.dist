@@ -63,3 +63,6 @@ parameters:
     network_accepting: The PKP PLN can accept deposits from this journal.
     network_oldojs: This journal must be running OJS 2.4.8 to make deposits to the PKP PLN.
     network_default: The PKP PLN does not know about this journal yet.
+
+    # remove completed deposits, once LOCKSSOMatic reports 100% agreement.
+    remove_complete_deposits: false

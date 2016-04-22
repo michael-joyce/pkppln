@@ -27,30 +27,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class SwordController extends Controller {
 
     /**
-     * Human-readable descriptions of the LOCKSS states.
-     *
-     * @var array
-     */
-    private static $lockssStates = array(
-        'received' => 'LOCKSS is aware of the deposit.',
-        'syncing' => 'LOCKSS boxes are downloading the deposit.',
-        'agreement' => 'The PKP LOCKSS network agrees internally on content checksums.',
-        'unknown' => 'The deposit is not known to LOCKSS.'
-    );
-    
-    /**
-     * Human-readable descriptions of the staging server processing states.
-     *
-     * @var array
-     */
-    private static $processingStates = array(
-        'received' => 'The PLN has downloaded the deposit file.',
-        'validated' => 'The PLN has validated the checksums and OJS export XML.',
-        'sent' => 'The PLN has notified LOCKSS that the deposit is ready.',
-        'unknown' => 'The deposit is in an unknown state.'
-    );
-
-    /**
      * Parse an XML string, register the namespaces it uses, and return the
      * result.
      *
@@ -301,38 +277,10 @@ class SwordController extends Controller {
         $journal->setContacted(new DateTime());
 		$journal->setStatus('healthy');
         $em->flush();
-		
-        $processingState = 'unknown';
-        switch($deposit->getState()) {
-            case 'depositedByJournal': 
-            case 'harvested':
-            case 'payload-validated':
-            case 'bag-validated':
-            case 'virus-checked':
-            case 'xml-validated':
-                $processingState = 'received';
-                break;
-            case 'reserialized':
-                $processingState = 'validated';
-                break;
-            case 'deposited':
-                $processingState = 'sent';
-				break;
-            default:
-                $processingState = 'unknown';
-                $logger->critical('Deposit ' . $deposit->getId() . ' is in unknown processing state ' . $deposit->getState());
-                break;
-        }
-        
-        $plnState = 'unknown';
 
         /** @var Response */
         $response = $this->render("AppBundle:Sword:statement.xml.twig", array(
-            "deposit" => $deposit,
-            "processingState" => $processingState,
-            'processingStateDesc' => self::$processingStates[$processingState],
-            'plnState' => $plnState,
-            'plnStateDesc' => self::$lockssStates[$plnState]
+            'deposit' => $deposit,
         ));
         $response->headers->set('Content-Type', 'text/xml');
         return $response;
@@ -368,7 +316,7 @@ class SwordController extends Controller {
         }
 
         /** @var Deposit $deposit */
-        $deposit = $em->getRepository('AppBundle:Deposit')->findOneBy(array('deposit_uuid' => $deposit_uuid));
+        $deposit = $em->getRepository('AppBundle:Deposit')->findOneBy(array('depositUuid' => $deposit_uuid));
         if ($deposit === null) {
             throw new SwordException(400, "Deposit UUID not found.");
         }

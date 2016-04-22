@@ -20,7 +20,7 @@
         pkp:journalTitle="{{plnJournalTitle}}"
         pkp:journalUrl="{{deposit.journal.url}}"
         pkp:issn="{{deposit.journal.issn}}"
-		pkp:publisher="{{publisher}}"
+	pkp:publisher="{{publisher}}"
         pkp:publisherName="{{deposit.journal.publisherName}}"
         pkp:publisherUrl="{{deposit.journal.publisherUrl}}">
         {{ url('fetch', { 'journalUuid': deposit.journal.uuid, 'depositUuid': deposit.depositUuid }) }}

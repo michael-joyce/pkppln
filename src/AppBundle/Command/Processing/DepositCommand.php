@@ -3,8 +3,10 @@
 namespace AppBundle\Command\Processing;
 
 use AppBundle\Entity\Deposit;
+use AppBundle\Services\FilePaths;
 use AppBundle\Services\SwordClient;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Send a fully processed deposit to LOCKSSOMatic.

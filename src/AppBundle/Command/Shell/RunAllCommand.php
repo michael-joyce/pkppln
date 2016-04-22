@@ -47,6 +47,7 @@ class RunAllCommand extends ContainerAwareCommand {
             'pln:virus-scan',
             'pln:reserialize',
             'pln:deposit',
+            'pln:status',
         );
     }
 
