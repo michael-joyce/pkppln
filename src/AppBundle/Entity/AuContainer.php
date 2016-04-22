@@ -68,11 +68,11 @@ class AuContainer {
     /**
      * Add deposits
      *
-     * @param Deposit $deposits
+     * @param Deposit $deposit
      * @return AuContainer
      */
-    public function addDeposit(Deposit $deposits) {
-        $this->deposits[] = $deposits;
+    public function addDeposit(Deposit $deposit) {
+        $this->deposits[] = $deposit;
 
         return $this;
     }

@@ -769,7 +769,7 @@ class Deposit
      */
     public function setPackageChecksumValue($packageChecksumValue)
     {
-        $this->packageChecksumValue = $packageChecksumValue;
+        $this->packageChecksumValue = strtoupper($packageChecksumValue);
 
         return $this;
     }

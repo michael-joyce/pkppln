@@ -259,7 +259,7 @@ class Journal {
         if($this->title) {
             return $this->title;
         }
-        return '(untitled)';
+        return '(unknown)';
     }
 
     /**
@@ -422,12 +422,12 @@ class Journal {
     /**
      * Add deposits
      *
-     * @param Deposit $deposits
+     * @param Deposit $deposit
      * @return Journal
      */
-    public function addDeposit(Deposit $deposits)
+    public function addDeposit(Deposit $deposit)
     {
-        $this->deposits[] = $deposits;
+        $this->deposits[] = $deposit;
 
         return $this;
     }
@@ -435,11 +435,11 @@ class Journal {
     /**
      * Remove deposits
      *
-     * @param Deposit $deposits
+     * @param Deposit $deposit
      */
-    public function removeDeposit(Deposit $deposits)
+    public function removeDeposit(Deposit $deposit)
     {
-        $this->deposits->removeElement($deposits);
+        $this->deposits->removeElement($deposit);
     }
 
     /**
@@ -455,13 +455,12 @@ class Journal {
     /**
      * Get the deposits which have been sent to LOCKSSOMatic.
      * 
-     * @param string $action
      * @return Deposit[]
      */
-    public function getCompletedDeposits($action = 'add') {
+    public function getCompletedDeposits() {
         $completed = [];
         foreach($this->deposits as $deposit) {
-            if($deposit->getState() === 'deposited' && $deposit->getAction() === $action) {
+            if($deposit->getState() === 'completed') {
                 $completed[] = $deposit;
             }
         }
@@ -483,7 +482,7 @@ class Journal {
      * @return string
      */
     public function __toString() {
-        return $this->title;
+        return $this->getTitle();
     }
 
     /**
