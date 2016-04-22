@@ -96,6 +96,9 @@ class PingWhitelistCommand extends ContainerAwareCommand {
 			
             $url = $router->generate('journal_show', array('id' => $journal->getId()), UrlGeneratorInterface::ABSOLUTE_URL);
 			$uuid = $journal->getUuid();
+			if(!$all && $journal->getStatus() === 'ping-error') {
+				$this->logger->notice("{$fmt}/{$count} - skipped (previous ping-error) - - {$journal->getUrl()}");
+			}
 			if(!$all && $bwlist->isWhitelisted($uuid)) {
 				$this->logger->notice("{$fmt}/{$count} - skipped (whitelisted) - - {$journal->getUrl()}");
 				continue;
@@ -109,14 +112,20 @@ class PingWhitelistCommand extends ContainerAwareCommand {
 				$response = $ping->ping($journal);
 			} catch (Exception $e) {
                 $this->logger->error("Ping - HTTP ERROR: {$e->getMessage()} - {$journal->getUrl()} - {$url}");
+				$journal->setStatus('ping-error');
+				$em->flush($journal);
 				continue;
 			}
 			if($response->getHttpStatus() !== 200) {
 				$this->logger->error("Ping - HTTP {$response->getHttpStatus()} - - {$journal->getUrl()} - {$url} - {$response->getError()}");
+				$journal->setStatus('ping-error');
+				$em->flush($journal);
 				continue;
 			}
             if(! $response->getOjsRelease()) {
     			$this->logger->warning("Ping - HTTP {$response->getHttpStatus()} - no version number found - {$journal->getUrl()} - {$url}");
+				$journal->setStatus('ping-error');
+				$em->flush($journal);
                 continue;
             }
 			$this->logger->notice("Ping - {$response->getHttpStatus()} - {$response->getOjsRelease()} - {$journal->getUrl()} - {$url}");

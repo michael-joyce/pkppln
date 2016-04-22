@@ -156,8 +156,8 @@ class JournalController extends Controller {
 		
 		try {
 			$result = $this->container->get('ping')->ping($entity);
-            if(! $result->hasXml() || $result->hasError()) {
-                $this->addFlash('warning', 'The ping did not complete. ' . $ping->getError());
+            if(! $result->hasXml() || $result->hasError() || ($result->getHttpStatus() !== 200)) {
+				$this->addFlash('warning', "The ping did not complete. HTTP {$result->getHttpStatus()} {$result->getError()}");
                 return $this->redirect($this->generateUrl('journal_show', array(
                     'id' => $id
                 )));

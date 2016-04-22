@@ -54,6 +54,7 @@ class Ping {
      * @throws Exception
 	 */
 	public function ping(Journal $journal) {
+		$this->logger->notice("Pinging {$journal}");
 		$url = $journal->getGatewayUrl();
 		$client = new Client();
 		try {
