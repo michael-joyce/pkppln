@@ -27,6 +27,11 @@ class Ping {
      * @var Logger
      */
     private $logger;
+	
+	/**
+	 * @var Client
+	 */
+	private $client;
 
     /**
      * Set the ORM thing.
@@ -45,6 +50,20 @@ class Ping {
     public function setLogger(Logger $logger) {
         $this->logger = $logger;
     }
+	
+	public function setClient(Client $client) {
+		$this->client = $client;
+	}
+	
+	/**
+	 * @return Client
+	 */
+	public function getClient() {
+		if( ! $this->client) {
+			$this->client = new Client();
+		}
+		return $this->client;
+	}
 
 	/**
 	 * Ping a journal, check on it's health, etc.
@@ -56,7 +75,7 @@ class Ping {
 	public function ping(Journal $journal) {
 		$this->logger->notice("Pinging {$journal}");
 		$url = $journal->getGatewayUrl();
-		$client = new Client();
+		$client = $this->getClient();
 		try {
 			$response = $client->get($url, array(
 				'allow_redirects' => false,
