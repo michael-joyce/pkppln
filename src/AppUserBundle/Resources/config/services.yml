@@ -8,3 +8,4 @@ services:
         class: AppUserBundle\Form\PasswordType
         tags:
             - { name: form.type, alias: appbundle_user_password }
+            
