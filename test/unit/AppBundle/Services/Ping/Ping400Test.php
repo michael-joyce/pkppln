@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Services;
+namespace AppBundle\Services\Ping;
 
 use AppBundle\Utility\AbstractTestCase;
 use AppBundle\Utility\PingResult;
@@ -14,7 +14,7 @@ use GuzzleHttp\Subscriber\Mock;
  * Test the ping behaviour when the pinged server responds with HTTP 300. Nothing
  * should change.
  */
-class Ping300Test extends AbstractTestCase {
+class Ping400Test extends AbstractTestCase {
 	
 	/**
 	 * @var Ping
@@ -53,7 +53,7 @@ class Ping300Test extends AbstractTestCase {
 		
 		$mock = new Mock([
 			new Response(
-				301, 
+				404, 
 				array('Location' => 'http://example.com')
             )]);
 		$client->getEmitter()->attach($mock);
@@ -77,7 +77,7 @@ class Ping300Test extends AbstractTestCase {
 	}
 	
 	public function testPingStatus() {
-		$this->assertEquals(301, $this->response->getHttpStatus());
+		$this->assertEquals(404, $this->response->getHttpStatus());
 	}	
 		
 	public function testRequestHeaders() {

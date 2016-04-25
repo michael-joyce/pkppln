@@ -83,6 +83,11 @@ class SwordClient {
      */
     private $logger;
     
+	/**
+	 * @var Client
+	 */
+	private $client;
+
     /**
      * All PKP PLN journals are given the same title in LOCKSS/LOCKSSOMatic to
      * enable use of the LOCKSS subscription manager.
@@ -119,6 +124,20 @@ class SwordClient {
 		$this->saveDepositXml = $saveDepositXml;
     }
     
+	public function setClient(Client $client) {
+		$this->client = $client;
+	}
+	
+	/**
+	 * @return Client
+	 */
+	public function getClient() {
+		if(! $this->client) {
+			$this->client = new Client();
+		}
+		return $this->client;
+	}
+
     /**
      * Set the PLN Journal Title.
      * 
@@ -127,7 +146,7 @@ class SwordClient {
     public function setPlnJournalTitle($plnJournalTitle) {
         $this->plnJournalTitle = $plnJournalTitle;
     }
-
+	
     /**
      * Set the logger
      * 
@@ -182,7 +201,7 @@ class SwordClient {
      * @throws RequestException
      */
     public function serviceDocument(Journal $journal) {
-        $client = new Client();
+        $client = $this->getClient();
         $headers = array(
             'On-Behalf-Of' => $this->serverUuid,
             'Journal-Url' => $journal->getUrl(),
@@ -200,10 +219,10 @@ class SwordClient {
         }
         $xml = new SimpleXMLElement($response->getBody());
         $this->namespaces->registerNamespaces($xml);
-        $this->maxUpload = $xml->xpath('sword:maxUploadSize')[0];
-        $this->uploadChecksum = $xml->xpath('lom:uploadChecksumType')[0];
-        $this->siteName = $xml->xpath('.//atom:title');
-        $this->colIri = $xml->xpath('.//app:collection/@href')[0];
+        $this->maxUpload = (string)($xml->xpath('sword:maxUploadSize')[0]);
+        $this->uploadChecksum = (string)($xml->xpath('lom:uploadChecksumType')[0]);
+        $this->siteName = (string)($xml->xpath('.//atom:title')[0]);
+        $this->colIri = (string)($xml->xpath('.//app:collection/@href')[0]);
     }
 
     /**
@@ -276,4 +295,20 @@ class SwordClient {
         
         return $statementXml;
     }
+	
+	public function getSiteName() {
+		return $this->siteName;
+	}
+	
+	public function getColIri() {
+		return $this->colIri;
+	}
+	
+	public function getMaxUpload() {
+		return $this->maxUpload;
+	}
+	
+	public function getUploadChecksum() {
+		return $this->uploadChecksum;
+	}
 }
