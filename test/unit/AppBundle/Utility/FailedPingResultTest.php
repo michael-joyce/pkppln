@@ -78,5 +78,4 @@ class FailedPingResultTest extends PHPUnit_Framework_TestCase {
 ENDSTR;
 		return $str;
 	}
-
 }

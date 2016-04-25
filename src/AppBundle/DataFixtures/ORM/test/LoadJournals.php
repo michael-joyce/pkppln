@@ -4,6 +4,8 @@ namespace AppBundle\DataFixtures\ORM\test;
 
 use AppBundle\Entity\Journal;
 use AppBundle\Utility\AbstractDataFixture;
+use DateInterval;
+use DateTime;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -33,6 +35,8 @@ class LoadJournals extends AbstractDataFixture implements OrderedFixtureInterfac
         $j0->setStatus('healthy');
         $j0->setUuid('c0a65967-32bd-4ee8-96de-c469743e563a');
         $manager->persist($j0);
+		$j0->setContacted(new DateTime('-10 days'));
+		$j0->setNotified(new DateTime('-5 days'));
 		
         $j1 = new Journal();
         $j1->setEmail('foo@bar.com');

@@ -6,10 +6,15 @@ use AppBundle\Utility\AbstractTestCase;
 use AppBundle\Utility\PingResult;
 use GuzzleHttp\Client;
 use GuzzleHttp\Message\Response;
+use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Subscriber\History;
 use GuzzleHttp\Subscriber\Mock;
 
-class PingTest extends AbstractTestCase {
+/**
+ * Test the ping behaviour when the pinged server responds with HTTP 200 and 
+ * the right content.
+ */
+class Ping200Test extends AbstractTestCase {
 	
 	/**
 	 * @var Ping
@@ -26,9 +31,19 @@ class PingTest extends AbstractTestCase {
 	 */
 	protected $history;
 	
+	/**
+	 * @var array
+	 */
+	protected $prePing;
+	
 	public function setUp() {
 		parent::setUp();
 		$journal = $this->references->getReference('journal');
+		$this->prePing['contacted'] = $journal->getContacted();
+		$this->prePing['status'] = $journal->getstatus();
+		$this->prePing['ojsVersion'] = $journal->getOjsVersion();
+		$this->prePing['title'] = $journal->getTitle();
+		$this->prePing['url'] = $journal->getUrl();
 		
 		$this->ping = $this->getContainer()->get('ping');
 		$client = new Client();
@@ -37,9 +52,11 @@ class PingTest extends AbstractTestCase {
 		$client->getEmitter()->attach($this->history);
 		
 		$mock = new Mock([
-			new Response(200),
-			$this->getResponseString()
-		]);
+			new Response(
+				200, 
+				array('X-Mock' => 'rl44001'),
+				$this->getResponseBody()
+            )]);
 		$client->getEmitter()->attach($mock);
 		
 		$this->ping->setClient($client);
@@ -70,12 +87,38 @@ class PingTest extends AbstractTestCase {
 		$this->assertEquals('PkpPlnBot 1.0; http://pkp.sfu.ca', $request->getHeader('User-Agent'));
 	}
 	
-	private function getResponseString() {
-		$str = <<<ENDSTR
-HTTP/1.1 200 OK
-Date: Fri, 22 Apr 2016 23:25:45 GMT
-Content-Type: text/xml; charset=utf-8
+	public function testUpdatedContacted() {
+		$this->em->clear();
+		$journal = $this->em->getRepository('AppBundle:Journal')->find(1);
+		$this->assertNotEquals($this->prePing['contacted'], $journal->getContacted());
+	}
+		
+	public function testUpdatedStatus() {
+		$this->em->clear();
+		$journal = $this->em->getRepository('AppBundle:Journal')->find(1);
+		$this->assertEquals('healthy', $journal->getStatus());
+	}
+		
+	public function testUpdatedTitle() {
+		$this->em->clear();
+		$journal = $this->em->getRepository('AppBundle:Journal')->find(1);
+		$this->assertEquals('Testing Journal', $journal->getTitle());
+	}
+	
+	public function testupdatedOjsVersion() {
+		$this->em->clear();
+		$journal = $this->em->getRepository('AppBundle:Journal')->find(1);
+		$this->assertEquals('2.4.8.0', $journal->getOjsVersion());
+	}
+		
+	public function testupdatedTermsAccepted() {
+		$this->em->clear();
+		$journal = $this->em->getRepository('AppBundle:Journal')->find(1);
+		$this->assertTrue($journal->getTermsAccepted());
+	}
 
+	private function getResponseBody() {
+		$str = <<<ENDSTR
 <plnplugin>
     <ojsInfo>
         <release>2.4.8.0</release>
@@ -104,7 +147,7 @@ Content-Type: text/xml; charset=utf-8
         </terms>
     </pluginInfo>
     <journalInfo>
-        <title>Intl J Test</title>
+        <title>Testing Journal</title>
         <articles count="72">
             <article pubDate="2015-07-14 19:57:31">Transnational Publics: Asylum and the Arts in the City of Glasgow</article>
             <article pubDate="2015-07-14 19:57:31">Storytelling and the Lives of Asylum Seekers</article>
@@ -112,7 +155,7 @@ Content-Type: text/xml; charset=utf-8
     </journalInfo>
 </plnplugin>			
 ENDSTR;
-		return $str;
+		$stream = Stream::factory($str);
+		return $stream;
 	}
-	
 }

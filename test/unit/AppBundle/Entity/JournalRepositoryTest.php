@@ -46,7 +46,7 @@ class JournalRepositoryTest extends AbstractTestCase {
 		$r = $this->repository->findByStatus('healthy');
 		$this->assertEquals(1, count($r));
 	}
-
+	
 	public function testStatusSummary() {
 		$expected = Array(
 			Array(
@@ -61,16 +61,15 @@ class JournalRepositoryTest extends AbstractTestCase {
 		$r = $this->repository->statusSummary();
 		$this->assertEquals($expected, $r);
 	}
-	
+
 	public function testFindSilent() {
-		$this->markTestSkipped("The fixtures are broken for this one.");
-		$r = $this->repository->findSilent(11);
+		$this->em->clear();
+		$r = $this->repository->findSilent(9);
 		$this->assertEquals(1, count($r));
 	}
 
 	public function testFindOverdue() {
-		$this->markTestSkipped("The fixtures are broken for this one.");
-		$r = $this->repository->findOverdue(11);
+		$r = $this->repository->findOverdue(4);
 		$this->assertEquals(1, count($r));
 	}
 

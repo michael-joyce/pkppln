@@ -45,6 +45,5 @@ class JournalBuilderTest extends AbstractTestCase {
 		}
 		$this->fail('No exception thrown.');
 	}
-
 }
 

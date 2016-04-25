@@ -56,7 +56,7 @@ class PingResultTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testGetJournalTitle() {
-		$this->assertEquals('Intl J Test', $this->result->getJournalTitle());
+		$this->assertEquals('Journal of Mocked Titles', $this->result->getJournalTitle());
 	}
 
 	public function testGetArticleCount() {
@@ -102,7 +102,7 @@ class PingResultTest extends PHPUnit_Framework_TestCase {
         </terms>
     </pluginInfo>
     <journalInfo>
-        <title>Intl J Test</title>
+        <title>Journal of Mocked Titles</title>
         <articles count="72">
             <article pubDate="2015-07-14 19:57:31">Transnational Publics: Asylum and the Arts in the City of Glasgow</article>
             <article pubDate="2015-07-14 19:57:31">Storytelling and the Lives of Asylum Seekers</article>
@@ -112,5 +112,4 @@ class PingResultTest extends PHPUnit_Framework_TestCase {
 ENDSTR;
 		return $str;
 	}
-
 }

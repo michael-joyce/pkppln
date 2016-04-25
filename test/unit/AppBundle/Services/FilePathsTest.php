@@ -117,5 +117,4 @@ class FilePathsTest extends AbstractTestCase {
 			$path
 		);
 	}
-
 }

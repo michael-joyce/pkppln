@@ -24,8 +24,8 @@ class DepositBuilderXmlTest extends AbstractTestCase {
 		parent::setUp();
 		$this->builder = $this->getContainer()->get('depositbuilder');
 		$this->deposit = $this->builder->fromXml(
-				$this->references->getReference('journal'),
-				$this->getDepositXml()
+            $this->references->getReference('journal'),
+            $this->getDepositXml()
 		);
 	}
 
@@ -69,8 +69,8 @@ class DepositBuilderXmlTest extends AbstractTestCase {
 	
 	public function testPubDate() {
 		$this->assertEquals(
-				'2016-04-22T00:00:00-07:00', 
-				$this->deposit->getPubDate()->format('c')
+            '2016-04-22T00:00:00-07:00', 
+            $this->deposit->getPubDate()->format('c')
 		);
 	}
 	

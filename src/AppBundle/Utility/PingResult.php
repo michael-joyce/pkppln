@@ -33,12 +33,18 @@ class PingResult {
 	 */
 	private $body;
 	
+	/**
+	 * @var Response
+	 */
+	private $response;
+	
     /**
      * Construct a Ping response from an HTTP response.
      * 
      * @param Response $response
      */
 	public function __construct(Response $response) {
+		$this->response = $response;
 		$this->status = $response->getStatusCode();
 		$this->error = null;
 		$this->xml = null;
@@ -83,6 +89,17 @@ class PingResult {
      */
 	public function hasXml() {
 		return $this->xml !== null;
+	}
+	
+	/**
+	 * @return SimpleXmlElement
+	 */
+	public function getXml() {
+		return $this->xml;
+	}
+	
+	public function getHeader($name) {
+		return $this->response->getHeader($name);
 	}
 	
     /**

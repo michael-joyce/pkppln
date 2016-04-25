@@ -46,5 +46,4 @@ class BlackWhitelistTest extends AbstractTestCase {
 		$this->assertTrue($this->list->isBlacklisted('E10E1C62-80AB-4D62-8336-C13C7BE73ED8'));
 		$this->assertFalse($this->list->isBlacklisted('E10E1C62-C13C7BE73ED8'));
 	}
-	
 }

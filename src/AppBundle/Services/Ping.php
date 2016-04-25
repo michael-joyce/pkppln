@@ -59,7 +59,7 @@ class Ping {
 	 * @return Client
 	 */
 	public function getClient() {
-		if( ! $this->client) {
+		if(! $this->client) {
 			$this->client = new Client();
 		}
 		return $this->client;
@@ -90,17 +90,25 @@ class Ping {
 				$journal->setTitle($pingResponse->getJournalTitle('(unknown title)'));
 				$journal->setOjsVersion($pingResponse->getOjsRelease());
                 $journal->setTermsAccepted($pingResponse->areTermsAccepted() === 'yes');
-				$this->em->flush($journal);
+			} else {
+				$journal->setStatus('ping-error');
 			}
+			$this->em->flush($journal);
 			return $pingResponse;
 		} catch (RequestException $e) {
+			$journal->setStatus('ping-error');
+			$this->em->flush($journal);
             if ($e->hasResponse()) {
 				return new PingResult($e->getResponse());
             }
 			throw $e;
         } catch (XmlParseException $e) {
+			$journal->setStatus('ping-error');
+			$this->em->flush($journal);
 			return new PingResult($e->getResponse());
         } catch (Exception $e) {
+			$journal->setStatus('ping-error');
+			$this->em->flush($journal);
 			throw $e;
 		}
 	}

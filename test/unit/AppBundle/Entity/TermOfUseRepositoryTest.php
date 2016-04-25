@@ -34,5 +34,4 @@ class TermOfUseRepositoryTest extends AbstractTestCase {
 		$this->assertEquals(1, $r[1]->getId());
 		$this->assertEquals(3, $r[2]->getId());
 	}
-	
 }

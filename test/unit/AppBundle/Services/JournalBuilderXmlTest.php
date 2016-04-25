@@ -24,7 +24,8 @@ class JournalBuilderXmlTest extends AbstractTestCase {
 		parent::setUp();
 		$this->builder = $this->getContainer()->get('journalbuilder');
 		$this->journal = $this->builder->fromXml(
-				$this->getDepositXml(), '1B4D7E02-06B9-4791-8762-B6DF064DE1DA'
+            $this->getDepositXml(),
+            '1B4D7E02-06B9-4791-8762-B6DF064DE1DA'
 		);
 	}
 
@@ -95,5 +96,4 @@ ENDXML;
 		$ns->registerNamespaces($xml);
 		return $xml;
 	}
-
 }

@@ -74,6 +74,4 @@ ENDSTR;
 ENDSTR;
 		return $str;
 	}
-	
-	
 }

@@ -92,8 +92,7 @@ class JournalRepository extends EntityRepository {
     public function findOverdue($days) {
         $dt = new DateTime("-{$days} day");
         $qb = $this->createQueryBuilder('e');
-        $qb->where("e.status = 'unhealthy'");
-        $qb->andWhere('e.notified < :dt');
+        $qb->Where('e.notified < :dt');
         $qb->setParameter('dt', $dt);
         return $qb->getQUery()->getResult();
     }
