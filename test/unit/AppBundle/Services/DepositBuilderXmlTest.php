@@ -88,7 +88,7 @@ class DepositBuilderXmlTest extends AbstractTestCase {
 		$this->assertEquals('http://example.com/deposit/foo.zip', $this->deposit->getUrl());
 	}
 	
-	public function testDepositReciept() {
+	public function testDepositReceipt() {
 		$this->assertEquals('http://pkppln.dv/web/app_dev.php/api/sword/2.0/cont-iri/C0A65967-32BD-4EE8-96DE-C469743E563A/28FF5B33-D3C4-440C-B87A-16D402D10D93/state', $this->deposit->getDepositReceipt());
 	}
 	

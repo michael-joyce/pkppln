@@ -29,7 +29,7 @@ class LoadDeposits extends AbstractDataFixture implements OrderedFixtureInterfac
         $deposit->setChecksumType('SHA1');
         $deposit->setChecksumValue('03cfd743661f07975fa2f1220c5194cbaff48451');
         $deposit->setDepositUuid('d38e7ecb-7d7e-408d-94b0-b00d434fdbd2');
-        $deposit->setDepositReceipt('http://example.com/path/to/reciept');
+        $deposit->setDepositReceipt('http://example.com/path/to/receipt');
         $deposit->setFileType('application/zip');
         $deposit->setIssue(2);
         $deposit->setJournal($this->getReference('journal'));
