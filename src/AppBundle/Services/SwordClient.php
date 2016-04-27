@@ -2,6 +2,7 @@
 
 namespace AppBundle\Services;
 
+use Exception;
 use AppBundle\Entity\Deposit;
 use AppBundle\Entity\Journal;
 use AppBundle\Utility\Namespaces;
@@ -250,6 +251,7 @@ class SwordClient {
             $request = $client->createRequest('POST', $this->colIri);
             $request->setBody(Stream::factory($xml));
             $response = $client->send($request);
+            $responseXml = new SimpleXMLElement($response->getBody());
         } catch (RequestException $e) {
             $this->logger->critical($e->getMessage());
             if ($e->hasResponse()) {
@@ -260,12 +262,15 @@ class SwordClient {
                 $this->logger->warning("Detail: " . (string) $xml->xpath('//sword:verboseDescription')[0]);
             }
             return false;
+        } catch (Exception $e) {
+            $this->logger->critical("Error parsing deposit response from server: {$e->getMessage()}");
+            return false;
         }
+
+        $this->logger->critical('wtf is going on here.');
         $deposit->setDepositReceipt($response->getHeader('Location'));
         $deposit->setDepositDate(new DateTime());
-
         // TODO should I do something wtih responseXML here?
-        $responseXml = new SimpleXMLElement($response->getBody());
         $this->namespaces->registerNamespaces($responseXml);
         return true;
     }
@@ -289,7 +294,6 @@ class SwordClient {
     public function statement(Deposit $deposit) {
         $receipt = $this->receipt($deposit);        
         $statementUrl = $receipt->xpath('atom:link[@rel="http://purl.org/net/sword/terms/statement"]/@href')[0];
-        
         $client = $this->getClient();
         $statementRequest = $client->createRequest('GET', $statementUrl);
         $statementResponse = $client->send($statementRequest);

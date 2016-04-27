@@ -40,8 +40,12 @@ class CreateDepositTest extends AbstractTestCase {
         $this->sc->setClient($client);
         $deposit = $this->references->getReference('deposit');
         $deposit->setAuContainer($this->references->getReference('aucontainer'));
-        $this->sc->createDeposit($deposit);
-    }
+//        try {
+            $this->sc->createDeposit($deposit);
+//        } catch (Exception $e) {
+//            // expected,  because the response XML isn't valid.
+//        }        
+    }    
 
     public function fixtures() {
         return array(
@@ -62,15 +66,14 @@ class CreateDepositTest extends AbstractTestCase {
     public function testDepositSent() {
         $this->em->clear();
         $deposit = $this->em->getRepository('AppBundle:Deposit')->find(1);
-        $this->assertEquals('http://example.com/path/to/receipt', $deposit->getDepositReceipt());
-        $this->assertNotNull($deposit->getDepositReceipt());
+        $this->assertNotEquals('http://example.com/path/to/receipt/23452', $deposit->getDepositReceipt());
     }
 
     private function getCreateDepositResponse() {
         $str = <<<ENDSTR
 <entry xmlns="http://www.w3.org/2005/Atom" xmlns:sword="http://purl.org/net/sword/">
    <sword:treatment>Content URLs deposited to LOCKSSOMatic, collection PKP PLN Staging Server.</sword:treatment>
-   <content src="http://lom.dv/web/app_dev.php/deposit/2"/>
+   <content src="http://lom.dv/web/app_dev.php/deposit/2">
    <link rel="edit-media" href="http://lom.dv/web/app_dev.php/api/sword/2.0/col-iri/C45B7FE2-4697-4108-AA84-E1C03A83A206"/>
    <link rel="http://purl.org/net/sword/terms/add" href="http://lom.dv/web/app_dev.php/api/sword/2.0/cont-iri/C45B7FE2-4697-4108-AA84-E1C03A83A206/2BC85105-3BDC-4AAE-BF13-DB416EBE1887/edit"/>
    <link rel="edit" href="http://lom.dv/web/app_dev.php/api/sword/2.0/cont-iri/C45B7FE2-4697-4108-AA84-E1C03A83A206/2BC85105-3BDC-4AAE-BF13-DB416EBE1887/edit"/>
@@ -80,7 +83,7 @@ ENDSTR;
         $stream = Stream::factory($str);
         
         $response = new Response(201, array(
-            'Location' => 'http://example.com/path/to/receipt',
+            'Location' => 'http://example.com/path/to/receipt/23452',
         ), $stream);
         return $response;
     }
