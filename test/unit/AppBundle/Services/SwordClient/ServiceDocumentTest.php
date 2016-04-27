@@ -88,11 +88,11 @@ class ServiceDocumentTest extends AbstractTestCase {
             <atom:title>PKP PLN Staging Server</atom:title>
             <accept>application/atom+xml;type=entry</accept> 
             <sword:mediation>true</sword:mediation>
-                            <lom:property name="base_url" definitional="true" />
-                            <lom:property name="container_number" definitional="true" />
-                            <lom:property name="manifest_url" definitional="true" />
-                            <lom:property name="permission_url" definitional="true" />
-            </collection>
+            <lom:property name="base_url" definitional="true" />
+            <lom:property name="container_number" definitional="true" />
+            <lom:property name="manifest_url" definitional="true" />
+            <lom:property name="permission_url" definitional="true" />
+        </collection>
     </workspace>
 </service>
 ENDSTR;

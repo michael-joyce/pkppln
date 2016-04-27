@@ -27,6 +27,7 @@ class LoadAuContainers extends AbstractDataFixture implements OrderedFixtureInte
     protected function doLoad(ObjectManager $manager) {
 		$c1 = new AuContainer();
 		$c1->setOpen(false);
+        $this->setReference('aucontainer', $c1);
 		$manager->persist($c1);
 		$c2 = new AuContainer();
 		$manager->persist($c2);

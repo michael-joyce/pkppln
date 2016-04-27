@@ -5,6 +5,7 @@ namespace AppBundle\Services;
 use AppBundle\Entity\Deposit;
 use AppBundle\Entity\Journal;
 use AppBundle\Utility\Namespaces;
+use DateTime;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Stream\Stream;
@@ -245,7 +246,7 @@ class SwordClient {
 			file_put_contents($atomPath, $xml);
 		}
         try {
-            $client = new Client();
+            $client = $this->getClient();
             $request = $client->createRequest('POST', $this->colIri);
             $request->setBody(Stream::factory($xml));
             $response = $client->send($request);
@@ -261,14 +262,16 @@ class SwordClient {
             return false;
         }
         $deposit->setDepositReceipt($response->getHeader('Location'));
+        $deposit->setDepositDate(new DateTime());
 
+        // TODO should I do something wtih responseXML here?
         $responseXml = new SimpleXMLElement($response->getBody());
         $this->namespaces->registerNamespaces($responseXml);
         return true;
     }
     
     public function receipt(Deposit $deposit) {
-        $client = new Client();
+        $client = $this->getClient();
         $receiptRequest = $client->createRequest('GET', $deposit->getDepositReceipt());
         $receiptResponse = $client->send($receiptRequest);
         $receiptXml = new SimpleXMLElement($receiptResponse->getBody());
@@ -287,7 +290,7 @@ class SwordClient {
         $receipt = $this->receipt($deposit);        
         $statementUrl = $receipt->xpath('atom:link[@rel="http://purl.org/net/sword/terms/statement"]/@href')[0];
         
-        $client = new Client();
+        $client = $this->getClient();
         $statementRequest = $client->createRequest('GET', $statementUrl);
         $statementResponse = $client->send($statementRequest);
         $statementXml = new \SimpleXMLElement($statementResponse->getBody());
