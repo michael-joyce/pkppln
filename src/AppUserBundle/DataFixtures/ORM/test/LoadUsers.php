@@ -28,7 +28,7 @@ class LoadUsers extends AbstractDataFixture {
         $user->setEmail("user@example.com");
         $user->setFullname("Unprivileged user");
         $user->setUsername("user@example.com");
-        $user->setPlainPassword("supersecret");
+        $user->setPlainPassword("secret");
         $user->setEnabled(true);
         $manager->persist($user);
         $manager->flush();

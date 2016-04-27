@@ -7,7 +7,7 @@ use AppBundle\Utility\AbstractDataFixture;
 use Doctrine\Common\Persistence\ObjectManager;
 
 /**
- * Load a white list entry for testing.
+ * Load a many whitelist entries for testing.
  */
 class LoadWhitelist extends AbstractDataFixture {
 

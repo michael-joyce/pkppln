@@ -1,6 +1,9 @@
 imports:
     - { resource: config_dev.yml }
 
+liip_functional_test:
+    cache_sqlite_db: true
+
 framework:
     test: ~
     session:
@@ -15,9 +18,6 @@ web_profiler:
 swiftmailer:
     disable_delivery: true
 
-liip_functional_test:
-    cache_sqlite_db: true
-
 doctrine:
     dbal:
         default_connection: default
@@ -29,4 +29,7 @@ doctrine:
 security:
     firewalls:
         main:
+            pattern: ^/
             http_basic: ~
+    encoders:
+        FOS\UserBundle\Model\UserInterface: plaintext

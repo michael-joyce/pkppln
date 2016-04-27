@@ -12,7 +12,7 @@ use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Subscriber\History;
 use GuzzleHttp\Subscriber\Mock;
 
-class CreateDepositTest extends AbstractTestCase {
+class StatementTest extends AbstractTestCase {
 
     /**
      * @var SwordClient
