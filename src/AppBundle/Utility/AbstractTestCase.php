@@ -33,10 +33,17 @@ abstract class AbstractTestCase extends BaseTestCase {
      * {@inheritDocs}
      */
     protected function setUp() {
+        parent::setUp();
         $fixtures = $this->fixtures();
 		if(count($fixtures) > 0) {
 			$this->references = $this->loadFixtures($fixtures)->getReferenceRepository();
 		}
 		$this->em = $this->getContainer()->get('doctrine')->getManager();
+    }
+    
+    public function tearDown() {
+        parent::tearDown();
+        $this->em->clear();
+        $this->em->close();
     }
 }
