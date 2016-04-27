@@ -73,5 +73,4 @@ class BlacklistControllerTest extends AbstractTestCase {
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertNotContains('E10E1C62-80AB-4D62-8336-C13C7BE73ED8', $this->client->getResponse()->getContent());
     }
-    
 }

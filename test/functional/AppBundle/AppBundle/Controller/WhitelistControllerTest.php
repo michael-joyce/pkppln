@@ -73,5 +73,4 @@ class WhitelistControllerTest extends AbstractTestCase {
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertNotContains('6646AFAA-BEBA-40C8-A286-C64A3E90D0F6', $this->client->getResponse()->getContent());
     }
-    
 }

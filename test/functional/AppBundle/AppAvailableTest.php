@@ -59,6 +59,4 @@ class AppAvailableTest extends AbstractTestCase {
             array('/register/'),
 		);
 	}
-
-    
 }

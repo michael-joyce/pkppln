@@ -9,6 +9,6 @@
 /composer.phar
 /vendor/
 /web/bundles/
-data
+/data
 docs/api
 docs/build

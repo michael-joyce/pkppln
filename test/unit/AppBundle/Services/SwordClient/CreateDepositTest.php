@@ -114,5 +114,4 @@ ENDSTR;
         $response = new Response(200, array(), $stream);
         return $response;
     }
-
 }
