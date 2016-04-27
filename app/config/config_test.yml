@@ -1,5 +1,6 @@
 imports:
     - { resource: config_dev.yml }
+    - { resource: parameters.yml }
 
 liip_functional_test:
     cache_sqlite_db: true
@@ -33,3 +34,9 @@ security:
             http_basic: ~
     encoders:
         FOS\UserBundle\Model\UserInterface: plaintext
+
+parameters:
+    router.request_context.base_url: /web/app_dev.php
+    router.request_context.host: pkppln.test
+    router.request_context.scheme: http
+    pln_data_dir: test/data

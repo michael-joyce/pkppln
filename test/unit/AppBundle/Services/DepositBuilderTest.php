@@ -55,7 +55,7 @@ class DepositBuilderTest extends AbstractTestCase {
 
 	public function testBuildDepositReceiptUrl() {
 		$deposit = $this->references->getReference('deposit');
-		$this->assertEquals('http://pkppln.dv/web/app_dev.php/api/sword/2.0/cont-iri/C0A65967-32BD-4EE8-96DE-C469743E563A/D38E7ECB-7D7E-408D-94B0-B00D434FDBD2/state', $this->builder->buildDepositReceiptUrl($deposit));
+		$this->assertEquals('http://pkppln.test/web/app_dev.php/api/sword/2.0/cont-iri/C0A65967-32BD-4EE8-96DE-C469743E563A/D38E7ECB-7D7E-408D-94B0-B00D434FDBD2/state', $this->builder->buildDepositReceiptUrl($deposit));
 	}
 
 	public function testGetLicensingInfo() {

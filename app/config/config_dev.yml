@@ -46,3 +46,4 @@ assetic:
 
 swiftmailer:
     disable_delivery: true
+

@@ -90,6 +90,8 @@ class DefaultController extends Controller {
      * @param Request $request
      */
     public function fetchAction(Request $request, $journalUuid, $depositUuid) {
+        $journalUuid = strtoupper($journalUuid);
+        $depositUuid = strtoupper($depositUuid);
 		$logger = $this->get('monolog.logger.lockss');
 		$logger->notice("fetch - {$request->getClientIp()} - {$journalUuid} - {$depositUuid}");
         $em = $this->container->get('doctrine');
