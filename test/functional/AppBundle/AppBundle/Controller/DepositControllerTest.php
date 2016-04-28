@@ -21,7 +21,7 @@ class DepositContainerControllerTest extends AbstractTestCase {
         return array(
             'AppBundle\DataFixtures\ORM\test\LoadJournals',
             'AppBundle\DataFixtures\ORM\test\LoadDeposits',
-            'AppBundle\DataFixtures\ORM\Test\LoadAuContainers',
+            'AppBundle\DataFixtures\ORM\test\LoadAuContainers',
             'AppUserBundle\DataFixtures\ORM\test\LoadUsers',
         );
     }

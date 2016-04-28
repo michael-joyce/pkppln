@@ -37,8 +37,6 @@ class JournalControllerPingTest extends AbstractTestCase {
     public function fixtures() {
         return array(
             'AppBundle\DataFixtures\ORM\test\LoadJournals',
-            'AppBundle\DataFixtures\ORM\test\LoadDeposits',
-            'AppBundle\DataFixtures\ORM\Test\LoadAuContainers',
             'AppUserBundle\DataFixtures\ORM\test\LoadUsers',
         );
     }

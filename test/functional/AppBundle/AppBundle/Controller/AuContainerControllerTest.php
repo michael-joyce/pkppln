@@ -23,7 +23,7 @@ class AuContainerControllerTest extends AbstractTestCase {
             'AppBundle\DataFixtures\ORM\test\LoadDeposits',
             'AppBundle\DataFixtures\ORM\test\LoadDocs',
             'AppBundle\DataFixtures\ORM\test\LoadTermsOfUse',
-            'AppBundle\DataFixtures\ORM\Test\LoadAuContainers',
+            'AppBundle\DataFixtures\ORM\test\LoadAuContainers',
             'AppUserBundle\DataFixtures\ORM\test\LoadUsers',
         );
     }
