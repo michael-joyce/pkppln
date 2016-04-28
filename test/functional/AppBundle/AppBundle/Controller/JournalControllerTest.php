@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Services\Ping;
 use AppBundle\Utility\AbstractTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -35,10 +36,27 @@ class JournalControllerTest extends AbstractTestCase {
         $linkCrawler = $crawler->selectLink('I J Testing');
         $this->assertCount(1, $linkCrawler);
         $this->assertEquals('http://localhost/journal/1', $linkCrawler->link()->getUri());
+		
+		$this->assertCount(1, $crawler->selectLink('healthy'));
+		$this->assertCount(1, $crawler->selectLink('new'));
     }
     
-    public function testIndexStatus() {
-        $this->markTestSkipped('Need more journals for this');
+    public function testIndexStatusNew() {
+        $this->client->request('GET', '/journal/', array('status' => 'new'));
+        $response = $this->client->getResponse();
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $crawler = $this->client->getCrawler();
+        $this->assertCount(1, $crawler->selectLink('J Oranges'));
+        $this->assertCount(0, $crawler->selectLink('I J Testing'));				
+    }
+    
+    public function testIndexStatusHealthy() {
+        $this->client->request('GET', '/journal/', array('status' => 'healthy'));
+        $response = $this->client->getResponse();
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $crawler = $this->client->getCrawler();
+        $this->assertCount(0, $crawler->selectLink('J Oranges'));
+        $this->assertCount(1, $crawler->selectLink('I J Testing'));				
     }
     
     public function testShow() {
@@ -49,34 +67,107 @@ class JournalControllerTest extends AbstractTestCase {
     }
     
     public function testPing() {
-        $this->markTestSkipped('unimplemented.');
+		$ping = $this->getContainer()->get('ping');
+		$this->assertInstanceOf('AppBundle\Services\Ping', $ping);
     }
     
     public function testSearchPage() {
-        $this->markTestSkipped('unimplemented.');
+        $this->client->request('GET', '/journal/', array('status' => 'new'));
+        $response = $this->client->getResponse();
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $linkCrawler = $this->client->getCrawler()->selectLink('Search');
+		$this->assertCount(2, $linkCrawler);		
+        $link = $linkCrawler->eq(1)->link();
+        $this->assertEquals('http://localhost/journal/search', $link->getUri());
     }
     
     public function testSearchTitle() {
-        $this->markTestSkipped('Need more journals for this');
+        $this->client->request('GET', '/journal/search');
+        $response = $this->client->getResponse();
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $crawler = $this->client->getCrawler();
+        $buttonCrawler = $crawler->selectButton('Search');
+        $form = $buttonCrawler->form(array(
+            'q' => 'orange'
+        ));
+        $this->client->submit($form);
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertCount(1, $this->client->getCrawler()->selectLink('Orange Inc'));
+        $this->assertCount(0, $this->client->getCrawler()->selectLink('I J Testing'));
     }
     
     public function testSearchUuid() {
-        $this->markTestSkipped('Need more journals for this');
+        $this->client->request('GET', '/journal/search');
+        $response = $this->client->getResponse();
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $crawler = $this->client->getCrawler();
+        $buttonCrawler = $crawler->selectButton('Search');
+        $form = $buttonCrawler->form(array(
+            'q' => 'A556CBF2'
+        ));
+        $this->client->submit($form);
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertCount(1, $this->client->getCrawler()->selectLink('Orange Inc'));
+        $this->assertCount(0, $this->client->getCrawler()->selectLink('I J Testing'));
     }
     
     public function testSearchIssn() {
-        $this->markTestSkipped('Need more journals for this');
+        $this->client->request('GET', '/journal/search');
+        $response = $this->client->getResponse();
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $crawler = $this->client->getCrawler();
+        $buttonCrawler = $crawler->selectButton('Search');
+        $form = $buttonCrawler->form(array(
+            'q' => '4321'
+        ));
+        $this->client->submit($form);
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertCount(1, $this->client->getCrawler()->selectLink('Orange Inc'));
+        $this->assertCount(0, $this->client->getCrawler()->selectLink('I J Testing'));
     }
     
     public function testSearchUrl() {
-        $this->markTestSkipped('Need more journals for this');
+        $this->client->request('GET', '/journal/search');
+        $response = $this->client->getResponse();
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $crawler = $this->client->getCrawler();
+        $buttonCrawler = $crawler->selectButton('Search');
+        $form = $buttonCrawler->form(array(
+            'q' => 'orangula'
+        ));
+        $this->client->submit($form);
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertCount(1, $this->client->getCrawler()->selectLink('Orange Inc'));
+        $this->assertCount(0, $this->client->getCrawler()->selectLink('I J Testing'));
     }
     
     public function testSearchEmail() {
-        $this->markTestSkipped('Need more journals for this');
+        $this->client->request('GET', '/journal/search');
+        $response = $this->client->getResponse();
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $crawler = $this->client->getCrawler();
+        $buttonCrawler = $crawler->selectButton('Search');
+        $form = $buttonCrawler->form(array(
+            'q' => '@bar.com'
+        ));
+        $this->client->submit($form);
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertCount(1, $this->client->getCrawler()->selectLink('Orange Inc'));
+        $this->assertCount(0, $this->client->getCrawler()->selectLink('I J Testing'));
     }
     
     public function testSearchPublisherName() {
-        $this->markTestSkipped('Need more journals for this');
+        $this->client->request('GET', '/journal/search');
+        $response = $this->client->getResponse();
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $crawler = $this->client->getCrawler();
+        $buttonCrawler = $crawler->selectButton('Search');
+        $form = $buttonCrawler->form(array(
+            'q' => 'Orange Inc'
+        ));
+        $this->client->submit($form);
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertCount(1, $this->client->getCrawler()->selectLink('Orange Inc'));
+        $this->assertCount(0, $this->client->getCrawler()->selectLink('I J Testing'));		
     }
 }

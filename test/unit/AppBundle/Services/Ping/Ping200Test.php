@@ -2,6 +2,7 @@
 
 namespace AppBundle\Services\Ping;
 
+use AppBundle\Services\Ping;
 use AppBundle\Utility\AbstractTestCase;
 use AppBundle\Utility\PingResult;
 use GuzzleHttp\Client;
