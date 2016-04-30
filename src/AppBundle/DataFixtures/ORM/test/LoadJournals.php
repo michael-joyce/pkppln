@@ -34,6 +34,7 @@ class LoadJournals extends AbstractDataFixture implements OrderedFixtureInterfac
         $j0->setUrl('http://journal.example.com');
         $j0->setStatus('healthy');
         $j0->setUuid('c0a65967-32bd-4ee8-96de-c469743e563a');
+		$j0->setOjsVersion('2.4.8.0');
         $manager->persist($j0);
 		$j0->setContacted(new DateTime('-10 days'));
 		$j0->setNotified(new DateTime('-5 days'));

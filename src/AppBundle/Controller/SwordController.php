@@ -105,6 +105,7 @@ class SwordController extends Controller {
 			$journal->setTimestamp();
 			if($journal->getUrl() !== $url) {
 				$logger->warning("journal URL mismatch - {$uuid} - {$journal->getUrl()} - {$url}");
+				$journal->setUrl($url);
 			}
 		} else {
             $journal = new Journal();
@@ -160,7 +161,7 @@ class SwordController extends Controller {
         /** @var LoggerInterface */
         $logger = $this->get('monolog.logger.sword');
 
-        $obh = $this->fetchHeader($request, "On-Behalf-Of");
+        $obh = strtoupper($this->fetchHeader($request, "On-Behalf-Of"));
         $journalUrl = $this->fetchHeader($request, "Journal-Url");
 
         $accepting = $this->checkAccess($obh);
@@ -170,10 +171,10 @@ class SwordController extends Controller {
         }
 		
         $logger->notice("service document - {$request->getClientIp()} - {$obh} - {$journalUrl} - {$acceptingLog}");
-        if ($obh === null) {
+        if (!$obh) {
 			throw new SwordException(400, "Missing On-Behalf-Of header for {$journalUrl}");
         }
-        if ($journalUrl === null) {
+        if (!$journalUrl) {
 			throw new SwordException(400, "Missing Journal-Url header for {$obh}");
         }
 		
@@ -205,7 +206,7 @@ class SwordController extends Controller {
     public function createDepositAction(Request $request, $journal_uuid) {
         /** @var LoggerInterface */
         $logger = $this->get('monolog.logger.sword');
-		
+		$journal_uuid = strtoupper($journal_uuid);
         $accepting = $this->checkAccess($journal_uuid);
         $acceptingLog = 'not accepting';
         if ($accepting) {
@@ -248,6 +249,7 @@ class SwordController extends Controller {
     public function statementAction(Request $request, $journal_uuid, $deposit_uuid) {
         /** @var LoggerInterface */
         $logger = $this->get('monolog.logger.sword');
+		$journal_uuid = strtoupper($journal_uuid);
         $accepting = $this->checkAccess($journal_uuid);
         $acceptingLog = 'not accepting';
         if ($accepting) {
