@@ -103,5 +103,4 @@ class TermOfUseHistoryControllerTest extends AbstractTestCase {
 		
 		$this->assertCount(2, $repo->getTermHistory(1));
 	}
-
 }

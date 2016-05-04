@@ -64,5 +64,4 @@ abstract class AbstractTestCase extends BaseTestCase {
 		$this->em->clear();
 		$this->em->close();
 	}
-
 }

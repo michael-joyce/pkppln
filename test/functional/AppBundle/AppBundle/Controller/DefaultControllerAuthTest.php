@@ -116,5 +116,4 @@ class DefaultControllerAuthTest extends AbstractTestCase {
 		$this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
 		$this->assertContains('first term', $response->getContent());
 	}
-
 }

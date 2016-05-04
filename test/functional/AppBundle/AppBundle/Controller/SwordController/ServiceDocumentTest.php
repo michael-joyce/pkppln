@@ -149,5 +149,4 @@ class ServiceDocumentTest extends AbstractTestCase {
 		$journal = $this->em->getRepository('AppBundle:Journal')->findOneBy(array('uuid' => 'C0A65967-32BD-4EE8-96DE-C469743E563A'));
 		$this->assertEquals('http://example.com', $journal->getUrl());
 	}
-	
 }

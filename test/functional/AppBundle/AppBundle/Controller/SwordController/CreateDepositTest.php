@@ -67,12 +67,12 @@ class CreateDepositTest extends AbstractTestCase {
 	public function testCreateDepositWhitelisted() {
 		$depositCount = count($this->em->getRepository('AppBundle:Deposit')->findAll());
 		$this->client->request(
-				'POST', 
-				'/api/sword/2.0/col-iri/c0a65967-32bd-4ee8-96de-c469743e563a',
-				array(),
-				array(),
-				array(),
-				$this->getDepositXmlNotWhitelisted()
+            'POST', 
+            '/api/sword/2.0/col-iri/c0a65967-32bd-4ee8-96de-c469743e563a',
+            array(),
+            array(),
+            array(),
+            $this->getDepositXmlNotWhitelisted()
 		);
 		$response = $this->client->getResponse();
 		$this->assertEquals(201, $response->getStatusCode());
@@ -85,12 +85,12 @@ class CreateDepositTest extends AbstractTestCase {
 	public function testCreateDepositNotWhitelisted() {
 		$depositCount = count($this->em->getRepository('AppBundle:Deposit')->findAll());
 		$this->client->request(
-				'POST', 
-				'/api/sword/2.0/col-iri/5F5C84B1-80BF-4071-8D3F-057AA3184FC9',
-				array(),
-				array(),
-				array(),
-				$this->getDepositXmlNotWhitelisted()
+            'POST', 
+            '/api/sword/2.0/col-iri/5F5C84B1-80BF-4071-8D3F-057AA3184FC9',
+            array(),
+            array(),
+            array(),
+            $this->getDepositXmlNotWhitelisted()
 		);
 		$this->assertEquals(400, $this->client->getResponse()->getStatusCode());
 		$this->assertContains('Not authorized to create deposits.', $this->client->getResponse()->getContent());
