@@ -65,6 +65,42 @@ class JournalControllerTest extends AbstractTestCase {
         $this->assertContains('C0A65967-32BD-4EE8-96DE-C469743E563A', $response->getContent());
     }
     
+    public function testDelete() {
+        $this->client->followRedirects(true);
+        $this->client->request('GET', '/journal/1/delete');        
+        $response = $this->client->getResponse();
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertContains('Journals which have made deposits cannot be deleted.', $response->getContent());
+    }
+    
+    public function testDeleteUnchecked() {
+        $this->client->followRedirects(true);
+        $this->client->request('GET', '/journal/2/delete');        
+        $response = $this->client->getResponse();
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        // we can delete
+        $this->assertNotContains('Journals which have made deposits cannot be deleted.', $response->getContent());
+        $formCrawler = $this->client->getCrawler()->selectButton('Delete');
+        $form = $formCrawler->form();
+        $this->client->submit($form);
+        $this->assertNotContains('Journal deleted', $this->client->getResponse()->getContent());
+    }
+    
+    public function testDeleteChecked() {
+        $this->client->followRedirects(true);
+        $this->client->request('GET', '/journal/2/delete');        
+        $response = $this->client->getResponse();
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        // we can delete
+        $this->assertNotContains('Journals which have made deposits cannot be deleted.', $response->getContent());
+        $formCrawler = $this->client->getCrawler()->selectButton('Delete');
+        $form = $formCrawler->form(array(
+            'form[confirm]' => 'yes'
+        ));
+        $this->client->submit($form);
+        $this->assertContains('Journal deleted', $this->client->getResponse()->getContent());
+    }
+        
     public function testPing() {
 		$ping = $this->getContainer()->get('ping');
 		$this->assertInstanceOf('AppBundle\Services\Ping', $ping);

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Journal;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use Exception;
@@ -113,6 +114,71 @@ class JournalController extends Controller {
         );
     }
     
+    private function createDeleteForm(Journal $journal) {
+        $formBuilder = $this->createFormBuilder($journal);
+        $formBuilder->setMethod('DELETE');
+        $formBuilder->add('confirm', 'checkbox', array(
+            'label' => 'Yes, delete this journal', 
+            'mapped' => false,
+            'value' => 'yes',
+            'required' => false,
+        ));
+        $formBuilder->add('delete', 'submit', array('label' => 'Delete'));
+        $form = $formBuilder->getForm();
+        return $form;
+    }
+    
+    /**
+     * Finds and displays a Journal entity.
+     *
+     * @Route("/{id}/delete", name="journal_delete")
+     * @Method({"GET","DELETE"})
+     * @Template()
+     */
+    public function deleteAction(Request $request, $id) {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('AppBundle:Journal')->find($id);
+        
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Journal entity.');
+        }
+        
+        if($entity->countDeposits() > 0) {
+            $this->addFlash('warning', 'Journals which have made deposits cannot be deleted.');
+            return $this->redirect($this->generateUrl('journal_show', array('id' => $entity->getId())));
+        }
+        
+        $form = $this->createDeleteForm($entity);
+        $form->handleRequest($request);
+        
+        if($form->isSubmitted() && $form->isValid() && $form->get('confirm')->getData()) {
+//            Once JournalUrls are a thing, uncomment these lines.            
+//            foreach($entity->getUrls() as $url) {
+//                $em->remove($url);
+//            }
+            
+            $whitelist = $em->getRepository('AppBundle:Whitelist')->findOneBy(array('uuid' => $entity->getUuid()));
+            if($whitelist) {
+                $em->remove($whitelist);
+            }
+            $blacklist = $em->getRepository('AppBundle:Whitelist')->findOneBy(array('uuid' => $entity->getUuid()));
+            if($blacklist) {
+                $em->remove($blacklist);
+            }
+            $em->remove($entity);
+            $em->flush();
+            
+            $this->addFlash('success', 'Journal deleted.');
+            return $this->redirect($this->generateUrl('journal'));
+        }
+
+        return array(
+            'entity' => $entity,
+            'form' => $form->createView(),
+        );
+    }
+
     /**
      * Update a journal status.
      * 
