@@ -116,6 +116,7 @@ class JournalController extends Controller {
     
     private function createDeleteForm(Journal $journal) {
         $formBuilder = $this->createFormBuilder($journal);
+        $formBuilder->setAction($this->generateUrl('journal_delete', array('id' => $journal->getId())));
         $formBuilder->setMethod('DELETE');
         $formBuilder->add('confirm', 'checkbox', array(
             'label' => 'Yes, delete this journal', 
