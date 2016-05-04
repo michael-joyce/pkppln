@@ -2,38 +2,8 @@
 
 namespace AppBundle\Controller\SwordController;
 
-use AppBundle\Utility\AbstractTestCase;
-use AppBundle\Utility\Namespaces;
-use SimpleXMLElement;
-use Symfony\Component\BrowserKit\Client;
-use Symfony\Component\HttpFoundation\Response;
+class ServiceDocumentTest extends AbstractSwordTestCase {
 
-class ServiceDocumentTest extends AbstractTestCase {
-
-	/**
-	 * @var Client
-	 */
-	protected $client;
-
-	/**
-	 * @var Namespaces
-	 */
-	protected $ns;
-
-	public function setUp() {
-		parent::setUp();
-		$this->client = static::createClient();
-		$this->ns = new Namespaces();
-	}
-	
-    public function fixtures() {
-        return array(
-            'AppBundle\DataFixtures\ORM\test\LoadJournals',
-			'AppBundle\DataFixtures\ORM\test\LoadTermsOfUse',
-			'AppBundle\DataFixtures\ORM\test\LoadWhitelist',
-        );
-    }
-    
 	public function testServiceDocument() {
 		$this->client->request('GET', '/api/sword/2.0/sd-iri', array(), array(), array(
 			'HTTP_On-Behalf-Of' => '7AD045C9-89E6-4ACA-8363-56FE9A45C34F',
@@ -71,35 +41,6 @@ class ServiceDocumentTest extends AbstractTestCase {
 		));
 		$this->assertEquals(400, $this->client->getResponse()->getStatusCode());
 	}
-	
-	/**
-	 * @return SimpleXMLElement
-	 * @param Client $client
-	 */
-	protected function getXml(Client $client) {
-		$xml = new SimpleXMLElement($this->client->getResponse()->getContent());
-		$this->ns->registerNamespaces($xml);
-		return $xml;
-	}
-	
-    /**
-     * Get a single XML value as a string.
-     * 
-     * @param SimpleXMLElement $xml
-     * @param type $xpath
-     * @return string
-     * @throws Exception
-     */
-    public function getXmlValue(SimpleXMLElement $xml, $xpath) {
-        $data = $xml->xpath($xpath);
-        if (count($data) === 1) {
-            return trim((string) $data[0]);
-        }
-        if (count($data) === 0) {
-            return null;
-        }
-        throw new Exception("Too many elements for '{$xpath}'");
-    }
 
 	public function testServiceDocumentContentNewJournal() {
 		$this->assertCount(2, $this->em->getRepository('AppBundle:Journal')->findAll());

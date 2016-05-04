@@ -301,7 +301,8 @@ class SwordController extends Controller {
     public function editAction(Request $request, $journal_uuid, $deposit_uuid) {
         /** @var LoggerInterface */
         $logger = $this->get('monolog.logger.sword');
-
+        $journal_uuid = strtoupper($journal_uuid);
+        $deposit_uuid = strtoupper($deposit_uuid);
         $accepting = $this->checkAccess($journal_uuid);
         $acceptingLog = 'not accepting';
         if ($accepting) {
