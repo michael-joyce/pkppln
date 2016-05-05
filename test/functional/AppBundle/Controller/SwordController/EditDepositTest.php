@@ -6,14 +6,38 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EditDepositTest extends AbstractSwordTestCase {
 
-    public function testEditDepositNotWhitelisted() {}    
-    
-    public function testEditDepositJournalMissing() {}
-    
-    public function testEditDepositDepositMissing() {}
-    
-    public function testEditDepositJournalMismatch() {}
-    
+    public function testEditDepositNotWhitelisted() {
+		$depositCount = count($this->em->getRepository('AppBundle:Deposit')->findAll());
+		$this->client->request(
+            'PUT', 
+            '/api/sword/2.0/cont-iri/79009984-7225-4518-932B-5135BCBC19DB/d38e7ecb-7d7e-408d-94b0-b00d434fdbd2/edit',
+            array(),
+            array(),
+            array(),
+            $this->getEditXml()
+		);
+        $this->em->clear();
+        $response = $this->client->getResponse();
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
+        $this->assertEquals($depositCount, count($this->em->getRepository('AppBundle:Deposit')->findAll()));
+	}    
+    	
+    public function testEditDepositDepositMissing() {
+		$depositCount = count($this->em->getRepository('AppBundle:Deposit')->findAll());
+		$this->client->request(
+            'PUT', 
+            '/api/sword/2.0/cont-iri/c0a65967-32bd-4ee8-96de-c469743e563a/c0a65967-32bd-4ee8-96de-c469743e563a/edit',
+            array(),
+            array(),
+            array(),
+            $this->getEditXml()
+		);
+        $this->em->clear();
+        $response = $this->client->getResponse();
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
+        $this->assertEquals($depositCount, count($this->em->getRepository('AppBundle:Deposit')->findAll()));
+	}
+
     public function testEditDepositSuccess() {
 		$depositCount = count($this->em->getRepository('AppBundle:Deposit')->findAll());
 		$this->client->request(
@@ -28,9 +52,15 @@ class EditDepositTest extends AbstractSwordTestCase {
         $response = $this->client->getResponse();
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
         $this->assertEquals($depositCount, count($this->em->getRepository('AppBundle:Deposit')->findAll()));
+		
+		$deposit = $this->em->getRepository('AppBundle:Deposit')->findOneBy(array(
+			'depositUuid' => strtoupper('d38e7ecb-7d7e-408d-94b0-b00d434fdbd2')
+		));
+		$this->assertEquals('55CA6286E3E4F4FBA5D0448333FA99FC5A404A73', $deposit->getChecksumValue());
+		$this->assertEquals('depositedByJournal', $deposit->getState());
     }
 
-    private function getEditXml() {
+	private function getEditXml() {
 		$str = <<<'ENDXML'
 <entry 
     xmlns="http://www.w3.org/2005/Atom" 
@@ -42,7 +72,7 @@ class EditDepositTest extends AbstractSwordTestCase {
     <pkp:publisherName>Publisher of Stuff</pkp:publisherName>
     <pkp:publisherUrl>http://publisher.example.com</pkp:publisherUrl>
     <pkp:issn>1234-1234</pkp:issn>
-    <id>urn:uuid:5F5C84B1-80BF-4071-8D3F-057AA3184FC9</id>
+    <id>urn:uuid:d38e7ecb-7d7e-408d-94b0-b00d434fdbd2</id>
     <updated>2016-04-22T12:35:48Z</updated>
     <pkp:content size="123" volume="2" issue="4" pubdate="2016-04-22" 
 		checksumType="SHA-1"

@@ -24,13 +24,13 @@ class DepositRepositoryTest extends AbstractTestCase {
 	}
 
 	public function testFindByState() {
-		$r = $this->repository->findByState('deposited');
+		$r = $this->repository->findByState('depositedByJournal');
 		$this->assertEquals(1, count($r));
 	}
 
 	public function testStateSummary() {
 		$expected = Array(Array(
-				'state' => 'deposited',
+				'state' => 'depositedByJournal',
 				'ct' => '1',
 			), Array(
 				'state' => 'harvested',

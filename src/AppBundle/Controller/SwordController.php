@@ -317,15 +317,19 @@ class SwordController extends Controller {
         $em = $this->getDoctrine()->getManager();
 
         /** @var Journal $journal */
-        $journal = $em->getRepository('AppBundle:Journal')->findOneBy(array('uuid' => $journal_uuid));
+        $journal = $em->getRepository('AppBundle:Journal')->findOneBy(array(
+			'uuid' => $journal_uuid
+		));
         if ($journal === null) {
             throw new SwordException(400, "Journal UUID not found.");
         }
 
         /** @var Deposit $deposit */
-        $deposit = $em->getRepository('AppBundle:Deposit')->findOneBy(array('depositUuid' => $deposit_uuid));
+        $deposit = $em->getRepository('AppBundle:Deposit')->findOneBy(array(
+			'depositUuid' => $deposit_uuid
+		));
         if ($deposit === null) {
-            throw new SwordException(400, "Deposit UUID not found.");
+			throw new SwordException(400, "Deposit UUID {$deposit_uuid} not found.");
         }
 
         if ($journal->getId() !== $deposit->getJournal()->getId()) {
@@ -333,14 +337,15 @@ class SwordController extends Controller {
         }
 
         $journal->setContacted(new DateTime());
+		$journal->setStatus('healthy');        
         $xml = $this->parseXml($request->getContent());
-        $newDeposit = $this->get('depositbuilder')->fromXml($xml, 'edit');
+        $newDeposit = $this->get('depositbuilder')->fromXml($journal, $xml);
 
         /** @var Response */
         $response = $this->statementAction($request, $journal_uuid, $deposit_uuid);
         $response->headers->set(
             'Location',
-            $deposit->getDepositReceipt(),
+            $newDeposit->getDepositReceipt(),
             true
         );
         $response->setStatusCode(Response::HTTP_CREATED);

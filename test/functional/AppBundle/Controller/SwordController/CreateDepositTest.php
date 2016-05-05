@@ -12,7 +12,7 @@ class CreateDepositTest extends AbstractSwordTestCase {
             array(),
             array(),
             array(),
-            $this->getDepositXmlNotWhitelisted()
+            $this->getDepositXml()
 		);
 		$response = $this->client->getResponse();
 		$this->assertEquals(201, $response->getStatusCode());
@@ -30,14 +30,14 @@ class CreateDepositTest extends AbstractSwordTestCase {
             array(),
             array(),
             array(),
-            $this->getDepositXmlNotWhitelisted()
+            $this->getDepositXml()
 		);
 		$this->assertEquals(400, $this->client->getResponse()->getStatusCode());
 		$this->assertContains('Not authorized to create deposits.', $this->client->getResponse()->getContent());
 		$this->assertEquals($depositCount, count($this->em->getRepository('AppBundle:Deposit')->findAll()));
 	}    
 	
-	private function getDepositXmlNotWhitelisted() {
+	private function getDepositXml() {
 		$str = <<<'ENDXML'
 <entry 
     xmlns="http://www.w3.org/2005/Atom" 

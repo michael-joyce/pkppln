@@ -126,17 +126,20 @@ class DepositBuilder {
      * @param string $action
      * @return Deposit
      */
-    public function fromXml(Journal $journal, SimpleXMLElement $xml, $action = 'add') {
+    public function fromXml(Journal $journal, SimpleXMLElement $xml) {
         $id = $this->getXmlValue($xml, '//atom:id');
-        $deposit_uuid = substr($id, 9, 36);
+        $deposit_uuid = strtoupper(substr($id, 9, 36));
 
         $deposit = $this->em->getRepository('AppBundle:Deposit')->findOneBy(array(
             'depositUuid' => $deposit_uuid,
         ));
+		$action = 'edit';
         if (!$deposit) {
+			$action = 'add';
             $deposit = new Deposit();
         }
-        $deposit->setAction($action);
+        $deposit->setAction($action);	
+		$deposit->setState('depositedByJournal');
         $deposit->setChecksumType($this->getXmlValue($xml, 'pkp:content/@checksumType'));
         $deposit->setChecksumValue($this->getXmlValue($xml, 'pkp:content/@checksumValue'));
         $deposit->setDepositUuid($deposit_uuid);

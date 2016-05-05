@@ -35,7 +35,7 @@ class LoadDeposits extends AbstractDataFixture implements OrderedFixtureInterfac
 		$d0->setJournal($this->getReference('journal'));
 		$d0->setPubDate(new DateTime());
 		$d0->setSize(100);
-		$d0->setState('deposited');
+		$d0->setState('depositedByJournal');
 		$d0->setUrl('http://journal.example.com/path/to/deposit');
 		$d0->setVolume(1);
 		$manager->persist($d0);
