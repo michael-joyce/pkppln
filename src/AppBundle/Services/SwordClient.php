@@ -267,7 +267,6 @@ class SwordClient {
             return false;
         }
 
-        $this->logger->critical('wtf is going on here.');
         $deposit->setDepositReceipt($response->getHeader('Location'));
         $deposit->setDepositDate(new DateTime());
         // TODO should I do something wtih responseXML here?
