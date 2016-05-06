@@ -2,6 +2,8 @@
 
 namespace AppBundle\Command\Processing;
 
+require_once('vendor/scholarslab/bagit/lib/bagit.php');
+
 use Exception;
 use AppBundle\Entity\Deposit;
 use AppBundle\Services\DtdValidator;

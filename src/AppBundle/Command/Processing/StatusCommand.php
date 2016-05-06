@@ -5,6 +5,8 @@ namespace AppBundle\Command\Processing;
 use AppBundle\Entity\Deposit;
 use AppBundle\Services\FilePaths;
 use AppBundle\Services\SwordClient;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 

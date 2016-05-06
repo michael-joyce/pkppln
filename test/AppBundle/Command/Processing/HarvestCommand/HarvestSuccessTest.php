@@ -19,6 +19,12 @@ class HarvestSuccessTest extends AbstractCommandTestCase {
 	
 	protected $command;
 	
+	public function dataFiles() {
+		return array(
+			'.' => 'received/C0A65967-32BD-4EE8-96DE-C469743E563A/D38E7ECB-7D7E-408D-94B0-B00D434FDBD2.zip',
+		);
+	}
+	
 	public function setUp() {		
 		$this->command = new HarvestCommand();
 		
@@ -39,15 +45,20 @@ class HarvestSuccessTest extends AbstractCommandTestCase {
 		$this->commandTester->execute(array(
 			'command' => $this->getCommandName(),
 		));
-		$deposits =$this->em->getRepository('AppBundle:Deposit')->findBy(array(
-			'state' => 'harvest-error'
-		));
-		
+		$this->assertCount(0, $this->em->getRepository('AppBundle:Deposit')->findBy(array(
+				'state' => 'harvest-error'
+		)));
+		$this->assertCount(2, $this->em->getRepository('AppBundle:Deposit')->findBy(array(
+				'state' => 'harvested'
+		)));
 		$this->assertCount(2, $this->history);
 		$requests = $this->history->getRequests();
 		$this->assertEquals('HEAD', $requests[0]->getMethod());
 		$this->assertEquals('GET', $requests[1]->getMethod());
-	}
+		
+		$content = file_get_contents('test/data/received/C0A65967-32BD-4EE8-96DE-C469743E563A/D38E7ECB-7D7E-408D-94B0-B00D434FDBD2.zip');
+		$this->assertEquals('absclksd', $content);
+	} 
 
 	public function getCommand() {
 		return $this->command; // use the injected Guzzle client.
@@ -58,9 +69,7 @@ class HarvestSuccessTest extends AbstractCommandTestCase {
 	}
 	
 	protected function getResponseBody() {
-		$str = <<<ENDSTR
-				absclksd
-ENDSTR;
+		$str = 'absclksd';
 		$stream = Stream::factory($str);
 		return $stream;
 	}

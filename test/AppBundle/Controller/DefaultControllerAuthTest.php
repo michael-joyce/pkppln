@@ -20,7 +20,7 @@ class DefaultControllerAuthTest extends AbstractTestCase {
 	public function dataFiles() {
 		return array(
 			'onix.xml' => 'onix.xml',
-			'D38E7ECB-7D7E-408D-94B0-B00D434FDBD2.zip' => 'staged/C0A65967-32BD-4EE8-96DE-C469743E563A/D38E7ECB-7D7E-408D-94B0-B00D434FDBD2.zip'
+			'bag-harvested.zip' => 'staged/C0A65967-32BD-4EE8-96DE-C469743E563A/D38E7ECB-7D7E-408D-94B0-B00D434FDBD2.zip'
 		);
 	}
 	
