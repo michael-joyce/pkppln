@@ -9,6 +9,10 @@ services:
     # with Symfony 2.7 and 2.8. This fixes it.
     fos_user.doctrine_registry:
         alias: doctrine
+    
+    appuserbundle.user_manipulator:
+        class: AppUserBundle\Util\UserManipulator
+        arguments: [@fos_user.user_manager]
 
     sword_exception_listener:
         class: AppBundle\EventListener\SwordExceptionListener

@@ -24,6 +24,8 @@ class CreateUserCommand extends ContainerAwareCommand
             ->setDefinition(array(
                 new InputArgument('email', InputArgument::REQUIRED, 'The email'),
                 new InputArgument('password', InputArgument::REQUIRED, 'The password'),
+				new InputArgument('fullname', InputArgument::REQUIRED, 'The full name'),
+				new InputArgument('institution', InputArgument::REQUIRED, 'The institution'),
                 new InputOption('super-admin', null, InputOption::VALUE_NONE, 'Set the user as super admin'),
                 new InputOption('inactive', null, InputOption::VALUE_NONE, 'Set the user as inactive'),
             ))
@@ -57,11 +59,13 @@ EOT
     {
         $email      = $input->getArgument('email');
         $password   = $input->getArgument('password');
+		$fullname   = $input->getArgument('fullname');
+		$institution = $input->getArgument('institution');
         $inactive   = $input->getOption('inactive');
         $superadmin = $input->getOption('super-admin');
 
-        $manipulator = $this->getContainer()->get('fos_user.util.user_manipulator');
-        $manipulator->create($email, $password, $email, !$inactive, $superadmin);
+        $manipulator = $this->getContainer()->get('appuserbundle.user_manipulator');
+        $manipulator->create($email, $password, $fullname, $institution, !$inactive, $superadmin);
 
         $output->writeln(sprintf('Created user <comment>%s</comment>', $email));
     }
@@ -84,6 +88,36 @@ EOT
                 }
             );
             $input->setArgument('email', $email);
+        }
+		
+        if (!$input->getArgument('fullname')) {
+            $fullname = $this->getHelper('dialog')->askAndValidate(
+                $output,
+                'Please choose a fullname:',
+                function($fullname) {
+                    if (empty($fullname)) {
+                        throw new \Exception('fullname can not be empty');
+                    }
+
+                    return $fullname;
+                }
+            );
+            $input->setArgument('fullname', $fullname);
+        }
+
+        if (!$input->getArgument('institution')) {
+            $institution = $this->getHelper('dialog')->askAndValidate(
+                $output,
+                'Please choose a institution:',
+                function($institution) {
+                    if (empty($institution)) {
+                        throw new \Exception('institution can not be empty');
+                    }
+
+                    return $institution;
+                }
+            );
+            $input->setArgument('institution', $institution);
         }
 
         if (!$input->getArgument('password')) {

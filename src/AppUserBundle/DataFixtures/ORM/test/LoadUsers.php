@@ -30,6 +30,7 @@ class LoadUsers extends AbstractDataFixture {
         $user->setUsername("user@example.com");
         $user->setPlainPassword("secret");
         $user->setEnabled(true);
+		$user->setNotify(true);
         $manager->persist($user);
         $manager->flush();
     }
