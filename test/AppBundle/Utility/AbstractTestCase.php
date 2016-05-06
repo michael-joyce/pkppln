@@ -91,7 +91,7 @@ abstract class AbstractTestCase extends BaseTestCase {
 		
 		foreach($this->dataFiles() as $src => $dst) {
 			$dir = self::DSTDIR . '/' . dirname($dst);
-			if( ! file_exists($dir)) {
+			if(! file_exists($dir)) {
 				mkdir($dir, 0755, true);
 			}
 			copy(self::SRCDIR . '/' . $src, self::DSTDIR . '/' . $dst);

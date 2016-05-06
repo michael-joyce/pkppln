@@ -68,7 +68,7 @@ class HarvestCommand extends AbstractProcessingCmd {
 		try {
 			$fh = fopen($path, 'wb');
 			$body = $response->getBody();
-			if( ! $body) {
+			if(! $body) {
 				throw new Exception("Response body was empty.");
 			}
 			// 64k chunks.
