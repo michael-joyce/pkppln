@@ -53,7 +53,7 @@ class FilePathsTest extends AbstractTestCase {
 		$this->fp->setBaseDir(dirname(__FILE__));
 		$path = $this->fp->rootPath(false);
 		$this->assertStringStartsWith('/', $path);
-		$this->assertStringEndsWith('/test/unit/AppBundle/Services', $path);
+		$this->assertStringEndsWith('/test/AppBundle/Services', $path);
 	}
 
 	public function testGetHarvestDir() {
