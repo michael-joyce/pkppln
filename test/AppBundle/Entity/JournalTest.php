@@ -44,7 +44,9 @@ class JournalTest extends PHPUnit_Framework_TestCase {
 		$this->journal->addDeposit($d1);
 		$d2 = new Deposit();
 		$this->journal->addDeposit($d2);
-		$this->assertEquals(array($d1), $this->journal->getCompletedDeposits());
+		$completed = $this->journal->getCompletedDeposits();
+		$this->assertInstanceOf('Doctrine\Common\Collections\ArrayCollection', $completed);
+		$this->assertCount(1, $completed);
 	}
 	
 	public function testToStringEmptyTitle() {
