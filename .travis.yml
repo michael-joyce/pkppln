@@ -9,7 +9,9 @@ php:
 cache: apt
 
 env:
-    - CLAMSCAN_BIN="/usr/bin/clamdscan"
+    global:
+        - SYMFONY_ENV=test
+        - CLAMSCAN_BIN="/usr/bin/clamdscan"
 
 before_script:
   - sudo apt-get update
