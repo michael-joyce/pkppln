@@ -42,5 +42,4 @@ class UserManipulator {
 		$this->userManager->updateUser($user);
 		return $user;
 	}
-
 }

@@ -5,6 +5,7 @@ namespace AppBundle\Entity;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -18,7 +19,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="JournalRepository")
  */
 class Journal {
-    
+
+	public static $SENTSTATES = array(
+			'deposited', 
+			'complete',
+			'status-error',
+		);
+
+	
     /**
      * The URL suffix for the ping gateway, appened to the Journal's URL for the
      * ping.
@@ -450,20 +458,34 @@ class Journal {
         return $this->deposits;
     }
 
-    /**
+	/**
      * Get the deposits which have been sent to LOCKSSOMatic.
      * 
-     * @return Deposit[]
-     */
-    public function getCompletedDeposits() {
-        $completed = [];
-        foreach($this->deposits as $deposit) {
-            if($deposit->getState() === 'completed') {
-                $completed[] = $deposit;
-            }
-        }
-        return $completed;
-    }
+     * @return ArrayCollection|Deposit[]
+	 */
+	public function getCompletedDeposits() {
+		$criteria = Criteria::create()
+			->where(Criteria::expr()->eq('state', 'completed'))
+		;
+		return $this->getDeposits()->matching($criteria);
+	}
+
+	
+	/**
+	 * Get the deposits which have been set to LOCKSSOMatic, but which may not have
+	 * achieved agreement yet.
+	 * 
+	 * Deposits returned will be in state deposited, complete, or status-error. Those
+	 * have all been sent to lockss.
+	 * 
+     * @return ArrayCollection|Deposit[]
+	 */
+	public function getSentDeposits() {
+		$criteria = Criteria::create()
+			->where(Criteria::expr()->in('state', self::$SENTSTATES))
+		;
+		return $this->getDeposits()->matching($criteria);
+	}
 
     /**
      * Count the deposits for a journal.

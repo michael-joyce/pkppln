@@ -17,5 +17,4 @@ class CreateUserCommandTest extends AbstractCommandTestCase {
 	public function testCreateUser() {
 		
 	}
-	
 }

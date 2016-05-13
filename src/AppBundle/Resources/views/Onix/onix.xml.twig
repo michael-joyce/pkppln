@@ -13,7 +13,7 @@
             <PreservationAgencyName>Public Knowledge Project PLN</PreservationAgencyName>
         </PreservationAgency>
         {% for journal in journals %}
-            {% set deposits = journal.getCompletedDeposits() %}
+            {% set deposits = journal.getSentDeposits() %}
             {% if deposits|length > 0 %}
                 <HoldingsRecord>
                     <NotificationType>00</NotificationType>
