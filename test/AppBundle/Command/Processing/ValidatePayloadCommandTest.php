@@ -2,6 +2,8 @@
 
 namespace AppBundle\Command\Processing;
 
+use AppBundle\Utility\AbstractCommandTestCase;
+
 class ValidatePayloadCommandTest extends AbstractCommandTestCase {
 	
 	public function getCommand() {

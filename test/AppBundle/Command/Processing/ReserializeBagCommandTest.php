@@ -4,9 +4,10 @@ namespace AppBundle\Command\Processing;
 
 require_once('vendor/scholarslab/bagit/lib/bagit.php');
 
+use AppBundle\Utility\AbstractCommandTestCase;
+use BagIt;
 use Exception;
 use ZipArchive;
-use BagIt;
 
 class ReserializeBagCommandTest extends AbstractCommandTestCase {
 

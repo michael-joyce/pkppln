@@ -2,7 +2,7 @@
 
 namespace AppBundle\Command\Processing\HarvestCommand;
 
-use AppBundle\Command\Processing\AbstractCommandTestCase;
+use AppBundle\Utility\AbstractCommandTestCase;
 use AppBundle\Command\Processing\HarvestCommand;
 use GuzzleHttp\Client;
 use GuzzleHttp\Message\Response;

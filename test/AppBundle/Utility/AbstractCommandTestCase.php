@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Command\Processing;
+namespace AppBundle\Utility;
 
 use AppBundle\Utility\AbstractTestCase;
 use Symfony\Component\Console\Application;

@@ -3,6 +3,7 @@
 namespace AppBundle\Command\Processing;
 
 use AppBundle\Entity\Deposit;
+use AppBundle\Utility\AbstractCommandTestCase;
 use Closure;
 use Exception;
 

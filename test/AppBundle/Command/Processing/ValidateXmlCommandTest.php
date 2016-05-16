@@ -2,6 +2,7 @@
 
 namespace AppBundle\Command\Processing;
 
+use AppBundle\Utility\AbstractCommandTestCase;
 use Exception;
 use ZipArchive;
 

@@ -4,6 +4,7 @@ namespace AppBundle\Command\Processing;
 
 use Exception;
 use ZipArchive;
+use AppBundle\Utility\AbstractCommandTestCase;
 
 class VirusCheckCommandTest extends AbstractCommandTestCase {
 	
