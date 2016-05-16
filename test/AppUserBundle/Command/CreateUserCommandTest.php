@@ -2,7 +2,7 @@
 
 namespace AppUserBundle\Command;
 
-use AppBundle\Command\Processing\AbstractCommandTestCase;
+use AppBundle\Utility\AbstractCommandTestCase;
 
 class CreateUserCommandTest extends AbstractCommandTestCase {
 
