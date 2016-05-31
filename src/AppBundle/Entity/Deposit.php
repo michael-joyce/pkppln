@@ -162,6 +162,7 @@ class Deposit
     private $state;
     
     /**
+     * List of errors that occured while processing.
      *
      * @var array
      * @ORM\Column(type="array", nullable=false)
@@ -169,6 +170,10 @@ class Deposit
     private $errorLog;
     
     /**
+     * The number of errors that occured during processing. 
+     * 
+     * @todo can this be gotten from count($this->errorLog)?
+     * 
      * @var int
      * @ORM\Column(type="integer", nullable=false)
      */
@@ -536,12 +541,23 @@ class Deposit
         return $this->plnState;
     }
     
+    /**
+     * Set the comment on a deposit.
+     * 
+     * @param string $comment
+     * @return Deposit
+     */
     public function setComment($comment) {
         $this->comment = $comment;
         
         return $this;
     }
     
+    /**
+     * Get the content on a deposit.
+     * 
+     * @return string
+     */
     public function getComment() {
         return $this->comment;
     }
@@ -616,6 +632,10 @@ class Deposit
     }
 
     /**
+     * Set the timestamp. Called automatically before inserts.
+     *
+     * @todo the automatic timestamp functions aren't consistently named. 
+     * 
      * @ORM\PrePersist
      */
     public function setTimestamp() {
@@ -797,6 +817,12 @@ class Deposit
         return $this;
     }
 	
+    /**
+     * Add a bit of licensing information to a deposit.
+     * 
+     * @param type $key
+     * @param type $value
+     */
 	public function addLicense($key, $value) {
 		$this->license[$key] = $value;
 	}
@@ -814,10 +840,6 @@ class Deposit
     /**
      * Set processingLog. 
      * 
-     * @todo should this be removed? Doctrine can set the processing log without
-     * it, and there aren't really any use cases for setting the deposit log
-     * otherwise.
-     *
      * @param string $processingLog
      * @return Deposit
      */
@@ -842,6 +864,12 @@ class Deposit
         return $this;
     }
     
+    /**
+     * Add a message to the error log.
+     * 
+     * @param type $error
+     * @return Deposit
+     */
     public function addErrorLog($error) {
         $this->errorLog[] = $error;
         $this->updateErrorCount();
@@ -849,11 +877,18 @@ class Deposit
         return $this;
     }
     
+    /**
+     * Count the errors in the log.
+     * 
+     * @return int
+     */
     public function getErrorCount() {
         return $this->errorCount;
     }
     
     /**
+     * Called automatically to update the error count.
+     * 
      * @ORM\prePersist
      * @ORM\preUpdate
      */

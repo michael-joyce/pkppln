@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Send a fully processed deposit to LOCKSSOMatic.
+ * Check the status of deposits in LOCKSSOMatic.
  * 
  * @see SwordClient
  */
@@ -27,6 +27,9 @@ class StatusCommand extends AbstractProcessingCmd {
      */
     private $cleanup;
 
+    /**
+     * {@inheritDoc}
+     */
     public function __construct($name = null) {
         parent::__construct($name);
     }
@@ -40,6 +43,9 @@ class StatusCommand extends AbstractProcessingCmd {
         parent::configure();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function setContainer(ContainerInterface $container = null) {
         parent::setContainer($container);
         $this->cleanup = !$this->container->getParameter('remove_complete_deposits');
@@ -47,6 +53,9 @@ class StatusCommand extends AbstractProcessingCmd {
         $this->client->setLogger($this->logger);
     }
 
+    /**
+     * Remove a directory and its contents recursively. Use with caution. 
+     */
     private function delTree($path) {
         $directoryIterator = new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS);
         $fileIterator = new RecursiveIteratorIterator($directoryIterator, RecursiveIteratorIterator::CHILD_FIRST);
@@ -62,7 +71,8 @@ class StatusCommand extends AbstractProcessingCmd {
 
     /**
      * Process one deposit. Fetch the data and write it to the file system.
-     * Updates the deposit status.
+     * Updates the deposit status, and may remove the processing files if 
+     * LOCKSSOatic reports agreement.
      *
      * @param Deposit $deposit
      * @return type
@@ -110,6 +120,9 @@ class StatusCommand extends AbstractProcessingCmd {
         return "Deposit status succeeded.";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function errorState() {
         return "status-error";
     }

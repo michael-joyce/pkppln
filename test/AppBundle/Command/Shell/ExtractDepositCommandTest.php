@@ -14,5 +14,4 @@ class ExtractDepositCommandTest extends AbstractCommandTestCase {
 	public function getCommandName() {
 		
 	}
-
 }

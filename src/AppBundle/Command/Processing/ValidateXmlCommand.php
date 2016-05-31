@@ -15,6 +15,9 @@ use DOMDocument;
  */
 class ValidateXmlCommand extends AbstractProcessingCmd {
 
+    /**
+     * The PKP Public Identifier for OJS export XML.
+     */
     const PKP_PUBLIC_ID = '-//PKP//OJS Articles and Issues XML//EN';
 
     /**
@@ -36,8 +39,21 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
     }
     
     /**
+     * Load the XML document into a DOM and return it. Errors are appended to
+     * the $report parameter.
+     * 
+     * For reasons beyond anyone's apparent control, the export may contain
+     * invalid UTF-8 characters. If the file cannot be parsed as XML, the
+     * function will attempt to filter out invalid UTF-8 characters and then
+     * try to load the XML again.
+     * 
+     * Other errors in the XML, beyond the bad UTF-8, will not be tolerated.
+     * 
      * @return DOMDocument
+     * 
+     * @param Deposit $deposit
      * @param string $filename
+     * @param string $report
      */
     private function loadXml(Deposit $deposit, $filename, &$report) {
         $dom = new DOMDocument();
@@ -50,6 +66,8 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
                 $report .= "\nCannot validate XML.\n";
                 return null;
             }
+            // The XML files can be arbitrarily large, so stream them, filter
+            // the stream, and write to disk. The result may not fit in memory.
             $filteredFilename = "{$filename}-filtered.xml";
             $in = fopen($filename, 'rb');
             $out = fopen($filteredFilename, 'wb');
@@ -137,6 +155,9 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
         return "XML validation succeeded.";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function errorState() {
         return "xml-error";
     }

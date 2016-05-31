@@ -22,6 +22,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 /**
  * SWORD v2 Controller to receive deposits.
  * 
+ * See http://swordapp.org/sword-v2/sword-v2-specifications/
+ * 
+ * Set a prefix for all routes in this controller.
  * @Route("/api/sword/2.0")
  */
 class SwordController extends Controller {
@@ -140,6 +143,12 @@ class SwordController extends Controller {
 		return $terms;
 	}
     
+    /**
+     * Figure out which message to return for the network status widget in OJS.
+     * 
+     * @param Journal $journal
+     * @return string
+     */
     private function getNetworkMessage(Journal $journal) {
         if($journal->getOjsVersion() === null) {
             return $this->container->getParameter('network_default');
@@ -156,6 +165,9 @@ class SwordController extends Controller {
      *
      * @Route("/sd-iri", name="service_document")
      * @Method("GET")
+     * 
+     * @param Request $request
+     * @return Response
      */
     public function serviceDocumentAction(Request $request) {
         /** @var LoggerInterface */
@@ -202,6 +214,11 @@ class SwordController extends Controller {
      *
      * @Route("/col-iri/{journal_uuid}", name="create_deposit")
      * @Method("POST")
+     * 
+     * @param Request $request
+     * @param string $journal_uuid
+     * 
+     * @return Response
      */
     public function createDepositAction(Request $request, $journal_uuid) {
         /** @var LoggerInterface */
@@ -245,6 +262,12 @@ class SwordController extends Controller {
      *
      * @Route("/cont-iri/{journal_uuid}/{deposit_uuid}/state", name="statement")
      * @Method("GET")
+     * 
+     * @param Request $request
+     * @param string $journal_uuid
+     * @param string $deposit_uuid
+     * 
+     * @return Response
      */
     public function statementAction(Request $request, $journal_uuid, $deposit_uuid) {
         /** @var LoggerInterface */
@@ -297,6 +320,12 @@ class SwordController extends Controller {
      *
      * @Route("/cont-iri/{journal_uuid}/{deposit_uuid}/edit")
      * @Method("PUT")
+     * 
+     * @param Request $request
+     * @param string $journal_uuid
+     * @param string $deposit_uuid
+     * 
+     * @return Response
      */
     public function editAction(Request $request, $journal_uuid, $deposit_uuid) {
         /** @var LoggerInterface */

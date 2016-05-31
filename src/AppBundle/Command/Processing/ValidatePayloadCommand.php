@@ -79,6 +79,9 @@ class ValidatePayloadCommand extends AbstractProcessingCmd {
         return "Payload checksum validation succeeded.";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function errorState() {
         return "payload-error";
     }

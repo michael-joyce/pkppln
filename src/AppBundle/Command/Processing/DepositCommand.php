@@ -20,10 +20,6 @@ class DepositCommand extends AbstractProcessingCmd {
      */
     private $client;
     
-    public function __construct($name = null) {
-        parent::__construct($name);
-    }
-    
     /**
      * {@inheritDoc}
      */
@@ -33,6 +29,9 @@ class DepositCommand extends AbstractProcessingCmd {
         parent::configure();
     }
     
+    /**
+     * {@inheritDoc}
+     */
     public function setContainer(ContainerInterface $container = null) {
         parent::setContainer($container);
         $this->client = $container->get('sword_client');
@@ -79,6 +78,9 @@ class DepositCommand extends AbstractProcessingCmd {
         return "Deposit to Lockssomatic succeeded.";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function errorState() {
         return "deposit-error";
     }

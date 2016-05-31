@@ -20,6 +20,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Journal {
 
+    /**
+     * List of states where a deposit has been sent to LOCKSSOMatic.
+     * 
+     * This should be a constant array, but those aren't supported in PHP 5.4.
+     *
+     * @var array
+     */
 	public static $SENTSTATES = array(
 			'deposited', 
 			'complete',
@@ -30,6 +37,8 @@ class Journal {
     /**
      * The URL suffix for the ping gateway, appened to the Journal's URL for the
      * ping.
+     * 
+     * @todo remove this, and use the gateway url reported in deposits.
      */
     const GATEWAY_URL_SUFFIX = '/gateway/plugin/PLNGatewayPlugin';
 

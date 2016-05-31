@@ -25,14 +25,21 @@ class HarvestCommand extends AbstractProcessingCmd {
 	 */
 	private $client;
 
-	public function __construct($name = null) {
-		parent::__construct($name);
-	}
-
+    /**
+     * Set the HTTP client, usually based on Guzzle.
+     * 
+     * @param Client $client
+     */
 	public function setClient(Client $client) {
 		$this->client = $client;
 	}
 
+    /**
+     * Get a configured client, creating one if one hasn't been set by
+     * setClient().
+     * 
+     * @return Client
+     */
 	public function getClient() {
 		if (!$this->client) {
 			$this->client = new Client(
@@ -40,8 +47,8 @@ class HarvestCommand extends AbstractProcessingCmd {
 					'headers' => array(
 						'User-Agent' => 'PkpPlnBot 1.0; http://pkp.sfu.ca',
 						'Accept' => 'application/xml,text/xml,*/*;q=0.1'
-					)))
-			);
+                )))
+            );
 		}
 		return $this->client;
 	}
@@ -192,6 +199,9 @@ class HarvestCommand extends AbstractProcessingCmd {
 		return "harvested";
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function errorState() {
 		return "harvest-error";
 	}

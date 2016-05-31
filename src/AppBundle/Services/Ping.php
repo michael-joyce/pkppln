@@ -51,6 +51,11 @@ class Ping {
         $this->logger = $logger;
     }
 	
+    /**
+     * Set the HTTP client
+     * 
+     * @param Client $client
+     */
 	public function setClient(Client $client) {
 		$this->client = $client;
 	}

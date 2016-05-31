@@ -21,7 +21,13 @@ class ReserializeBagCommand extends AbstractProcessingCmd {
         $this->setDescription('Reserialize the deposit bag.');
         parent::configure();
     }
-	
+
+    /**
+     * Add the metadata from the database to the bag-info.txt file.
+     * 
+     * @param BagIt $bag
+     * @param Deposit $deposit
+     */
 	protected function addMetadata(BagIt $bag, Deposit $deposit) {
         $bag->bagInfoData = array(); // @todo this is very very bad. Once BagItPHP is updated it should be $bag->clearAllBagInfo();
         $bag->setBagInfoData('External-Identifier', $deposit->getDepositUuid());        
@@ -119,6 +125,9 @@ class ReserializeBagCommand extends AbstractProcessingCmd {
         return "Bag Reserialize succeeded.";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function errorState() {
         return "reserialize-error";
     }

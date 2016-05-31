@@ -112,6 +112,10 @@ class Blacklist {
     }
 
     /**
+     * Set the created timestamp. Called automatically.
+     * 
+     * @todo figure out consistent naming for the timestamping functions.
+     * 
      * @ORM\PrePersist
      */
     public function setTimestamp() {

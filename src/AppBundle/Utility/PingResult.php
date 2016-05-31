@@ -58,6 +58,12 @@ class PingResult {
 		}
 	}
 	
+    /**
+     * Get the body of a ping response, optionally stripping out tags.
+     * 
+     * @param type $stripTags
+     * @return type
+     */
 	public function getBody($stripTags = true) {
 		if($stripTags) {
 			return strip_tags($this->body);
@@ -98,6 +104,12 @@ class PingResult {
 		return $this->xml;
 	}
 	
+    /**
+     * Fetch a named header
+     * 
+     * @param string $name
+     * @return string|null
+     */
 	public function getHeader($name) {
 		return $this->response->getHeader($name);
 	}

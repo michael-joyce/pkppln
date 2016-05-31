@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -12,7 +13,7 @@ class TermOfUseRepository extends EntityRepository
     /**
      * Get the terms, ordered by weight.
      *
-     * @return TermOfUse[]
+     * @return Collection|TermOfUse[]
      */
     public function getTerms() {
         $qb = $this->createQueryBuilder('t')

@@ -94,6 +94,9 @@ class ValidateBagCommand extends AbstractProcessingCmd {
         return "Bag checksum validation succeeded.";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function errorState() {
         return "bag-error";
     }

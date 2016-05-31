@@ -17,14 +17,14 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Router;
 
 /**
- * Experimental sword client.
+ * Bespoke sword client, for use with LOCKSSOMatic.
  */
 class SwordClient {
 
     /**
      * IRI for the service document.
      *
-     * @var type 
+     * @var string 
      */
     private $sdIri;
     
@@ -38,7 +38,7 @@ class SwordClient {
     /**
      * Maximum upload file size, as reported by the service document.
      *
-     * @var type 
+     * @var int 
      */
     private $maxUpload;
     
@@ -126,6 +126,11 @@ class SwordClient {
 		$this->saveDepositXml = $saveDepositXml;
     }
     
+    /**
+     * Set the HTTP client.
+     * 
+     * @param Client $client
+     */
 	public function setClient(Client $client) {
 		$this->client = $client;
 	}
@@ -302,18 +307,38 @@ class SwordClient {
         return $statementXml;
     }
 	
+    /**
+     * Get the site name, as used in deposits.
+     * 
+     * @return string
+     */
 	public function getSiteName() {
 		return $this->siteName;
 	}
 	
+    /**
+     * Get the collection IRI.
+     * 
+     * @return type
+     */
 	public function getColIri() {
 		return $this->colIri;
 	}
 	
+    /**
+     * Get the maximum upload size.
+     * 
+     * @return int
+     */
 	public function getMaxUpload() {
 		return $this->maxUpload;
 	}
 	
+    /**
+     * Get the checksum type expected by LOCKSSOMatic for uploads.
+     * 
+     * @return string
+     */
 	public function getUploadChecksum() {
 		return $this->uploadChecksum;
 	}

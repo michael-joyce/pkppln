@@ -72,8 +72,14 @@ class VirusCheckCommand extends AbstractProcessingCmd {
     }
 
     /**
+     * Load the XML from a file and return a DOM. Errors are appended to 
+     * the $report string.
+     * 
      * @return DOMDocument
+     * @param Deposit $deposit
      * @param string $filename
+     * @param string $report
+     * 
      */
     private function loadXml(Deposit $deposit, $filename, &$report) {
         $dom = new DOMDocument();
@@ -129,6 +135,8 @@ class VirusCheckCommand extends AbstractProcessingCmd {
             $chunkSize = 1024 * 1024; // 1MB chunks.
 			$length = $xp->evaluate('string-length(./text())', $embedded);			
             $offset = 1; // xpath string offsets start at 1, not zero.
+            // Stream the embedded content out of the file. It could be any 
+            // size, and may not fit in memory.
             while($offset < $length) {
 				$end = $offset+$chunkSize;
 				$chunk = $xp->evaluate("substring(./text(), {$offset}, {$chunkSize})", $embedded);				
@@ -206,6 +214,9 @@ class VirusCheckCommand extends AbstractProcessingCmd {
         return "Virus check passed. No infections found.";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function errorState() {
         return "virus-error";
     }

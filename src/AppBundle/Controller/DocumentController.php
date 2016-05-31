@@ -2,16 +2,17 @@
 
 namespace AppBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use AppBundle\Entity\Document;
+use AppBundle\Form\DocumentType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use AppBundle\Entity\Document;
-use AppBundle\Form\DocumentType;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Document controller.
+ * Document controller for admins to manage the public documentation.
  *
  * @Route("/admin/document")
  */
@@ -24,6 +25,9 @@ class DocumentController extends Controller
      * @Route("/", name="admin_document")
      * @Method("GET")
      * @Template()
+     * 
+     * @param Request $request
+     * @return array
      */
     public function indexAction(Request $request)
     {
@@ -37,7 +41,6 @@ class DocumentController extends Controller
             25
         );
 
-
         return array(
             'entities' => $entities,
         );
@@ -48,6 +51,9 @@ class DocumentController extends Controller
      * @Route("/", name="admin_document_create")
      * @Method("POST")
      * @Template("AppBundle:Document:new.html.twig")
+     * 
+     * @param Request $request
+     * @return array
      */
     public function createAction(Request $request)
     {
@@ -74,7 +80,7 @@ class DocumentController extends Controller
      *
      * @param Document $entity The entity
      *
-     * @return \Symfony\Component\Form\Form The form
+     * @return Form The form
      */
     private function createCreateForm(Document $entity)
     {
@@ -94,6 +100,8 @@ class DocumentController extends Controller
      * @Route("/new", name="admin_document_new")
      * @Method("GET")
      * @Template()
+     * 
+     * @return array
      */
     public function newAction()
     {
@@ -112,6 +120,10 @@ class DocumentController extends Controller
      * @Route("/{id}", name="admin_document_show")
      * @Method("GET")
      * @Template()
+     * 
+     * @param string $id
+     * 
+     * @return array
      */
     public function showAction($id)
     {
@@ -137,6 +149,10 @@ class DocumentController extends Controller
      * @Route("/{id}/edit", name="admin_document_edit")
      * @Method("GET")
      * @Template()
+     * 
+     * @param string $id
+     * 
+     * @return array
      */
     public function editAction($id)
     {
@@ -163,7 +179,7 @@ class DocumentController extends Controller
     *
     * @param Document $entity The entity
     *
-    * @return \Symfony\Component\Form\Form The form
+    * @return Form The form
     */
     private function createEditForm(Document $entity)
     {
@@ -176,12 +192,18 @@ class DocumentController extends Controller
 
         return $form;
     }
+    
     /**
      * Edits an existing Document entity.
      *
      * @Route("/{id}", name="admin_document_update")
      * @Method("PUT")
      * @Template("AppBundle:Document:edit.html.twig")
+     * 
+     * @param Request $request
+     * @param string $id
+     * 
+     * @return array
      */
     public function updateAction(Request $request, $id)
     {
@@ -213,18 +235,23 @@ class DocumentController extends Controller
      * Deletes a Document entity.
      *
      * @Route("/{id}/delete", name="admin_document_delete")
+     * 
+     * @param Request $request
+     * @param string $id
+     * 
+     * @return array
      */
     public function deleteAction(Request $request, $id)
     {
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('AppBundle:Document')->find($id);
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('AppBundle:Document')->find($id);
 
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find Document entity.');
-            }
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Document entity.');
+        }
 
-            $em->remove($entity);
-            $em->flush();
+        $em->remove($entity);
+        $em->flush();
 
         return $this->redirect($this->generateUrl('admin_document'));
     }
@@ -234,7 +261,7 @@ class DocumentController extends Controller
      *
      * @param mixed $id The entity id
      *
-     * @return \Symfony\Component\Form\Form The form
+     * @return Form The form
      */
     private function createDeleteForm($id)
     {

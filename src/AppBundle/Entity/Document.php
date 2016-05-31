@@ -26,36 +26,49 @@ class Document {
 	private $id;
 
 	/**
+     * Document title
+     * 
 	 * @var string
 	 * @ORM\Column(type="string", nullable=false)
 	 */
 	private $title;
 
 	/**
+     * The URL slug for the document
+     * 
 	 * @var string
 	 * @ORM\Column(type="string", nullable=false)
 	 */
 	private $path;
 	
 	/**
+     * A brief summary to display on the list of documents
+     * 
 	 * @var string
 	 * @ORM\Column(type="text", nullable=false)
 	 */
 	private $summary;
 	
 	/**
+     * The content
+     * 
 	 * @var string
 	 * @ORM\Column(type="text", nullable=false)
 	 */
 	private $content;
 
 	/**
+     * Date when the document was updated.
+     * 
 	 * @var DateTime
 	 * @ORM\Column(type="datetime", nullable=false)
 	 */
 	private $updated;
 
 	/**
+     * Automatically called to update the timestamps before insert/update 
+     * operations.
+     * 
 	 * @ORM\PrePersist
 	 * @ORM\PreUpdate
 	 */

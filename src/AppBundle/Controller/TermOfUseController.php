@@ -2,25 +2,30 @@
 
 namespace AppBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use AppBundle\Entity\TermOfUse;
+use AppBundle\EventListener\TermsOfUseListener;
+use AppBundle\Form\TermOfUseType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use AppBundle\Entity\TermOfUse;
-use AppBundle\Form\TermOfUseType;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * TermOfUse controller. The Terms of Use are read/write, with some special
- * actions on the writes, which are handled by an event listener.
+ * actions on the writes, which are handled by an event listener. The listener
+ * preserves edit history.
  *
- * @see AppBundle\EventListener\TermsOfUseListener
+ * @see TermsOfUseListener
  * @Route("/termofuse")
  */
 class TermOfUseController extends Controller {
 
     /**
      * Lists all TermOfUse entities.
+     * 
+     * @param Request $request
      *
      * @Route("/", name="termofuse")
      * @Method("GET")
@@ -66,6 +71,8 @@ class TermOfUseController extends Controller {
     /**
      * Creates a new TermOfUse entity.
      *
+     * @param Request $request
+     *
      * @Route("/", name="termofuse_create")
      * @Method("POST")
      * @Template("AppBundle:TermOfUse:new.html.twig")
@@ -95,7 +102,7 @@ class TermOfUseController extends Controller {
      *
      * @param TermOfUse $entity The entity
      *
-     * @return \Symfony\Component\Form\Form The form
+     * @return Form The form
      */
     private function createCreateForm(TermOfUse $entity) {
         $defaultLocale = $this->container->getParameter('terms_of_use_default_locale');
@@ -149,6 +156,8 @@ class TermOfUseController extends Controller {
 
     /**
      * Show the edit history of a term.
+     * 
+     * @param string $id
      *
      * @Route("/{id}/history", name="termofuse_history")
      * @Method("GET")
@@ -167,6 +176,8 @@ class TermOfUseController extends Controller {
 
     /**
      * Finds and displays a TermOfUse entity.
+     *
+     * @param string $id
      *
      * @Route("/{id}", name="termofuse_show")
      * @Method("GET")
@@ -191,6 +202,8 @@ class TermOfUseController extends Controller {
 
     /**
      * Displays a form to edit an existing TermOfUse entity.
+     *
+     * @param string $id
      *
      * @Route("/{id}/edit", name="termofuse_edit")
      * @Method("GET")
@@ -220,7 +233,7 @@ class TermOfUseController extends Controller {
      *
      * @param TermOfUse $entity The entity
      *
-     * @return \Symfony\Component\Form\Form The form
+     * @return Form The form
      */
     private function createEditForm(TermOfUse $entity) {
         $defaultLocale = $this->container->getParameter('terms_of_use_default_locale');
@@ -236,6 +249,9 @@ class TermOfUseController extends Controller {
 
     /**
      * Edits an existing TermOfUse entity.
+     *
+     * @param Request $request
+     * @param string $id
      *
      * @Route("/{id}", name="termofuse_update")
      * @Method("PUT")
@@ -270,6 +286,9 @@ class TermOfUseController extends Controller {
     /**
      * Deletes a TermOfUse entity.
      *
+     * @param Request $request
+     * @param string $id
+     *
      * @Route("/{id}/delete", name="termofuse_delete")
      */
     public function deleteAction(Request $request, $id) {
@@ -291,7 +310,7 @@ class TermOfUseController extends Controller {
      *
      * @param mixed $id The entity id
      *
-     * @return \Symfony\Component\Form\Form The form
+     * @return Form The form
      */
     private function createDeleteForm($id) {
         return $this->createFormBuilder()

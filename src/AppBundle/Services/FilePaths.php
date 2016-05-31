@@ -134,6 +134,12 @@ class FilePaths {
 		return $path;
     }
 	
+    /**
+     * Get the path to a harvested deposit.
+     * 
+     * @param Deposit $deposit
+     * @return type
+     */
 	final public function getHarvestFile(Deposit $deposit) {
 		$path = $this->getHarvestDir($deposit->getJournal());
 		return $path . '/' . $deposit->getFileName();
@@ -154,6 +160,12 @@ class FilePaths {
 		return $path;
     }
 	
+    /**
+     * Get the path to a deposit bag being processed.
+     * 
+     * @param Deposit $deposit
+     * @return type
+     */
 	public function getProcessingBagPath(Deposit $deposit) {
 		$path = $this->getProcessingDir($deposit->getJournal());
 		return $path . '/' . $deposit->getDepositUuid();
@@ -174,6 +186,12 @@ class FilePaths {
 		return $path;
     }
 	
+    /**
+     * Get the path to a processed, staged, bag.
+     * 
+     * @param Deposit $deposit
+     * @return type
+     */
 	final public function getStagingBagPath(Deposit $deposit) {
 		$path = $this->getStagingDir($deposit->getJournal());
 		return $path . '/' . $deposit->getDepositUuid() . '.zip';

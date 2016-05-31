@@ -21,6 +21,9 @@ class DepositController extends Controller {
      * @Route("/", name="deposit")
      * @Method("GET")
      * @Template()
+     * 
+     * @param Request $request
+     * @return array
      */
     public function indexAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
@@ -60,6 +63,7 @@ class DepositController extends Controller {
 	 * @Template()
 	 * 
 	 * @param Request $request
+     * @return array
 	 */
 	public function searchAction(Request $request) {
 		$em = $this->getDoctrine()->getManager();
@@ -89,6 +93,9 @@ class DepositController extends Controller {
      * @Route("/{id}", name="deposit_show")
      * @Method("GET")
      * @Template()
+     * 
+     * @param string $id
+     * @return array
      */
     public function showAction($id) {
         $em = $this->getDoctrine()->getManager();

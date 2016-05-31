@@ -10,10 +10,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Journal controller. Journals are read only, other than journal health status.
+ * Journal controller. Journals can be deleted, and it's possible to update
+ * the journal health status.
  *
  * @Route("/journal")
  */
@@ -25,6 +27,9 @@ class JournalController extends Controller {
      * @Route("/", name="journal")
      * @Method("GET")
      * @Template()
+     * 
+     * @param Request $request
+     * @return array
      */
     public function indexAction(Request $request) {
         /**
@@ -66,6 +71,7 @@ class JournalController extends Controller {
      * @Template()
      * 
      * @param Request $request
+     * @return array
      */
     public function searchAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
@@ -99,6 +105,9 @@ class JournalController extends Controller {
      * @Route("/{id}", name="journal_show")
      * @Method("GET")
      * @Template()
+     * 
+     * @param string $id
+     * @return array
      */
     public function showAction($id) {
         $em = $this->getDoctrine()->getManager();
@@ -114,6 +123,12 @@ class JournalController extends Controller {
         );
     }
     
+    /**
+     * Build and return a form to delete a journal.
+     * 
+     * @param Journal $journal
+     * @return Form
+     */
     private function createDeleteForm(Journal $journal) {
         $formBuilder = $this->createFormBuilder($journal);
         $formBuilder->setAction($this->generateUrl('journal_delete', array('id' => $journal->getId())));
@@ -135,6 +150,11 @@ class JournalController extends Controller {
      * @Route("/{id}/delete", name="journal_delete")
      * @Method({"GET","DELETE"})
      * @Template()
+     * 
+     * @param Request $request
+     * @param string $id
+     * 
+     * @return array
      */
     public function deleteAction(Request $request, $id) {
         $em = $this->getDoctrine()->getManager();
@@ -186,7 +206,7 @@ class JournalController extends Controller {
      * @Route("/{id}/status", name="journal_status")
      * 
      * @param Request $request
-     * @param type $id
+     * @param string $id
      */
     public function updateStatus(Request $request, $id) {
         $em = $this->getDoctrine()->getManager();
@@ -206,11 +226,14 @@ class JournalController extends Controller {
     }
 
    /**
-     * Finds and displays a Journal entity.
+     * Ping a journal and display the result.
      *
      * @Route("/ping/{id}", name="journal_ping")
      * @Method("GET")
      * @Template()
+     * 
+     * @param string $id
+     * @return array
      */
     public function pingAction($id) {
         $em = $this->getDoctrine()->getManager();
@@ -245,11 +268,16 @@ class JournalController extends Controller {
     }
 
 	/**
-     * Finds and displays a Journal entity.
+     * Show the deposits for a journal.
      *
      * @Route("/{id}/deposits", name="journal_deposits")
      * @Method("GET")
      * @Template()
+     * 
+     * @param Request $request
+     * @param string $id
+     * 
+     * @return array
      */
     public function showDepositsAction(Request $request, $id) {
         /** var ObjectManager $em */
@@ -268,7 +296,6 @@ class JournalController extends Controller {
             $request->query->getInt('page', 1),
             25
         );
-
 
         return array(
             'journal' => $journal,

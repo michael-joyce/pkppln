@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Tests\Logger;
 
 /**
- * Reset the processing status for one deposit.
+ * Summarize the processing status for the deposits.
  */
 class SummarizeDepositsCommand extends ContainerAwareCommand {
 

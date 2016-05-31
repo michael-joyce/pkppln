@@ -21,6 +21,8 @@ class TermOfUseHistoryController extends Controller {
      * @Route("/", name="termhistory")
      * @Method("GET")
      * @Template()
+     * @param Request $request
+     * @return array
      */
     public function indexAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
@@ -44,6 +46,9 @@ class TermOfUseHistoryController extends Controller {
      * @Route("/{id}", name="termhistory_show")
      * @Method("GET")
      * @Template()
+     * @param Request $request
+     * @param Request $id
+     * @return array
      */
     public function showAction(Request $request, $id) {
         $em = $this->getDoctrine()->getManager();

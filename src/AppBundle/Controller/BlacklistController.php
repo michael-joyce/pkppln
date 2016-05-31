@@ -2,13 +2,14 @@
 
 namespace AppBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use AppBundle\Entity\Blacklist;
+use AppBundle\Form\BlacklistType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use AppBundle\Entity\Blacklist;
-use AppBundle\Form\BlacklistType;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Blacklist controller. The blacklist is read/write.
@@ -23,6 +24,8 @@ class BlacklistController extends Controller {
      * @Route("/", name="blacklist")
      * @Method("GET")
      * @Template()
+     * @param Request $request
+     * @return array
      */
     public function indexAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
@@ -47,6 +50,8 @@ class BlacklistController extends Controller {
      * @Route("/", name="blacklist_create")
      * @Method("POST")
      * @Template("AppBundle:Blacklist:new.html.twig")
+     * @param Request $request
+     * @return array
      */
     public function createAction(Request $request) {
         $entity = new Blacklist();
@@ -73,7 +78,8 @@ class BlacklistController extends Controller {
      *
      * @param Blacklist $entity The entity
      *
-     * @return \Symfony\Component\Form\Form The form
+     * @return Form The form
+     * @return array
      */
     private function createCreateForm(Blacklist $entity) {
         $form = $this->createForm(new BlacklistType(), $entity, array(
@@ -92,6 +98,7 @@ class BlacklistController extends Controller {
      * @Route("/new", name="blacklist_new")
      * @Method("GET")
      * @Template()
+     * @return array
      */
     public function newAction() {
         $entity = new Blacklist();
@@ -107,7 +114,8 @@ class BlacklistController extends Controller {
 	 * @Route("/search", name="blacklist_search")
 	 * @Method("GET")
 	 * @Template()
-	 * @param Request $request
+     * @param Request $request
+     * @return array
 	 */
 	public function searchAction(Request $request) {
 		$em = $this->getDoctrine()->getManager();
@@ -141,6 +149,8 @@ class BlacklistController extends Controller {
      * @Route("/{id}", name="blacklist_show")
      * @Method("GET")
      * @Template()
+     * @param string $id
+     * @return array
      */
     public function showAction($id) {
         $em = $this->getDoctrine()->getManager();
@@ -170,6 +180,8 @@ class BlacklistController extends Controller {
      * @Route("/{id}/edit", name="blacklist_edit")
      * @Method("GET")
      * @Template()
+     * @param string $id
+     * @return array
      */
     public function editAction($id) {
         $em = $this->getDoctrine()->getManager();
@@ -195,7 +207,7 @@ class BlacklistController extends Controller {
      *
      * @param Blacklist $entity The entity
      *
-     * @return \Symfony\Component\Form\Form The form
+     * @return Form The form
      */
     private function createEditForm(Blacklist $entity) {
         $form = $this->createForm(new BlacklistType(), $entity, array(
@@ -214,6 +226,9 @@ class BlacklistController extends Controller {
      * @Route("/{id}", name="blacklist_update")
      * @Method("PUT")
      * @Template("AppBundle:Blacklist:edit.html.twig")
+     * @param Request $request
+     * @param string $id
+     * @return array
      */
     public function updateAction(Request $request, $id) {
         $em = $this->getDoctrine()->getManager();
@@ -246,6 +261,9 @@ class BlacklistController extends Controller {
      * Deletes a Blacklist entity.
      *
      * @Route("/{id}/delete", name="blacklist_delete")
+     * @param Request $request
+     * @param Request $request
+     * @return array
      */
     public function deleteAction(Request $request, $id) {
         $em = $this->getDoctrine()->getManager();
@@ -267,7 +285,7 @@ class BlacklistController extends Controller {
      *
      * @param mixed $id The entity id
      *
-     * @return \Symfony\Component\Form\Form The form
+     * @return Form The form
      */
     private function createDeleteForm($id) {
         return $this->createFormBuilder()

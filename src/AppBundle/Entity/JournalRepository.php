@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use DateTime;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Func;
 
@@ -14,10 +15,10 @@ use Doctrine\ORM\Query\Expr\Func;
 class JournalRepository extends EntityRepository {
 
     /**
-     * Search for a journal.
+     * Search for a journal by title, uuid, issn, url, email, or publisher.
      *
      * @param string $q
-     * @return Journal[]
+     * @return Collection|Journal[]
      */
     public function search($q) {
         $qb = $this->createQueryBuilder('j');
@@ -46,7 +47,7 @@ class JournalRepository extends EntityRepository {
      * Find journals by status.
      *
      * @param string $status
-     * @return Journal[]
+     * @return Collection|Journal[]
      */
     public function findByStatus($status) {
         return $this->findBy(array(
@@ -71,7 +72,7 @@ class JournalRepository extends EntityRepository {
      * Find journals that haven't contacted the PLN in $days.
      * 
      * @param integer $days
-     * @return Journal[]
+     * @return Collection|Journal[]
      */
     public function findSilent($days) {
         $dt = new DateTime("-{$days} day");
@@ -87,7 +88,7 @@ class JournalRepository extends EntityRepository {
      * for, but they have not been updated yet.
      * 
      * @param int $days
-     * @return Journal[]
+     * @return Collection|Journal[]
      */
     public function findOverdue($days) {
         $dt = new DateTime("-{$days} day");
@@ -102,7 +103,7 @@ class JournalRepository extends EntityRepository {
 	 * journals with status=new.
 	 * 
 	 * @param type $limit
-	 * @return type
+     * @return Collection|Journal[]
 	 */
     public function findNew($limit = 5) {
         $qb = $this->createQueryBuilder('e');

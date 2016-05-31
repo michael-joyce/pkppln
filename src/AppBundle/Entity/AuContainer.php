@@ -1,11 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -95,6 +89,13 @@ class AuContainer {
         return $this->deposits;
     }
     
+    /**
+     * Set open. An open container can be made closed, but a closed container
+     * cannot be reopened.
+     * 
+     * @param type $open
+     * @return AuContainer
+     */
     public function setOpen($open) {
         if($this->open) {
             // Only change an open container to closed.
@@ -103,10 +104,20 @@ class AuContainer {
         return $this;
     }
     
+    /**
+     * Get open
+     * 
+     * @return boolean
+     */
     public function isOpen() {
         return $this->open;
     }
 
+    /**
+     * Get the size of the container in bytes.
+     * 
+     * @return int
+     */
     public function getSize() {
         $size = 0;
         foreach ($this->deposits as $deposit) {
@@ -115,6 +126,11 @@ class AuContainer {
         return $size;
     }
 
+    /**
+     * Count the deposits in the container.
+     * 
+     * @return int
+     */
     public function countDeposits() {
         return $this->deposits->count();
     }

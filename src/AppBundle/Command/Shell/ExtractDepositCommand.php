@@ -62,6 +62,9 @@ class ExtractDepositCommand extends ContainerAwareCommand {
         $this->addOption('source-names', null, InputOption::VALUE_NONE, 'Use original source file names - use with extreme care.');
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function execute(InputInterface $input, OutputInterface $output) {
         $file = $input->getArgument('file');
         $path = $input->getArgument('path');

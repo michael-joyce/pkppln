@@ -18,12 +18,19 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class DefaultController extends Controller {
 
+    /**
+     * The LOCKSS permision statement, required for LOCKSS to harvest
+     * content.
+     */
     const PERMISSION_STMT = 'LOCKSS system has permission to collect, preserve, and serve this Archival Unit.';
 
     /**
-     * Home page.
+     * Home page. There's different content for anonymous users vs logged in
+     * users.
      * 
      * @Route("/", name="home")
+     * 
+     * @return Response
      */
     public function indexAction() {
         $em = $this->container->get('doctrine');
@@ -43,9 +50,12 @@ class DefaultController extends Controller {
     }
 
     /**
+     * View one document.
+     * 
      * @param string $path
      * @Route("/docs/{path}", name="doc_view")
      * @Template()
+     * @return array
      */
     public function docsViewAction($path) {
         $em = $this->container->get('doctrine');
@@ -62,6 +72,7 @@ class DefaultController extends Controller {
     /**
      * @Route("/docs", name="doc_list")
      * @Template()
+     * @return array
      */
     // Must be after docsViewAction()
     public function docsListAction() {
@@ -74,6 +85,8 @@ class DefaultController extends Controller {
      * Return the permission statement for LOCKSS.
      * 
      * @Route("/permission", name="lockss_permission")
+     * @param Request $request
+     * @return Response
      */
     public function permissionAction(Request $request) {
         $this->get('monolog.logger.lockss')->notice("permission - {$request->getClientIp()}");
@@ -88,6 +101,9 @@ class DefaultController extends Controller {
      * 
      * @Route("/fetch/{journalUuid}/{depositUuid}.zip", name="fetch")
      * @param Request $request
+     * @param string $journalUuid
+     * @param string $depositUuid
+     * @return BinaryFileResponse
      */
     public function fetchAction(Request $request, $journalUuid, $depositUuid) {
         $journalUuid = strtoupper($journalUuid);
@@ -167,6 +183,7 @@ class DefaultController extends Controller {
      * )
      * @Template()
      * @param Request $request
+     * @return array
      */
     public function termsFeedAction(Request $request) {
         $em = $this->get('doctrine')->getManager();
