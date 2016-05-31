@@ -9,7 +9,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Overrides the CreateUserCommand from FOSUserBundle.
+ * Overrides the CreateUserCommand from FOSUserBundle to add support for
+ * fullname and institution.
  */
 class CreateUserCommand extends ContainerAwareCommand
 {

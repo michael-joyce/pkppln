@@ -5,7 +5,12 @@ namespace AppUserBundle\Util;
 use AppUserBundle\Entity\User;
 use FOS\UserBundle\Model\UserManagerInterface;
 
-// http://stackoverflow.com/questions/11595261/override-symfony2-console-commands
+/**
+ * Custom user manipulator which adds support for fullname and institution, which
+ * are not part of the stock FOSUserBundle.
+ * 
+ * http://stackoverflow.com/questions/11595261/override-symfony2-console-commands
+ */
 class UserManipulator {
 
 	/**
