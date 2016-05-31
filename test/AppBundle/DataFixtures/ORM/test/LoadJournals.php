@@ -48,6 +48,7 @@ class LoadJournals extends AbstractDataFixture implements OrderedFixtureInterfac
         $j1->setUrl('http://journal.orangula.dev');
         $j1->setStatus('new');
         $j1->setUuid('A556CBF2-B674-444F-87B7-23DEE36F013D');
+        $j1->setContacted(new DateTime());
         $manager->persist($j1);
 		
         $manager->flush();
