@@ -14,26 +14,26 @@ class DocumentType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
-     * @param array $options
+     * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('title')
             ->add('path')
-			->add('summary')
+            ->add('summary')
             ->add('content', 'ckeditor', array(
-				'config_name' => 'pkppln_config',
-			));
+                'config_name' => 'pkppln_config',
+            ));
     }
-    
+
     /**
      * @param OptionsResolverInterface $resolver
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\Document'
+            'data_class' => 'AppBundle\Entity\Document',
         ));
     }
 

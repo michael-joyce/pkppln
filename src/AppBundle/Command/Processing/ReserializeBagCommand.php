@@ -2,7 +2,7 @@
 
 namespace AppBundle\Command\Processing;
 
-require_once('vendor/scholarslab/bagit/lib/bagit.php');
+require_once 'vendor/scholarslab/bagit/lib/bagit.php';
 
 use AppBundle\Entity\AuContainer;
 use AppBundle\Entity\Deposit;
@@ -11,12 +11,13 @@ use BagIt;
 /**
  * Take a processed bag and reserialize it.
  */
-class ReserializeBagCommand extends AbstractProcessingCmd {
-
+class ReserializeBagCommand extends AbstractProcessingCmd
+{
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    protected function configure() {
+    protected function configure()
+    {
         $this->setName('pln:reserialize');
         $this->setDescription('Reserialize the deposit bag.');
         parent::configure();
@@ -25,12 +26,13 @@ class ReserializeBagCommand extends AbstractProcessingCmd {
     /**
      * Add the metadata from the database to the bag-info.txt file.
      * 
-     * @param BagIt $bag
+     * @param BagIt   $bag
      * @param Deposit $deposit
      */
-	protected function addMetadata(BagIt $bag, Deposit $deposit) {
+    protected function addMetadata(BagIt $bag, Deposit $deposit)
+    {
         $bag->bagInfoData = array(); // @todo this is very very bad. Once BagItPHP is updated it should be $bag->clearAllBagInfo();
-        $bag->setBagInfoData('External-Identifier', $deposit->getDepositUuid());        
+        $bag->setBagInfoData('External-Identifier', $deposit->getDepositUuid());
         $bag->setBagInfoData('PKP-PLN-Deposit-UUID', $deposit->getDepositUuid());
         $bag->setBagInfoData('PKP-PLN-Deposit-Received', $deposit->getReceived()->format('c'));
         $bag->setBagInfoData('PKP-PLN-Deposit-Volume', $deposit->getVolume());
@@ -42,20 +44,21 @@ class ReserializeBagCommand extends AbstractProcessingCmd {
         $bag->setBagInfoData('PKP-PLN-Journal-Title', $journal->getTitle());
         $bag->setBagInfoData('PKP-PLN-Journal-ISSN', $journal->getIssn());
         $bag->setBagInfoData('PKP-PLN-Journal-URL', $journal->getUrl());
-		$bag->setBagInfoData('PKP-PLN-Journal-Email', $journal->getEmail());
+        $bag->setBagInfoData('PKP-PLN-Journal-Email', $journal->getEmail());
         $bag->setBagInfoData('PKP-PLN-Publisher-Name', $journal->getPublisherName());
         $bag->setBagInfoData('PKP-PLN-Publisher-URL', $journal->getPublisherUrl());
 
-		foreach($deposit->getLicense() as $key => $value) {
-			$bag->setBagInfoData('PKP-PLN-' . $key, $value);
-		}
-	}
+        foreach ($deposit->getLicense() as $key => $value) {
+            $bag->setBagInfoData('PKP-PLN-'.$key, $value);
+        }
+    }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    protected function processDeposit(Deposit $deposit) {
-        $extractedPath = $this->filePaths->getProcessingBagPath($deposit);		
+    protected function processDeposit(Deposit $deposit)
+    {
+        $extractedPath = $this->filePaths->getProcessingBagPath($deposit);
         $this->logger->info("Reserializing {$extractedPath}");
 
         $temp = tempnam(sys_get_temp_dir(), 'deposit_processing_log');
@@ -63,72 +66,78 @@ class ReserializeBagCommand extends AbstractProcessingCmd {
             unlink($temp);
         }
         file_put_contents($temp, $deposit->getProcessingLog());
-		
+
         $bag = new BagIt($extractedPath);
-        $bag->addFile($temp, 'data/processing-log.txt');		
-		$this->addMetadata($bag, $deposit);
+        $bag->addFile($temp, 'data/processing-log.txt');
+        $this->addMetadata($bag, $deposit);
         $bag->update();
         unlink($temp);
-		
+
         $path = $this->filePaths->getStagingBagPath($deposit);
-		
-        if(file_exists($path)) {
+
+        if (file_exists($path)) {
             $this->logger->warning("{$path} already exists. Removing it.");
             unlink($path);
         }
-		
+
         $bag->package($path, 'zip');
         $deposit->setPackagePath($path);
         $deposit->setPackageSize(ceil(filesize($path) / 1000)); // bytes to kb.
         $deposit->setPackageChecksumType('sha1');
         $deposit->setPackageChecksumValue(hash_file('sha1', $path));
-        
+
         $auContainer = $this->em->getRepository('AppBundle:AuContainer')->getOpenContainer();
-        if($auContainer === null) {
+        if ($auContainer === null) {
             $auContainer = new AuContainer();
             $this->em->persist($auContainer);
         }
         $deposit->setAuContainer($auContainer);
         $auContainer->addDeposit($deposit);
-        if($auContainer->getSize() > $this->container->getParameter('pln_maxAuSize')) {
+        if ($auContainer->getSize() > $this->container->getParameter('pln_maxAuSize')) {
             $auContainer->setOpen(false);
             $this->em->flush($auContainer);
         }
+
         return true;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function failureLogMessage() {
-        return "Bag Reserialize failed.";
+    public function failureLogMessage()
+    {
+        return 'Bag Reserialize failed.';
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function nextState() {
-        return "reserialized";
+    public function nextState()
+    {
+        return 'reserialized';
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function processingState() {
-        return "virus-checked";
+    public function processingState()
+    {
+        return 'virus-checked';
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function successLogMessage() {
-        return "Bag Reserialize succeeded.";
+    public function successLogMessage()
+    {
+        return 'Bag Reserialize succeeded.';
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function errorState() {
-        return "reserialize-error";
+    public function errorState()
+    {
+        return 'reserialize-error';
     }
 }

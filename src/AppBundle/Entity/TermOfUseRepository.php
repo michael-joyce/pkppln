@@ -6,7 +6,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityRepository;
 
 /**
- * TermOfUseRepository
+ * TermOfUseRepository.
  */
 class TermOfUseRepository extends EntityRepository
 {
@@ -15,10 +15,12 @@ class TermOfUseRepository extends EntityRepository
      *
      * @return Collection|TermOfUse[]
      */
-    public function getTerms() {
+    public function getTerms()
+    {
         $qb = $this->createQueryBuilder('t')
                 ->orderBy('t.weight', 'ASC')
                 ->getQuery();
+
         return $qb->getResult();
     }
 }

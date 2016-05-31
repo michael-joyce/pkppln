@@ -13,18 +13,21 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @Route("/termhistory")
  */
-class TermOfUseHistoryController extends Controller {
-
+class TermOfUseHistoryController extends Controller
+{
     /**
      * Lists all TermOfUseHistory entities.
      *
      * @Route("/", name="termhistory")
      * @Method("GET")
      * @Template()
+     *
      * @param Request $request
+     *
      * @return array
      */
-    public function indexAction(Request $request) {
+    public function indexAction(Request $request)
+    {
         $em = $this->getDoctrine()->getManager();
         $dql = 'SELECT e FROM AppBundle:TermOfUseHistory e ORDER BY e.termId';
         $query = $em->createQuery($dql);
@@ -46,11 +49,14 @@ class TermOfUseHistoryController extends Controller {
      * @Route("/{id}", name="termhistory_show")
      * @Method("GET")
      * @Template()
+     *
      * @param Request $request
      * @param Request $id
+     *
      * @return array
      */
-    public function showAction(Request $request, $id) {
+    public function showAction(Request $request, $id)
+    {
         $em = $this->getDoctrine()->getManager();
         $repo = $em->getRepository('AppBundle:TermOfUseHistory');
         $query = $repo->createQueryBuilder('h')

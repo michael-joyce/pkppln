@@ -7,19 +7,19 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Blacklist
+ * Blacklist.
  *
  * @ORM\Table()
  * @ORM\HasLifecycleCallbacks
  * @ORM\Entity()
  * @ORM\Entity(repositoryClass="BlacklistRepository")
  */
-class Blacklist {
-
+class Blacklist
+{
     /**
      * Database ID.
      * 
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
@@ -56,19 +56,20 @@ class Blacklist {
     private $created;
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer 
+     * @return int
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
-
     /**
-     * Set uuid
+     * Set uuid.
      *
      * @param string $uuid
+     *
      * @return Blacklist
      */
     public function setUuid($uuid)
@@ -79,9 +80,9 @@ class Blacklist {
     }
 
     /**
-     * Get uuid
+     * Get uuid.
      *
-     * @return string 
+     * @return string
      */
     public function getUuid()
     {
@@ -89,9 +90,10 @@ class Blacklist {
     }
 
     /**
-     * Set created
+     * Set created.
      *
      * @param \DateTime $created
+     *
      * @return Blacklist
      */
     public function setCreated($created)
@@ -102,9 +104,9 @@ class Blacklist {
     }
 
     /**
-     * Get created
+     * Get created.
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreated()
     {
@@ -118,14 +120,16 @@ class Blacklist {
      * 
      * @ORM\PrePersist
      */
-    public function setTimestamp() {
+    public function setTimestamp()
+    {
         $this->created = new DateTime();
     }
 
     /**
-     * Set comment
+     * Set comment.
      *
      * @param string $comment
+     *
      * @return Blacklist
      */
     public function setComment($comment)
@@ -136,21 +140,22 @@ class Blacklist {
     }
 
     /**
-     * Get comment
+     * Get comment.
      *
-     * @return string 
+     * @return string
      */
     public function getComment()
     {
         return $this->comment;
     }
-    
+
     /**
      * The deposit's uuid is the string representation.
      *
      * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         return $this->uuid;
     }
 }

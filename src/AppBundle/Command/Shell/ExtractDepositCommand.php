@@ -23,12 +23,12 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Tests\Logger;
 
 /**
- * Description of ExtractDepositCommand
+ * Description of ExtractDepositCommand.
  *
  * @author mjoyce
  */
-class ExtractDepositCommand extends ContainerAwareCommand {
-
+class ExtractDepositCommand extends ContainerAwareCommand
+{
     /**
      * @var Logger
      */
@@ -44,7 +44,8 @@ class ExtractDepositCommand extends ContainerAwareCommand {
      *
      * @param ContainerInterface $container
      */
-    public function setContainer(ContainerInterface $container = null) {
+    public function setContainer(ContainerInterface $container = null)
+    {
         parent::setContainer($container);
         $this->templating = $container->get('templating');
         $this->logger = $container->get('logger');
@@ -52,9 +53,10 @@ class ExtractDepositCommand extends ContainerAwareCommand {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function configure() {
+    public function configure()
+    {
         $this->setName('pln:extract');
         $this->setDescription('Extract the content of an OJS deposit XML file.');
         $this->addArgument('file', InputArgument::REQUIRED, 'UUID of the deposit to extract.');
@@ -63,49 +65,50 @@ class ExtractDepositCommand extends ContainerAwareCommand {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function execute(InputInterface $input, OutputInterface $output) {
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
         $file = $input->getArgument('file');
         $path = $input->getArgument('path');
         $fs = new Filesystem();
         $useSrcNames = $input->getOption('source-names');
-        
-        if(substr($path, -1, 1) !== '/') {
+
+        if (substr($path, -1, 1) !== '/') {
             $path .= '/';
         }
-        if(! $fs->exists($path)) {
+        if (!$fs->exists($path)) {
             $fs->mkdir($path);
         }
         ini_set('memory_limit', '128M');
-        
+
         $dom = new DOMDocument();
         $valid = $dom->load($file, LIBXML_COMPACT | LIBXML_PARSEHUGE);
         if (!$valid) {
             throw new Exception("{$file} is not a valid XML file.");
-        }        
+        }
         $xp = new DOMXPath($dom);
         gc_enable();
         foreach ($xp->query('//embed') as $embedded) {
-            /** @var DOMNamedNodeMap */
+            /* @var DOMNamedNodeMap */
             $attrs = $embedded->attributes;
-            if(! $attrs) {
-                $output->writeln("Embedded element has no attributes. Skipping.");
+            if (!$attrs) {
+                $output->writeln('Embedded element has no attributes. Skipping.');
                 continue;
             }
             $filename = $attrs->getNamedItem('filename')->nodeValue;
-            if(! $filename) {
-                $output->writeln("Embedded element has no file name. Skipping.");
+            if (!$filename) {
+                $output->writeln('Embedded element has no file name. Skipping.');
                 continue;
             }
             $ext = pathinfo($filename, PATHINFO_EXTENSION);
-            if($ext) {
-                $ext = '.' . $ext;
+            if ($ext) {
+                $ext = '.'.$ext;
             }
-            
+
             $tmpPath = '';
-            if($useSrcNames) {
-                $tmpPath = $path . $filename;
+            if ($useSrcNames) {
+                $tmpPath = $path.$filename;
                 $ext = '';
             } else {
                 $tmpPath = tempnam($path, 'pln-');
@@ -114,19 +117,19 @@ class ExtractDepositCommand extends ContainerAwareCommand {
             $output->writeln("Extracting {$filename} as {$path}{$tmpName}{$ext}.");
             $fh = fopen($tmpPath, 'wb');
             $chunkSize = 1024 * 1024; // 1MB chunks.
-			$length = $xp->evaluate('string-length(./text())', $embedded);			
+            $length = $xp->evaluate('string-length(./text())', $embedded);
             $offset = 1; // xpath string offsets start at 1, not zero.
-            while($offset < $length) {
-				$end = $offset+$chunkSize;
-				$chunk = $xp->evaluate("substring(./text(), {$offset}, {$chunkSize})", $embedded);				
+            while ($offset < $length) {
+                $end = $offset + $chunkSize;
+                $chunk = $xp->evaluate("substring(./text(), {$offset}, {$chunkSize})", $embedded);
                 fwrite($fh, base64_decode($chunk));
-				$offset = $end;
+                $offset = $end;
                 $output->write('.');
             }
             $output->writeln('');
             fclose($fh);
-            if($ext && ! $useSrcNames) {
-                $fs->rename($tmpPath, $tmpPath . $ext);
+            if ($ext && !$useSrcNames) {
+                $fs->rename($tmpPath, $tmpPath.$ext);
             }
         }
     }

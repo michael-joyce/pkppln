@@ -6,7 +6,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * TermOfUse
+ * TermOfUse.
  *
  * A single term of use that the journal managers must agree to.
  *
@@ -14,12 +14,12 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\HasLifecycleCallbacks
  * @ORM\Entity(repositoryClass="TermOfUseRepository")
  */
-class TermOfUse {
-
+class TermOfUse
+{
     /**
-     * Database ID
+     * Database ID.
      * 
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
@@ -83,104 +83,118 @@ class TermOfUse {
     private $content;
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer 
+     * @return int
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
     /**
-     * Set weight
+     * Set weight.
      *
-     * @param integer $weight
+     * @param int $weight
+     *
      * @return TermOfUse
      */
-    public function setWeight($weight) {
+    public function setWeight($weight)
+    {
         $this->weight = $weight;
 
         return $this;
     }
 
     /**
-     * Get weight
+     * Get weight.
      *
-     * @return integer 
+     * @return int
      */
-    public function getWeight() {
+    public function getWeight()
+    {
         return $this->weight;
     }
 
     /**
-     * Get created
+     * Get created.
      *
      * @return DateTime
      */
-    public function getCreated() {
+    public function getCreated()
+    {
         return $this->created;
     }
 
     /**
-     * Set keyCode
+     * Set keyCode.
      *
      * @param string $keyCode
+     *
      * @return TermOfUse
      */
-    public function setKeyCode($keyCode) {
+    public function setKeyCode($keyCode)
+    {
         $this->keyCode = $keyCode;
 
         return $this;
     }
 
     /**
-     * Get keyCode
+     * Get keyCode.
      *
-     * @return string 
+     * @return string
      */
-    public function getKeyCode() {
+    public function getKeyCode()
+    {
         return $this->keyCode;
     }
 
     /**
-     * Set langCode
+     * Set langCode.
      *
      * @param string $langCode
+     *
      * @return TermOfUse
      */
-    public function setLangCode($langCode) {
+    public function setLangCode($langCode)
+    {
         $this->langCode = $langCode;
 
         return $this;
     }
 
     /**
-     * Get langCode
+     * Get langCode.
      *
-     * @return string 
+     * @return string
      */
-    public function getLangCode() {
+    public function getLangCode()
+    {
         return $this->langCode;
     }
 
     /**
-     * Set content
+     * Set content.
      *
      * @param string $content
+     *
      * @return TermOfUse
      */
-    public function setContent($content) {
+    public function setContent($content)
+    {
         $this->content = $content;
 
         return $this;
     }
 
     /**
-     * Get content
+     * Get content.
      *
-     * @return string 
+     * @return string
      */
-    public function getContent() {
+    public function getContent()
+    {
         return $this->content;
     }
 
@@ -190,18 +204,20 @@ class TermOfUse {
      * 
      * @ORM\PrePersist
      */
-    public function setCreatedTimestamp() {
+    public function setCreatedTimestamp()
+    {
         $this->created = new DateTime();
         $this->updated = new DateTime();
     }
-    
+
     /**
      * Called automatically before the database entry is updated or created to
      * set the timestamps.
      * 
      * @ORM\PreUpdate
      */
-    public function setUpdatedTimestamp() {
+    public function setUpdatedTimestamp()
+    {
         $this->updated = new DateTime();
     }
 
@@ -210,14 +226,15 @@ class TermOfUse {
      *
      * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         return $this->content;
     }
 
     /**
-     * Get updated
+     * Get updated.
      *
-     * @return DateTime 
+     * @return DateTime
      */
     public function getUpdated()
     {

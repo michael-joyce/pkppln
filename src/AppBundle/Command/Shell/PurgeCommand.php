@@ -14,9 +14,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class PurgeCommand extends ContainerAwareCommand
 {
-    
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function configure()
     {
@@ -54,8 +53,8 @@ class PurgeCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if($this->getContainer()->get('kernel')->getEnvironment() === 'prod') {
-            $output->writeln("This command cannot be used in production.");
+        if ($this->getContainer()->get('kernel')->getEnvironment() === 'prod') {
+            $output->writeln('This command cannot be used in production.');
             exit;
         }
         $helper = $this->getHelper('question');
@@ -69,7 +68,7 @@ class PurgeCommand extends ContainerAwareCommand
 
         $this->exec('doctrine:schema:drop', array('--force' => true), $output);
         $this->exec('doctrine:schema:create', array(), $output);
-        if($fixtures) {
+        if ($fixtures) {
             $this->exec('doctrine:fixtures:load', array('--append' => true), $output);
         }
         $this->exec('cache:clear', array('--no-warmup' => true), $output);

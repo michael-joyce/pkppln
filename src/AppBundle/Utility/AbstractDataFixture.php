@@ -16,8 +16,8 @@ use Symfony\Component\HttpKernel\KernelInterface;
  *
  * http://stackoverflow.com/questions/11817971
  */
-abstract class AbstractDataFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface {
-
+abstract class AbstractDataFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
+{
     /**
      * @var ContainerInterface
      */
@@ -39,7 +39,7 @@ abstract class AbstractDataFixture extends AbstractFixture implements ContainerA
     }
 
     /**
-     * {@inheritDocs}
+     * {@inheritdoc}.
      */
     public function setContainer(ContainerInterface $container = null)
     {
@@ -47,7 +47,7 @@ abstract class AbstractDataFixture extends AbstractFixture implements ContainerA
     }
 
     /**
-     * {@inheritDocs}
+     * {@inheritdoc}.
      */
     public function getOrder()
     {
@@ -67,4 +67,3 @@ abstract class AbstractDataFixture extends AbstractFixture implements ContainerA
      */
     abstract protected function getEnvironments();
 }
-

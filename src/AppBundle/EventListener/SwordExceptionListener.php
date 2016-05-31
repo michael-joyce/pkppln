@@ -13,8 +13,8 @@ use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 /**
  * Listen for exceptions in the SWORD controller, and produce an error document.
  */
-class SwordExceptionListener {
-
+class SwordExceptionListener
+{
     /**
      * @var TwigEngine
      */
@@ -33,7 +33,7 @@ class SwordExceptionListener {
      * @var Logger
      */
     private $logger;
-    
+
     /**
      * The symfony request stack that generated the exception.
      *
@@ -42,11 +42,12 @@ class SwordExceptionListener {
     private $requestStack;
 
     /**
-     * Set the logger for exceptions
+     * Set the logger for exceptions.
      *
      * @param Logger $logger
      */
-    public function setLogger(Logger $logger) {
+    public function setLogger(Logger $logger)
+    {
         $this->logger = $logger;
     }
 
@@ -55,25 +56,28 @@ class SwordExceptionListener {
      * 
      * @param TwigEngine $templating
      */
-    public function setTemplating(TwigEngine $templating) {
+    public function setTemplating(TwigEngine $templating)
+    {
         $this->templating = $templating;
     }
-    
+
     /**
      * Set the request stack, so it may be interrogated later.
      * 
      * @param RequestStack $requestStack
      */
-    public function setRequestStack(RequestStack $requestStack) {
+    public function setRequestStack(RequestStack $requestStack)
+    {
         $this->requestStack = $requestStack;
     }
-    
+
     /**
      * Respond to an exception with an error document wrapped in a Response.
      *
      * @param GetResponseForExceptionEvent $event
      */
-    public function onKernelException(GetResponseForExceptionEvent $event) {
+    public function onKernelException(GetResponseForExceptionEvent $event)
+    {
         $exception = $event->getException();
 
         // only intercept SwordController exceptions.
@@ -85,7 +89,7 @@ class SwordExceptionListener {
             return;
         }
 
-        $this->logger->critical($exception->getMessage() . ' from ' . $this->requestStack->getCurrentRequest()->getClientIp());
+        $this->logger->critical($exception->getMessage().' from '.$this->requestStack->getCurrentRequest()->getClientIp());
 
         $response = $this->templating->renderResponse(
             'AppBundle:Sword:error.xml.twig',
@@ -102,7 +106,8 @@ class SwordExceptionListener {
      *
      * @param FilterControllerEvent $event
      */
-    public function onKernelController(FilterControllerEvent $event) {
+    public function onKernelController(FilterControllerEvent $event)
+    {
         $this->controller = $event->getController();
     }
 }

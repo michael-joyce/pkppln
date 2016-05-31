@@ -2,7 +2,7 @@
 
 namespace AppBundle\Command\Processing;
 
-require_once('vendor/scholarslab/bagit/lib/bagit.php');
+require_once 'vendor/scholarslab/bagit/lib/bagit.php';
 
 use Exception;
 use AppBundle\Entity\Deposit;
@@ -13,17 +13,18 @@ use DOMDocument;
 /**
  * Validate the OJS XML export.
  */
-class ValidateXmlCommand extends AbstractProcessingCmd {
-
+class ValidateXmlCommand extends AbstractProcessingCmd
+{
     /**
      * The PKP Public Identifier for OJS export XML.
      */
     const PKP_PUBLIC_ID = '-//PKP//OJS Articles and Issues XML//EN';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    protected function configure() {
+    protected function configure()
+    {
         $this->setName('pln:validate-xml');
         $this->setDescription('Validate OJS XML export files.');
         parent::configure();
@@ -32,12 +33,13 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
     /**
      * Log errors generated during the validation.
      */
-    private function logErrors(DtdValidator $validator) {
+    private function logErrors(DtdValidator $validator)
+    {
         foreach ($validator->getErrors() as $error) {
             $this->logger->warning(implode(':', array($error['file'], $error['line'], $error['message'])));
         }
     }
-    
+
     /**
      * Load the XML document into a DOM and return it. Errors are appended to
      * the $report parameter.
@@ -52,19 +54,21 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
      * @return DOMDocument
      * 
      * @param Deposit $deposit
-     * @param string $filename
-     * @param string $report
+     * @param string  $filename
+     * @param string  $report
      */
-    private function loadXml(Deposit $deposit, $filename, &$report) {
+    private function loadXml(Deposit $deposit, $filename, &$report)
+    {
         $dom = new DOMDocument();
         try {
             $dom->load($filename, LIBXML_COMPACT | LIBXML_PARSEHUGE);
         } catch (Exception $ex) {
-            if(strpos($ex->getMessage(), 'Input is not proper UTF-8') === false) {
-                $deposit->addErrorLog('XML file ' . basename($filename) . ' is not parseable: ' . $ex->getMessage());
+            if (strpos($ex->getMessage(), 'Input is not proper UTF-8') === false) {
+                $deposit->addErrorLog('XML file '.basename($filename).' is not parseable: '.$ex->getMessage());
                 $report .= $ex->getMessage();
                 $report .= "\nCannot validate XML.\n";
-                return null;
+
+                return;
             }
             // The XML files can be arbitrarily large, so stream them, filter
             // the stream, and write to disk. The result may not fit in memory.
@@ -73,25 +77,27 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
             $out = fopen($filteredFilename, 'wb');
             $blockSize = 64 * 1024; // 64k blocks
             $changes = 0;
-            while($buffer = fread($in, $blockSize)) {
+            while ($buffer = fread($in, $blockSize)) {
                 $filtered = iconv('UTF-8', 'UTF-8//IGNORE', $buffer);
                 $changes += strlen($buffer) - strlen($filtered);
                 fwrite($out, $filtered);
             }
-            $report .= basename($filename) . " contains {$changes} invalid UTF-8 characters, which have been removed with " 
-                    . ICONV_IMPL . ' version ' . ICONV_VERSION 
-                    . " in PHP " . PHP_VERSION . "\n";
-            
-            $report .= basename($filteredFilename) . " will be validated.\n";
+            $report .= basename($filename)." contains {$changes} invalid UTF-8 characters, which have been removed with "
+                    .ICONV_IMPL.' version '.ICONV_VERSION
+                    .' in PHP '.PHP_VERSION."\n";
+
+            $report .= basename($filteredFilename)." will be validated.\n";
             $dom->load($filteredFilename, LIBXML_COMPACT | LIBXML_PARSEHUGE);
         }
+
         return $dom;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    protected function processDeposit(Deposit $deposit) {
+    protected function processDeposit(Deposit $deposit)
+    {
         $extractedPath = $this->filePaths->getProcessingBagPath($deposit);
 
         $this->logger->info("Validating {$extractedPath} XML files.");
@@ -105,11 +111,11 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
             }
             $basename = basename($filename);
             $dom = $this->loadXml($deposit, $filename, $report);
-            if($dom === null) {
+            if ($dom === null) {
                 $valid = false;
                 continue;
             }
-            /** @var DtdValidator */
+            /* @var DtdValidator */
             $validator = $this->container->get('dtdvalidator');
             $validator->validate($dom);
             if ($validator->hasErrors()) {
@@ -124,41 +130,47 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
             }
         }
         $deposit->addToProcessingLog($report);
+
         return $valid;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function nextState() {
-        return "xml-validated";
+    public function nextState()
+    {
+        return 'xml-validated';
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function processingState() {
-        return "bag-validated";
+    public function processingState()
+    {
+        return 'bag-validated';
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function failureLogMessage() {
-        return "XML Validation failed.";
+    public function failureLogMessage()
+    {
+        return 'XML Validation failed.';
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function successLogMessage() {
-        return "XML validation succeeded.";
+    public function successLogMessage()
+    {
+        return 'XML validation succeeded.';
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function errorState() {
-        return "xml-error";
+    public function errorState()
+    {
+        return 'xml-error';
     }
 }

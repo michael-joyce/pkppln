@@ -8,7 +8,6 @@ use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Exception;
-use J20\Uuid\Uuid;
 use Monolog\Logger;
 use SimpleXMLElement;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -17,8 +16,8 @@ use Symfony\Component\Routing\Router;
 /**
  * Build a deposit and persist it to the database.
  */
-class DepositBuilder {
-
+class DepositBuilder
+{
     /**
      * ORM entity manager.
      * 
@@ -27,7 +26,7 @@ class DepositBuilder {
     private $em;
 
     /**
-     * Service logger
+     * Service logger.
      * 
      * @var Logger
      */
@@ -45,7 +44,8 @@ class DepositBuilder {
      * 
      * @param Logger $logger
      */
-    public function setLogger(Logger $logger) {
+    public function setLogger(Logger $logger)
+    {
         $this->logger = $logger;
     }
 
@@ -54,16 +54,18 @@ class DepositBuilder {
      * 
      * @param Registry $registry
      */
-    public function setManager(Registry $registry) {
+    public function setManager(Registry $registry)
+    {
         $this->em = $registry->getManager();
     }
 
     /**
-     * Set the router
+     * Set the router.
      * 
      * @param Router $router
      */
-    public function setRouter(Router $router) {
+    public function setRouter(Router $router)
+    {
         $this->router = $router;
     }
 
@@ -71,17 +73,20 @@ class DepositBuilder {
      * Get a single XML value as a string.
      * 
      * @param SimpleXMLElement $xml
-     * @param type $xpath
+     * @param type             $xpath
+     *
      * @return string
+     *
      * @throws Exception
      */
-    public function getXmlValue(SimpleXMLElement $xml, $xpath) {
+    public function getXmlValue(SimpleXMLElement $xml, $xpath)
+    {
         $data = $xml->xpath($xpath);
         if (count($data) === 1) {
             return trim((string) $data[0]);
         }
         if (count($data) === 0) {
-            return null;
+            return;
         }
         throw new Exception("Too many elements for '{$xpath}'");
     }
@@ -90,11 +95,13 @@ class DepositBuilder {
      * Build the URL for the deposit receipt.
      * 
      * @param Deposit $deposit
+     *
      * @return string
      */
-    public function buildDepositReceiptUrl(Deposit $deposit) {
+    public function buildDepositReceiptUrl(Deposit $deposit)
+    {
         return $this->router->getGenerator()->generate(
-            "statement",
+            'statement',
             array(
                 'journal_uuid' => $deposit->getJournal()->getUuid(),
                 'deposit_uuid' => $deposit->getDepositUuid(),
@@ -108,10 +115,11 @@ class DepositBuilder {
      * 
      * @todo getLicensingInfo() is a terrible name.
      * 
-     * @param Deposit $deposit
+     * @param Deposit          $deposit
      * @param SimpleXMLElement $xml
      */
-    public function getLicensingInfo(Deposit $deposit, SimpleXMLElement $xml) {
+    public function getLicensingInfo(Deposit $deposit, SimpleXMLElement $xml)
+    {
         $item = $xml->xpath('//pkp:license/node()');
         foreach ($item as $child) {
             $deposit->addLicense($child->getName(), (string) $child);
@@ -121,25 +129,27 @@ class DepositBuilder {
     /**
      * Build a deposit from XML.
      * 
-     * @param Journal $journal
+     * @param Journal          $journal
      * @param SimpleXMLElement $xml
-     * @param string $action
+     * @param string           $action
+     *
      * @return Deposit
      */
-    public function fromXml(Journal $journal, SimpleXMLElement $xml) {
+    public function fromXml(Journal $journal, SimpleXMLElement $xml)
+    {
         $id = $this->getXmlValue($xml, '//atom:id');
         $deposit_uuid = strtoupper(substr($id, 9, 36));
 
         $deposit = $this->em->getRepository('AppBundle:Deposit')->findOneBy(array(
             'depositUuid' => $deposit_uuid,
         ));
-		$action = 'edit';
+        $action = 'edit';
         if (!$deposit) {
-			$action = 'add';
+            $action = 'add';
             $deposit = new Deposit();
         }
-        $deposit->setAction($action);	
-		$deposit->setState('depositedByJournal');
+        $deposit->setAction($action);
+        $deposit->setState('depositedByJournal');
         $deposit->setChecksumType($this->getXmlValue($xml, 'pkp:content/@checksumType'));
         $deposit->setChecksumValue($this->getXmlValue($xml, 'pkp:content/@checksumValue'));
         $deposit->setDepositUuid($deposit_uuid);
@@ -155,13 +165,14 @@ class DepositBuilder {
         $this->getLicensingInfo($deposit, $xml);
 
         if ($action === 'add') {
-            $deposit->addToProcessingLog("Deposit received.");
+            $deposit->addToProcessingLog('Deposit received.');
         } else {
             $deposit->addToProcessingLog('Deposit edited or reset by journal manager.');
         }
 
         $this->em->persist($deposit);
         $this->em->flush();
+
         return $deposit;
     }
 }

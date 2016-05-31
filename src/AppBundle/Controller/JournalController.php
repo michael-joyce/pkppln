@@ -19,8 +19,8 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @Route("/journal")
  */
-class JournalController extends Controller {
-
+class JournalController extends Controller
+{
     /**
      * Lists all Journal entities.
      *
@@ -29,21 +29,23 @@ class JournalController extends Controller {
      * @Template()
      * 
      * @param Request $request
+     *
      * @return array
      */
-    public function indexAction(Request $request) {
-        /**
+    public function indexAction(Request $request)
+    {
+        /*
          * @var EntityManager
          */
         $em = $this->getDoctrine()->getManager();
         $repo = $em->getRepository('AppBundle:Journal');
         $qb = $repo->createQueryBuilder('e');
         $status = $request->query->get('status');
-        if($status !== null) {
+        if ($status !== null) {
             $qb->where('e.status = :status');
             $qb->setParameter('status', $status);
         }
-		$qb->orderBy('e.id');
+        $qb->orderBy('e.id');
         $query = $qb->getQuery();
 
         $paginator = $this->get('knp_paginator');
@@ -53,7 +55,6 @@ class JournalController extends Controller {
             25
         );
         $statuses = $repo->statusSummary();
-
 
         return array(
             'entities' => $entities,
@@ -71,13 +72,15 @@ class JournalController extends Controller {
      * @Template()
      * 
      * @param Request $request
+     *
      * @return array
      */
-    public function searchAction(Request $request) {
+    public function searchAction(Request $request)
+    {
         $em = $this->getDoctrine()->getManager();
         $q = $request->query->get('q', '');
 
-        $repo = $em->getRepository("AppBundle:Journal");
+        $repo = $em->getRepository('AppBundle:Journal');
         $paginator = $this->get('knp_paginator');
 
         $entities = array();
@@ -95,7 +98,7 @@ class JournalController extends Controller {
         return array(
             'q' => $q,
             'count' => count($results),
-            'entities' => $entities
+            'entities' => $entities,
         );
     }
 
@@ -107,9 +110,11 @@ class JournalController extends Controller {
      * @Template()
      * 
      * @param string $id
+     *
      * @return array
      */
-    public function showAction($id) {
+    public function showAction($id)
+    {
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AppBundle:Journal')->find($id);
@@ -122,28 +127,31 @@ class JournalController extends Controller {
             'entity' => $entity,
         );
     }
-    
+
     /**
      * Build and return a form to delete a journal.
      * 
      * @param Journal $journal
+     *
      * @return Form
      */
-    private function createDeleteForm(Journal $journal) {
+    private function createDeleteForm(Journal $journal)
+    {
         $formBuilder = $this->createFormBuilder($journal);
         $formBuilder->setAction($this->generateUrl('journal_delete', array('id' => $journal->getId())));
         $formBuilder->setMethod('DELETE');
         $formBuilder->add('confirm', 'checkbox', array(
-            'label' => 'Yes, delete this journal', 
+            'label' => 'Yes, delete this journal',
             'mapped' => false,
             'value' => 'yes',
             'required' => false,
         ));
         $formBuilder->add('delete', 'submit', array('label' => 'Delete'));
         $form = $formBuilder->getForm();
+
         return $form;
     }
-    
+
     /**
      * Finds and displays a Journal entity.
      *
@@ -152,45 +160,48 @@ class JournalController extends Controller {
      * @Template()
      * 
      * @param Request $request
-     * @param string $id
+     * @param string  $id
      * 
      * @return array
      */
-    public function deleteAction(Request $request, $id) {
+    public function deleteAction(Request $request, $id)
+    {
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AppBundle:Journal')->find($id);
-        
+
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Journal entity.');
         }
-        
-        if($entity->countDeposits() > 0) {
+
+        if ($entity->countDeposits() > 0) {
             $this->addFlash('warning', 'Journals which have made deposits cannot be deleted.');
+
             return $this->redirect($this->generateUrl('journal_show', array('id' => $entity->getId())));
         }
-        
+
         $form = $this->createDeleteForm($entity);
         $form->handleRequest($request);
-        
-        if($form->isSubmitted() && $form->isValid() && $form->get('confirm')->getData()) {
-//            Once JournalUrls are a thing, uncomment these lines.            
+
+        if ($form->isSubmitted() && $form->isValid() && $form->get('confirm')->getData()) {
+            //            Once JournalUrls are a thing, uncomment these lines.            
 //            foreach($entity->getUrls() as $url) {
 //                $em->remove($url);
 //            }
-            
+
             $whitelist = $em->getRepository('AppBundle:Whitelist')->findOneBy(array('uuid' => $entity->getUuid()));
-            if($whitelist) {
+            if ($whitelist) {
                 $em->remove($whitelist);
             }
             $blacklist = $em->getRepository('AppBundle:Whitelist')->findOneBy(array('uuid' => $entity->getUuid()));
-            if($blacklist) {
+            if ($blacklist) {
                 $em->remove($blacklist);
             }
             $em->remove($entity);
             $em->flush();
-            
+
             $this->addFlash('success', 'Journal deleted.');
+
             return $this->redirect($this->generateUrl('journal'));
         }
 
@@ -206,26 +217,28 @@ class JournalController extends Controller {
      * @Route("/{id}/status", name="journal_status")
      * 
      * @param Request $request
-     * @param string $id
+     * @param string  $id
      */
-    public function updateStatus(Request $request, $id) {
+    public function updateStatus(Request $request, $id)
+    {
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('AppBundle:Journal')->find($id);
         $status = $request->query->get('status');
-        if(! $status) {
-            $this->addFlash("error", "The journal's status has not been changed.");
+        if (!$status) {
+            $this->addFlash('error', "The journal's status has not been changed.");
         } else {
             $entity->setStatus($status);
-            if($status === 'healthy') {
+            if ($status === 'healthy') {
                 $entity->setContacted(new DateTime());
             }
-            $this->addFlash("success", "The journal's status has been updated.");
+            $this->addFlash('success', "The journal's status has been updated.");
             $em->flush();
         }
+
         return $this->redirect($this->generateUrl('journal_show', array('id' => $entity->getId())));
     }
 
-   /**
+    /**
      * Ping a journal and display the result.
      *
      * @Route("/ping/{id}", name="journal_ping")
@@ -233,41 +246,46 @@ class JournalController extends Controller {
      * @Template()
      * 
      * @param string $id
+     *
      * @return array
      */
-    public function pingAction($id) {
+    public function pingAction($id)
+    {
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AppBundle:Journal')->find($id);
-		
+
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Journal entity.');
         }
-		
-		try {
-			$result = $this->container->get('ping')->ping($entity);
-            if(! $result->hasXml() || $result->hasError() || ($result->getHttpStatus() !== 200)) {
-				$this->addFlash('warning', "The ping did not complete. HTTP {$result->getHttpStatus()} {$result->getError()}");
+
+        try {
+            $result = $this->container->get('ping')->ping($entity);
+            if (!$result->hasXml() || $result->hasError() || ($result->getHttpStatus() !== 200)) {
+                $this->addFlash('warning', "The ping did not complete. HTTP {$result->getHttpStatus()} {$result->getError()}");
+
                 return $this->redirect($this->generateUrl('journal_show', array(
-                    'id' => $id
+                    'id' => $id,
                 )));
             }
             $entity->setContacted(new DateTime());
             $entity->setTitle($result->getJournalTitle());
             $em->flush($entity);
-			return array(
-				'entity' => $entity,
-				'ping' => $result,
-			);
-		} catch (Exception $e) {
-			$this->addFlash('danger', $e->getMessage());
-			return $this->redirect($this->generateUrl('journal_show', array(
-				'id' => $id
-			)));
-		}
+
+            return array(
+                'entity' => $entity,
+                'ping' => $result,
+            );
+        } catch (Exception $e) {
+            $this->addFlash('danger', $e->getMessage());
+
+            return $this->redirect($this->generateUrl('journal_show', array(
+                'id' => $id,
+            )));
+        }
     }
 
-	/**
+    /**
      * Show the deposits for a journal.
      *
      * @Route("/{id}/deposits", name="journal_deposits")
@@ -275,11 +293,12 @@ class JournalController extends Controller {
      * @Template()
      * 
      * @param Request $request
-     * @param string $id
+     * @param string  $id
      * 
      * @return array
      */
-    public function showDepositsAction(Request $request, $id) {
+    public function showDepositsAction(Request $request, $id)
+    {
         /** var ObjectManager $em */
         $em = $this->getDoctrine()->getManager();
         $journal = $em->getRepository('AppBundle:Journal')->find($id);

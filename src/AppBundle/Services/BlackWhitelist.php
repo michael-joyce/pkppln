@@ -8,8 +8,8 @@ use Doctrine\Common\Persistence\ObjectManager;
 /**
  * Service to check a UUID for whitelist/blacklist status.
  */
-class BlackWhitelist {
-
+class BlackWhitelist
+{
     /**
      * @var ObjectManager
      */
@@ -20,7 +20,8 @@ class BlackWhitelist {
      *
      * @param Registry $doctrine
      */
-    public function __construct(Registry $doctrine) {
+    public function __construct(Registry $doctrine)
+    {
         $this->em = $doctrine->getManager();
     }
 
@@ -28,23 +29,29 @@ class BlackWhitelist {
      * Return true if the uuid is whitelisted.
      *
      * @param string $uuid
-     * @return boolean
+     *
+     * @return bool
      */
-    public function isWhitelisted($uuid) {
+    public function isWhitelisted($uuid)
+    {
         $repo = $this->em->getRepository('AppBundle:Whitelist');
+
         return $repo->findOneBy(array(
-            'uuid' => strtoupper($uuid))) !== null;
+            'uuid' => strtoupper($uuid), )) !== null;
     }
 
     /**
      * Return true if the uuid is blacklisted.
      *
      * @param string $uuid
-     * @return boolean
+     *
+     * @return bool
      */
-    public function isBlacklisted($uuid) {
+    public function isBlacklisted($uuid)
+    {
         $repo = $this->em->getRepository('AppBundle:Blacklist');
+
         return $repo->findOneBy(array(
-            'uuid' => strtoupper($uuid))) !== null;
+            'uuid' => strtoupper($uuid), )) !== null;
     }
 }

@@ -7,6 +7,6 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 /**
  * SWORD exception.
  */
-class SwordException extends HttpException {
-    
+class SwordException extends HttpException
+{
 }

@@ -15,8 +15,8 @@ use Symfony\Component\HttpKernel\Tests\Logger;
 /**
  * Send reminders about journals that haven't contacted the PLN in a while.
  */
-class HealthReminderCommand extends ContainerAwareCommand {
-
+class HealthReminderCommand extends ContainerAwareCommand
+{
     /**
      * @var TwigEngine
      */
@@ -28,9 +28,10 @@ class HealthReminderCommand extends ContainerAwareCommand {
     protected $logger;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    protected function configure() {
+    protected function configure()
+    {
         $this->setName('pln:health:reminder');
         $this->setDescription('Remind admins about silent journals.');
         $this->addOption(
@@ -47,20 +48,22 @@ class HealthReminderCommand extends ContainerAwareCommand {
      *
      * @param ContainerInterface $container
      */
-    public function setContainer(ContainerInterface $container = null) {
+    public function setContainer(ContainerInterface $container = null)
+    {
         parent::setContainer($container);
         $this->templating = $container->get('templating');
         $this->logger = $container->get('monolog.logger.processing');
     }
-    
+
     /**
      * Send the notifications.
      * 
-     * @param integer $days
-     * @param User[] $users
+     * @param int       $days
+     * @param User[]    $users
      * @param Journal[] $journals
      */
-    protected function sendReminders($days, $users, $journals) {
+    protected function sendReminders($days, $users, $journals)
+    {
         $notification = $this->templating->render('AppBundle:HealthCheck:reminder.txt.twig', array(
             'journals' => $journals,
             'days' => $days,
@@ -68,9 +71,9 @@ class HealthReminderCommand extends ContainerAwareCommand {
         $mailer = $this->getContainer()->get('mailer');
         foreach ($users as $user) {
             $message = Swift_Message::newInstance(
-                'Automated reminder from the PKP PLN', 
-                $notification, 
-                'text/plain', 
+                'Automated reminder from the PKP PLN',
+                $notification,
+                'text/plain',
                 'utf-8'
             );
             $message->setFrom('noreplies@pkp-pln.lib.sfu.ca');
@@ -82,10 +85,11 @@ class HealthReminderCommand extends ContainerAwareCommand {
     /**
      * Execute the runall command, which executes all the commands.
      *
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      */
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
         $em = $this->getContainer()->get('doctrine')->getManager();
         $days = $this->getContainer()->getParameter('days_reminder');
         $journals = $em->getRepository('AppBundle:Journal')->findOverdue($days);
@@ -98,6 +102,7 @@ class HealthReminderCommand extends ContainerAwareCommand {
         $users = $em->getRepository('AppUserBundle:User')->findUserToNotify();
         if (count($users) === 0) {
             $this->logger->error('No users to notify.');
+
             return;
         }
         $this->sendReminders($days, $users, $journals);

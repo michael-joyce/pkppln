@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Journal
+ * Journal.
  *
  * Any OJS journal may make deposits to the PLN.
  *
@@ -18,8 +18,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\HasLifecycleCallbacks
  * @ORM\Entity(repositoryClass="JournalRepository")
  */
-class Journal {
-
+class Journal
+{
     /**
      * List of states where a deposit has been sent to LOCKSSOMatic.
      * 
@@ -27,13 +27,12 @@ class Journal {
      *
      * @var array
      */
-	public static $SENTSTATES = array(
-			'deposited', 
-			'complete',
-			'status-error',
-		);
+    public static $SENTSTATES = array(
+            'deposited',
+            'complete',
+            'status-error',
+        );
 
-	
     /**
      * The URL suffix for the ping gateway, appened to the Journal's URL for the
      * ping.
@@ -43,9 +42,9 @@ class Journal {
     const GATEWAY_URL_SUFFIX = '/gateway/plugin/PLNGatewayPlugin';
 
     /**
-     * Database ID
+     * Database ID.
      * 
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
@@ -62,13 +61,13 @@ class Journal {
     private $uuid;
 
     /**
-     * When the journal last contacted the staging server
+     * When the journal last contacted the staging server.
      *
      * @var string
      * @ORM\Column(type="datetime", nullable=false)
      */
     private $contacted;
-    
+
     /**
      * OJS version powering the journal.
      *
@@ -94,7 +93,7 @@ class Journal {
     private $title;
 
     /**
-     * Journal's ISSN
+     * Journal's ISSN.
      *
      * @var string
      * @ORM\Column(type="string", length=9, nullable=false)
@@ -102,7 +101,7 @@ class Journal {
     private $issn;
 
     /**
-     * The journal's URL
+     * The journal's URL.
      *
      * @var string
      * 
@@ -119,12 +118,12 @@ class Journal {
      * @ORM\Column(type="string", nullable=false)
      */
     private $status = 'healthy';
-    
+
     /**
      * True if a ping reports that the journal manager has accepts the terms of 
      * use.
      *
-     * @var boolean
+     * @var bool
      * @ORM\Column(type="boolean", nullable=false)
      */
     private $termsAccepted;
@@ -139,7 +138,7 @@ class Journal {
     private $email;
 
     /**
-     * Name of the publisher
+     * Name of the publisher.
      *
      * @var string
      * @ORM\Column(type="string", nullable=false)
@@ -166,26 +165,28 @@ class Journal {
     /**
      * Construct a new Journal.
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->deposits = new ArrayCollection();
         $this->publisherName = '';
         $this->termsAccepted = false;
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer 
+     * @return int
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
-
     /**
-     * Set uuid
+     * Set uuid.
      *
      * @param string $uuid
+     *
      * @return Journal
      */
     public function setUuid($uuid)
@@ -196,9 +197,9 @@ class Journal {
     }
 
     /**
-     * Get uuid
+     * Get uuid.
      *
-     * @return string 
+     * @return string
      */
     public function getUuid()
     {
@@ -206,9 +207,10 @@ class Journal {
     }
 
     /**
-     * Set contacted
+     * Set contacted.
      *
      * @param DateTime $contacted
+     *
      * @return Journal
      */
     public function setContacted(DateTime $contacted)
@@ -219,7 +221,7 @@ class Journal {
     }
 
     /**
-     * Get contacted
+     * Get contacted.
      *
      * @return DateTime
      */
@@ -229,9 +231,10 @@ class Journal {
     }
 
     /**
-     * Set notified
+     * Set notified.
      *
      * @param DateTime $notified
+     *
      * @return Journal
      */
     public function setNotified($notified)
@@ -242,7 +245,7 @@ class Journal {
     }
 
     /**
-     * Get notified
+     * Get notified.
      *
      * @return DateTime
      */
@@ -252,9 +255,10 @@ class Journal {
     }
 
     /**
-     * Set title
+     * Set title.
      *
      * @param string $title
+     *
      * @return Journal
      */
     public function setTitle($title)
@@ -265,22 +269,24 @@ class Journal {
     }
 
     /**
-     * Get title
+     * Get title.
      *
-     * @return string 
+     * @return string
      */
     public function getTitle()
     {
-        if($this->title) {
+        if ($this->title) {
             return $this->title;
         }
+
         return '(unknown)';
     }
 
     /**
-     * Set issn
+     * Set issn.
      *
      * @param string $issn
+     *
      * @return Journal
      */
     public function setIssn($issn)
@@ -291,9 +297,9 @@ class Journal {
     }
 
     /**
-     * Get issn
+     * Get issn.
      *
-     * @return string 
+     * @return string
      */
     public function getIssn()
     {
@@ -301,9 +307,10 @@ class Journal {
     }
 
     /**
-     * Set url
+     * Set url.
      *
      * @param string $url
+     *
      * @return Journal
      */
     public function setUrl($url)
@@ -314,28 +321,30 @@ class Journal {
     }
 
     /**
-     * Get url
+     * Get url.
      *
-     * @return string 
+     * @return string
      */
     public function getUrl()
     {
         return $this->url;
     }
-    
+
     /**
      * Get the plugin's Gateway URL to ping the journal.
      * 
      * @return type
      */
-    public function getGatewayUrl() {
-        return $this->url . self::GATEWAY_URL_SUFFIX;
+    public function getGatewayUrl()
+    {
+        return $this->url.self::GATEWAY_URL_SUFFIX;
     }
 
     /**
-     * Set status
+     * Set status.
      *
      * @param string $status
+     *
      * @return Journal
      */
     public function setStatus($status)
@@ -346,9 +355,9 @@ class Journal {
     }
 
     /**
-     * Get status
+     * Get status.
      *
-     * @return string 
+     * @return string
      */
     public function getStatus()
     {
@@ -356,9 +365,10 @@ class Journal {
     }
 
     /**
-     * Set email
+     * Set email.
      *
      * @param string $email
+     *
      * @return Journal
      */
     public function setEmail($email)
@@ -369,9 +379,9 @@ class Journal {
     }
 
     /**
-     * Get email
+     * Get email.
      *
-     * @return string 
+     * @return string
      */
     public function getEmail()
     {
@@ -379,9 +389,10 @@ class Journal {
     }
 
     /**
-     * Set publisherName
+     * Set publisherName.
      *
      * @param string $publisherName
+     *
      * @return Journal
      */
     public function setPublisherName($publisherName)
@@ -392,9 +403,9 @@ class Journal {
     }
 
     /**
-     * Get publisherName
+     * Get publisherName.
      *
-     * @return string 
+     * @return string
      */
     public function getPublisherName()
     {
@@ -402,9 +413,10 @@ class Journal {
     }
 
     /**
-     * Set publisherUrl
+     * Set publisherUrl.
      *
      * @param string $publisherUrl
+     *
      * @return Journal
      */
     public function setPublisherUrl($publisherUrl)
@@ -415,9 +427,9 @@ class Journal {
     }
 
     /**
-     * Get publisherUrl
+     * Get publisherUrl.
      *
-     * @return string 
+     * @return string
      */
     public function getPublisherUrl()
     {
@@ -430,14 +442,16 @@ class Journal {
      * 
      * @ORM\PrePersist
      */
-    public function setTimestamp() {
+    public function setTimestamp()
+    {
         $this->contacted = new DateTime();
     }
 
     /**
-     * Add deposits
+     * Add deposits.
      *
      * @param Deposit $deposit
+     *
      * @return Journal
      */
     public function addDeposit(Deposit $deposit)
@@ -448,7 +462,7 @@ class Journal {
     }
 
     /**
-     * Remove deposits
+     * Remove deposits.
      *
      * @param Deposit $deposit
      */
@@ -458,7 +472,7 @@ class Journal {
     }
 
     /**
-     * Get deposits
+     * Get deposits.
      *
      * @return Collection
      */
@@ -467,41 +481,45 @@ class Journal {
         return $this->deposits;
     }
 
-	/**
+    /**
      * Get the deposits which have been sent to LOCKSSOMatic.
      * 
      * @return ArrayCollection|Deposit[]
-	 */
-	public function getCompletedDeposits() {
-		$criteria = Criteria::create()
-			->where(Criteria::expr()->eq('state', 'completed'))
-		;
-		return $this->getDeposits()->matching($criteria);
-	}
+     */
+    public function getCompletedDeposits()
+    {
+        $criteria = Criteria::create()
+            ->where(Criteria::expr()->eq('state', 'completed'))
+        ;
 
-	
-	/**
-	 * Get the deposits which have been set to LOCKSSOMatic, but which may not have
-	 * achieved agreement yet.
-	 * 
-	 * Deposits returned will be in state deposited, complete, or status-error. Those
-	 * have all been sent to lockss.
-	 * 
+        return $this->getDeposits()->matching($criteria);
+    }
+
+    /**
+     * Get the deposits which have been set to LOCKSSOMatic, but which may not have
+     * achieved agreement yet.
+     * 
+     * Deposits returned will be in state deposited, complete, or status-error. Those
+     * have all been sent to lockss.
+     * 
      * @return ArrayCollection|Deposit[]
-	 */
-	public function getSentDeposits() {
-		$criteria = Criteria::create()
-			->where(Criteria::expr()->in('state', self::$SENTSTATES))
-		;
-		return $this->getDeposits()->matching($criteria);
-	}
+     */
+    public function getSentDeposits()
+    {
+        $criteria = Criteria::create()
+            ->where(Criteria::expr()->in('state', self::$SENTSTATES))
+        ;
+
+        return $this->getDeposits()->matching($criteria);
+    }
 
     /**
      * Count the deposits for a journal.
      *
      * @return int
      */
-    public function countDeposits() {
+    public function countDeposits()
+    {
         return $this->deposits->count();
     }
 
@@ -510,14 +528,16 @@ class Journal {
      *
      * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         return $this->getTitle();
     }
 
     /**
-     * Set ojsVersion
+     * Set ojsVersion.
      *
      * @param string $ojsVersion
+     *
      * @return Journal
      */
     public function setOjsVersion($ojsVersion)
@@ -528,9 +548,9 @@ class Journal {
     }
 
     /**
-     * Get ojsVersion
+     * Get ojsVersion.
      *
-     * @return string 
+     * @return string
      */
     public function getOjsVersion()
     {
@@ -538,9 +558,10 @@ class Journal {
     }
 
     /**
-     * Set termsAccepted
+     * Set termsAccepted.
      *
-     * @param boolean $termsAccepted
+     * @param bool $termsAccepted
+     *
      * @return Journal
      */
     public function setTermsAccepted($termsAccepted)
@@ -551,9 +572,9 @@ class Journal {
     }
 
     /**
-     * Get termsAccepted
+     * Get termsAccepted.
      *
-     * @return boolean 
+     * @return bool
      */
     public function getTermsAccepted()
     {

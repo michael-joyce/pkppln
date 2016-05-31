@@ -17,9 +17,9 @@ use Doctrine\ORM\Mapping as ORM;
 class User extends BaseUser
 {
     /**
-     * Database ID
+     * Database ID.
      * 
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
@@ -32,66 +32,74 @@ class User extends BaseUser
      * @ORM\Column(name="fullname", type="string", nullable=true)
      */
     private $fullname;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="institution", type="string", nullable=true)
      */
     private $institution;
-    
+
     /**
      * Should this user get notification emails when a journal goes silent?
      *
-     * @var boolean
+     * @var bool
      * @ORM\Column(name="notify", type="boolean")
      */
     private $notify;
-    
+
     /**
-     * Construct a user
+     * Construct a user.
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->notify = false;
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer 
+     * @return int
      */
     public function getId()
     {
         return $this->id;
     }
-    
+
     /**
      * Set the email and username.
      * 
      * @param string $email
+     *
      * @return User
      */
-    public function setEmail($email) {
+    public function setEmail($email)
+    {
         parent::setUsername($email);
+
         return parent::setEmail($email);
     }
-    
+
     /**
      * Set the canonical email address.
      * 
      * @param string $emailCanonical
+     *
      * @return User
      */
-    public function setEmailCanonical($emailCanonical) {
+    public function setEmailCanonical($emailCanonical)
+    {
         parent::setUsernameCanonical($emailCanonical);
+
         return parent::setEmailCanonical($emailCanonical);
     }
 
     /**
-     * Set institution
+     * Set institution.
      *
      * @param string $institution
+     *
      * @return User
      */
     public function setInstitution($institution)
@@ -102,9 +110,9 @@ class User extends BaseUser
     }
 
     /**
-     * Get institution
+     * Get institution.
      *
-     * @return string 
+     * @return string
      */
     public function getInstitution()
     {
@@ -112,9 +120,10 @@ class User extends BaseUser
     }
 
     /**
-     * Set fullname
+     * Set fullname.
      *
      * @param string $fullname
+     *
      * @return User
      */
     public function setFullname($fullname)
@@ -125,9 +134,9 @@ class User extends BaseUser
     }
 
     /**
-     * Get fullname
+     * Get fullname.
      *
-     * @return string 
+     * @return string
      */
     public function getFullname()
     {
@@ -135,9 +144,10 @@ class User extends BaseUser
     }
 
     /**
-     * Set notify
+     * Set notify.
      *
-     * @param boolean $notify
+     * @param bool $notify
+     *
      * @return User
      */
     public function setNotify($notify)
@@ -148,9 +158,9 @@ class User extends BaseUser
     }
 
     /**
-     * Get notify
+     * Get notify.
      *
-     * @return boolean 
+     * @return bool
      */
     public function getNotify()
     {

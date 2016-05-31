@@ -5,18 +5,18 @@ namespace AppUserBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use FOS\UserBundle\Form\BaseType;
 
 /**
- * Overrides the ProfileType from FOSUserBundle
+ * Overrides the ProfileType from FOSUserBundle.
  */
-class ProfileType extends AbstractType {
-
+class ProfileType extends AbstractType
+{
     /**
      * @param FormBuilderInterface $builder
-     * @param array $options
+     * @param array                $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         $builder
                 ->remove('username')
                 ->add('email')
@@ -28,27 +28,30 @@ class ProfileType extends AbstractType {
     /**
      * @param OptionsResolverInterface $resolver
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver) {
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
         $resolver->setDefaults(array(
-            'data_class' => 'AppUserBundle\Entity\User'
+            'data_class' => 'AppUserBundle\Entity\User',
         ));
     }
-    
+
     /**
      * Get the parent form.
      * 
      * @return string
      */
-    public function getParent() {
+    public function getParent()
+    {
         return 'fos_user_profile';
     }
-    
+
     /**
      * Get the form name.
      * 
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return 'appbundle_user_profile';
     }
 }

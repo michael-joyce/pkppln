@@ -14,8 +14,8 @@ use Symfony\Component\HttpKernel\Tests\Logger;
 /**
  * List all deposits in a particular state.
  */
-class ListDepositsCommand extends ContainerAwareCommand {
-
+class ListDepositsCommand extends ContainerAwareCommand
+{
     /**
      * @var Registry
      */
@@ -31,16 +31,18 @@ class ListDepositsCommand extends ContainerAwareCommand {
      *
      * @param ContainerInterface $container
      */
-    public function setContainer(ContainerInterface $container = null) {
+    public function setContainer(ContainerInterface $container = null)
+    {
         parent::setContainer($container);
         $this->logger = $container->get('monolog.logger.processing');
         $this->em = $container->get('doctrine')->getManager();
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function configure() {
+    public function configure()
+    {
         $this->setName('pln:list');
         $this->setDescription('List deposits.');
         $this->addArgument(
@@ -51,17 +53,18 @@ class ListDepositsCommand extends ContainerAwareCommand {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
 
         /** @var DepositRepository $repo */
         $repo = $this->em->getRepository('AppBundle:Deposit');
 
         $state = $input->getArgument('state');
-		$deposits = $repo->findBy(array('state' => $state));
-        foreach($deposits as $deposit) {
-			$output->writeln("{$deposit->getJournal()->getUuid()}/{$deposit->getDepositUuid()}");
+        $deposits = $repo->findBy(array('state' => $state));
+        foreach ($deposits as $deposit) {
+            $output->writeln("{$deposit->getJournal()->getUuid()}/{$deposit->getDepositUuid()}");
         }
     }
 }

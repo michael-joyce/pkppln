@@ -22,8 +22,8 @@ use Symfony\Component\HttpKernel\Tests\Logger;
  * Ping all the journals that haven't contacted the PLN in a while, and send
  * notifications to interested users.
  */
-class HealthCheckCommand extends ContainerAwareCommand {
-
+class HealthCheckCommand extends ContainerAwareCommand
+{
     /**
      * @var TwigEngine
      */
@@ -33,16 +33,17 @@ class HealthCheckCommand extends ContainerAwareCommand {
      * @var Logger
      */
     protected $logger;
-	
-	/**
-	 * @var Ping
-	 */
-	protected $ping;
 
     /**
-     * {@inheritDoc}
+     * @var Ping
      */
-    protected function configure() {
+    protected $ping;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
         $this->setName('pln:health:check');
         $this->setDescription('Find journals that have gone silent.');
         $this->addOption(
@@ -59,21 +60,23 @@ class HealthCheckCommand extends ContainerAwareCommand {
      *
      * @param ContainerInterface $container
      */
-    public function setContainer(ContainerInterface $container = null) {
+    public function setContainer(ContainerInterface $container = null)
+    {
         parent::setContainer($container);
         $this->templating = $container->get('templating');
         $this->logger = $container->get('monolog.logger.processing');
-		$this->ping = $container->get('ping');
+        $this->ping = $container->get('ping');
     }
-    
+
     /**
      * Send the notifications.
      * 
-     * @param integer $days
-     * @param User[] $users
+     * @param int       $days
+     * @param User[]    $users
      * @param Journal[] $journals
      */
-    protected function sendNotifications($days, $users, $journals) {
+    protected function sendNotifications($days, $users, $journals)
+    {
         $notification = $this->templating->render('AppBundle:HealthCheck:notification.txt.twig', array(
             'journals' => $journals,
             'days' => $days,
@@ -81,9 +84,9 @@ class HealthCheckCommand extends ContainerAwareCommand {
         $mailer = $this->getContainer()->get('mailer');
         foreach ($users as $user) {
             $message = Swift_Message::newInstance(
-                'Automated notification from the PKP PLN', 
-                $notification, 
-                'text/plain', 
+                'Automated notification from the PKP PLN',
+                $notification,
+                'text/plain',
                 'utf-8'
             );
             $message->setFrom('noreplies@pkp-pln.lib.sfu.ca');
@@ -91,44 +94,49 @@ class HealthCheckCommand extends ContainerAwareCommand {
             $mailer->send($message);
         }
     }
-    
+
     /**
      * Request a ping from a journal.
      * 
      * @todo Use the Ping service.
+     *
      * @param Journal $journal
-     * @return boolean
+     *
+     * @return bool
      */
-    protected function pingJournal(Journal $journal) {
+    protected function pingJournal(Journal $journal)
+    {
         $client = new Client();
         try {
             $response = $client->get($journal->getGatewayUrl());
-            if($response->getStatusCode() !== 200) {
+            if ($response->getStatusCode() !== 200) {
                 return false;
             }
             $xml = $response->xml();
             $element = $xml->xpath('//terms')[0];
-            if($element && isset($element['termsAccepted']) && ((string)$element['termsAccepted']) === 'yes') {
+            if ($element && isset($element['termsAccepted']) && ((string) $element['termsAccepted']) === 'yes') {
                 return true;
             }
         } catch (RequestException $e) {
             $this->logger->error("Cannot ping {$journal->getUrl()}: {$e->getMessage()}");
             if ($e->hasResponse()) {
-                $this->logger->error($e->getResponse()->getStatusCode() . ' ' . $this->logger->error($e->getResponse()->getReasonPhrase()));
+                $this->logger->error($e->getResponse()->getStatusCode().' '.$this->logger->error($e->getResponse()->getReasonPhrase()));
             }
         } catch (XmlParseException $e) {
             $this->logger->error("Cannot parse journal ping response {$journal->getUrl()}: {$e->getMessage()}");
         }
+
         return false;
     }
 
     /**
      * Execute the runall command, which executes all the commands.
      *
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      */
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
         $em = $this->getContainer()->get('doctrine')->getManager();
         $days = $this->getContainer()->getParameter('days_silent');
         $journals = $em->getRepository('AppBundle:Journal')->findSilent($days);
@@ -141,12 +149,13 @@ class HealthCheckCommand extends ContainerAwareCommand {
         $users = $em->getRepository('AppUserBundle:User')->findUserToNotify();
         if (count($users) === 0) {
             $this->logger->error('No users to notify.');
+
             return;
         }
         $this->sendNotifications($days, $users, $journals);
 
         foreach ($journals as $journal) {
-            if($this->pingJournal($journal)) {
+            if ($this->pingJournal($journal)) {
                 $this->logger->notice("Ping Success {$journal->getUrl()})");
                 $journal->setStatus('healthy');
                 $journal->setContacted(new DateTime());

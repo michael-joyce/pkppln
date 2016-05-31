@@ -21,12 +21,13 @@ class TermOfUseType extends AbstractType
      *
      * @param string $defaultLocale
      */
-    public function __construct($defaultLocale) {
+    public function __construct($defaultLocale)
+    {
         $this->defaultLocale = $defaultLocale;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -37,19 +38,19 @@ class TermOfUseType extends AbstractType
             ->add('content')
         ;
     }
-    
+
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\TermOfUse'
+            'data_class' => 'AppBundle\Entity\TermOfUse',
         ));
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getName()
     {

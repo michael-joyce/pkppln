@@ -18,7 +18,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class DocumentController extends Controller
 {
-
     /**
      * Lists all Document entities.
      *
@@ -27,6 +26,7 @@ class DocumentController extends Controller
      * @Template()
      * 
      * @param Request $request
+     *
      * @return array
      */
     public function indexAction(Request $request)
@@ -53,6 +53,7 @@ class DocumentController extends Controller
      * @Template("AppBundle:Document:new.html.twig")
      * 
      * @param Request $request
+     *
      * @return array
      */
     public function createAction(Request $request)
@@ -71,7 +72,7 @@ class DocumentController extends Controller
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
@@ -106,11 +107,11 @@ class DocumentController extends Controller
     public function newAction()
     {
         $entity = new Document();
-        $form   = $this->createCreateForm($entity);
+        $form = $this->createCreateForm($entity);
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
@@ -138,7 +139,7 @@ class DocumentController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
-            'entity'      => $entity,
+            'entity' => $entity,
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -168,19 +169,19 @@ class DocumentController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
 
     /**
-    * Creates a form to edit a Document entity.
-    *
-    * @param Document $entity The entity
-    *
-    * @return Form The form
-    */
+     * Creates a form to edit a Document entity.
+     *
+     * @param Document $entity The entity
+     *
+     * @return Form The form
+     */
     private function createEditForm(Document $entity)
     {
         $form = $this->createForm(new DocumentType(), $entity, array(
@@ -192,7 +193,7 @@ class DocumentController extends Controller
 
         return $form;
     }
-    
+
     /**
      * Edits an existing Document entity.
      *
@@ -201,7 +202,7 @@ class DocumentController extends Controller
      * @Template("AppBundle:Document:edit.html.twig")
      * 
      * @param Request $request
-     * @param string $id
+     * @param string  $id
      * 
      * @return array
      */
@@ -226,8 +227,8 @@ class DocumentController extends Controller
         }
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -237,7 +238,7 @@ class DocumentController extends Controller
      * @Route("/{id}/delete", name="admin_document_delete")
      * 
      * @param Request $request
-     * @param string $id
+     * @param string  $id
      * 
      * @return array
      */

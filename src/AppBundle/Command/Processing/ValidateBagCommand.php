@@ -3,7 +3,7 @@
 namespace AppBundle\Command\Processing;
 
 // sigh. Something isn't autoloading here. 
-require_once('vendor/scholarslab/bagit/lib/bagit.php');
+require_once 'vendor/scholarslab/bagit/lib/bagit.php';
 
 use AppBundle\Entity\Deposit;
 use BagIt;
@@ -12,21 +12,23 @@ use ZipArchive;
 /**
  * Validate a bag, according to the bagit spec.
  */
-class ValidateBagCommand extends AbstractProcessingCmd {
-
+class ValidateBagCommand extends AbstractProcessingCmd
+{
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    protected function configure() {
+    protected function configure()
+    {
         $this->setName('pln:validate-bag');
         $this->setDescription('Validate PLN deposit packages.');
         parent::configure();
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    protected function processDeposit(Deposit $deposit) {
+    protected function processDeposit(Deposit $deposit)
+    {
         $harvestedPath = $this->filePaths->getHarvestFile($deposit);
         $extractedPath = $this->filePaths->getProcessingBagPath($deposit);
         $this->logger->info("Processing {$harvestedPath}");
@@ -36,68 +38,75 @@ class ValidateBagCommand extends AbstractProcessingCmd {
         }
 
         $zipFile = new ZipArchive();
-        if($zipFile->open($harvestedPath) === false) {
-            throw new Exception("Cannot open {$harvestedPath}: " . $zipFile->getStatusString());
+        if ($zipFile->open($harvestedPath) === false) {
+            throw new Exception("Cannot open {$harvestedPath}: ".$zipFile->getStatusString());
         }
 
         $this->logger->info("Extracting to {$extractedPath}");
 
-        if(file_exists($extractedPath)) {
+        if (file_exists($extractedPath)) {
             $this->logger->warning("{$extractedPath} is not empty. Removing it.");
             $this->fs->remove($extractedPath);
         }
-		// dirname() is neccessary here - extractTo will create one layer too many 
-		// directories otherwise.
-        if($zipFile->extractTo(dirname($extractedPath)) === false) {
-            throw new Exception("Cannot extract to {$extractedPath} "  . $zipFile->getStatusString());
+        // dirname() is neccessary here - extractTo will create one layer too many 
+        // directories otherwise.
+        if ($zipFile->extractTo(dirname($extractedPath)) === false) {
+            throw new Exception("Cannot extract to {$extractedPath} ".$zipFile->getStatusString());
         }
         $this->logger->info("Validating {$extractedPath}");
 
         $bag = new BagIt($extractedPath);
         $bag->validate();
 
-        if(count($bag->getBagErrors()) > 0) {
-            foreach($bag->getBagErrors() as $error) {
+        if (count($bag->getBagErrors()) > 0) {
+            foreach ($bag->getBagErrors() as $error) {
                 $deposit->addErrorLog("Bagit validation error for {$error[0]} - {$error[1]}");
             }
             $this->logger->warning("BagIt validation failed for {$deposit->getDepositUuid()}");
+
             return false;
         }
+
         return true;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function nextState() {
-        return "bag-validated";
+    public function nextState()
+    {
+        return 'bag-validated';
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function processingState() {
-        return "payload-validated";
+    public function processingState()
+    {
+        return 'payload-validated';
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function failureLogMessage() {
-        return "Bag checksum validation failed.";
+    public function failureLogMessage()
+    {
+        return 'Bag checksum validation failed.';
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function successLogMessage() {
-        return "Bag checksum validation succeeded.";
+    public function successLogMessage()
+    {
+        return 'Bag checksum validation succeeded.';
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function errorState() {
-        return "bag-error";
+    public function errorState()
+    {
+        return 'bag-error';
     }
 }

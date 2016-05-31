@@ -10,12 +10,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Run all the processing commands in order.
  */
-class RunAllCommand extends ContainerAwareCommand {
-
+class RunAllCommand extends ContainerAwareCommand
+{
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    protected function configure() {
+    protected function configure()
+    {
         $this->setName('pln:run-all');
         $this->setDescription('Run all processing commands.');
         $this->addOption(
@@ -38,7 +39,8 @@ class RunAllCommand extends ContainerAwareCommand {
      *
      * @return string[]
      */
-    private static function commandList() {
+    private static function commandList()
+    {
         return array(
             'pln:harvest',
             'pln:validate-payload',
@@ -54,11 +56,12 @@ class RunAllCommand extends ContainerAwareCommand {
     /**
      * Execute the runall command, which executes all the commands.
      *
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      */
-    protected function execute(InputInterface $input, OutputInterface $output) {
-        foreach(self::commandList() as $cmd) {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        foreach (self::commandList() as $cmd) {
             $output->writeln("Running {$cmd}");
             $command = $this->getApplication()->find($cmd);
             $command->run($input, $output);

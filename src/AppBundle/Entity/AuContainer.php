@@ -7,18 +7,18 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * AuContainer
+ * AuContainer.
  *
  * @ORM\Table()
  * @ORM\HasLifecycleCallbacks
  * @ORM\Entity(repositoryClass="AuContainerRepository")
  */
-class AuContainer {
-
+class AuContainer
+{
     /**
-     * Database ID
+     * Database ID.
      * 
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
@@ -33,83 +33,93 @@ class AuContainer {
      * @ORM\OneToMany(targetEntity="Deposit", mappedBy="auContainer")
      */
     private $deposits;
-    
+
     /**
      * True if the container can accept more deposits.
      * 
-     * @var boolean
+     * @var bool
      * @ORM\Column(type="boolean")
      */
     private $open;
 
     /**
-     * Constructor
+     * Constructor.
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->deposits = new ArrayCollection();
         $this->open = true;
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer 
+     * @return int
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
     /**
-     * Add deposits
+     * Add deposits.
      *
      * @param Deposit $deposit
+     *
      * @return AuContainer
      */
-    public function addDeposit(Deposit $deposit) {
+    public function addDeposit(Deposit $deposit)
+    {
         $this->deposits[] = $deposit;
 
         return $this;
     }
 
     /**
-     * Remove deposits
+     * Remove deposits.
      *
      * @param Deposit $deposits
      */
-    public function removeDeposit(Deposit $deposits) {
+    public function removeDeposit(Deposit $deposits)
+    {
         $this->deposits->removeElement($deposits);
     }
 
     /**
-     * Get deposits
+     * Get deposits.
      *
-     * @return Collection 
+     * @return Collection
      */
-    public function getDeposits() {
+    public function getDeposits()
+    {
         return $this->deposits;
     }
-    
+
     /**
      * Set open. An open container can be made closed, but a closed container
      * cannot be reopened.
      * 
      * @param type $open
+     *
      * @return AuContainer
      */
-    public function setOpen($open) {
-        if($this->open) {
+    public function setOpen($open)
+    {
+        if ($this->open) {
             // Only change an open container to closed.
             $this->open = $open;
         }
+
         return $this;
     }
-    
+
     /**
-     * Get open
+     * Get open.
      * 
-     * @return boolean
+     * @return bool
      */
-    public function isOpen() {
+    public function isOpen()
+    {
         return $this->open;
     }
 
@@ -118,11 +128,13 @@ class AuContainer {
      * 
      * @return int
      */
-    public function getSize() {
+    public function getSize()
+    {
         $size = 0;
         foreach ($this->deposits as $deposit) {
             $size += $deposit->getPackageSize();
         }
+
         return $size;
     }
 
@@ -131,7 +143,8 @@ class AuContainer {
      * 
      * @return int
      */
-    public function countDeposits() {
+    public function countDeposits()
+    {
         return $this->deposits->count();
     }
 }

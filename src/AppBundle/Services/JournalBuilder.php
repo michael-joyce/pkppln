@@ -13,8 +13,8 @@ use Symfony\Component\Routing\Router;
 /**
  * Construct a journal, and save it to the database.
  */
-class JournalBuilder {
-
+class JournalBuilder
+{
     /**
      * @var EntityManager
      */
@@ -31,11 +31,12 @@ class JournalBuilder {
     private $router;
 
     /**
-     * Set the service logger
+     * Set the service logger.
      * 
      * @param Logger $logger
      */
-    public function setLogger(Logger $logger) {
+    public function setLogger(Logger $logger)
+    {
         $this->logger = $logger;
     }
 
@@ -44,7 +45,8 @@ class JournalBuilder {
      * 
      * @param Registry $registry
      */
-    public function setManager(Registry $registry) {
+    public function setManager(Registry $registry)
+    {
         $this->em = $registry->getManager();
     }
 
@@ -55,7 +57,8 @@ class JournalBuilder {
      * 
      * @param Router $router
      */
-    public function setRouter(Router $router) {
+    public function setRouter(Router $router)
+    {
         $this->router = $router;
     }
 
@@ -63,17 +66,20 @@ class JournalBuilder {
      * Fetch a single XML value from a SimpleXMLElement.
      * 
      * @param SimpleXMLElement $xml
-     * @param string $xpath
+     * @param string           $xpath
+     *
      * @return string|null
+     *
      * @throws Exception
      */
-    public function getXmlValue(SimpleXMLElement $xml, $xpath) {
+    public function getXmlValue(SimpleXMLElement $xml, $xpath)
+    {
         $data = $xml->xpath($xpath);
         if (count($data) === 1) {
             return (string) $data[0];
         }
         if (count($data) === 0) {
-            return null;
+            return;
         }
         throw new Exception("Too many elements for '{$xpath}'");
     }
@@ -82,16 +88,18 @@ class JournalBuilder {
      * Build and persist a journal from XML.
      * 
      * @param SimpleXMLElement $xml
-     * @param string $journal_uuid
+     * @param string           $journal_uuid
+     *
      * @return Journal
      */
-    public function fromXml(SimpleXMLElement $xml, $journal_uuid) {
-		$journal = $this->em->getRepository('AppBundle:Journal')->findOneBy(array(
-			'uuid' => $journal_uuid
-		));
-		if($journal === null) {
-			$journal = new Journal();
-		}
+    public function fromXml(SimpleXMLElement $xml, $journal_uuid)
+    {
+        $journal = $this->em->getRepository('AppBundle:Journal')->findOneBy(array(
+            'uuid' => $journal_uuid,
+        ));
+        if ($journal === null) {
+            $journal = new Journal();
+        }
         $journal->setUuid($journal_uuid);
         $journal->setTitle($this->getXmlValue($xml, '//atom:title'));
         $journal->setUrl($this->getXmlValue($xml, '//pkp:journal_url'));
@@ -101,6 +109,7 @@ class JournalBuilder {
         $journal->setPublisherUrl($this->getXmlValue($xml, '//pkp:publisherUrl'));
         $this->em->persist($journal);
         $this->em->flush($journal);
+
         return $journal;
     }
 }

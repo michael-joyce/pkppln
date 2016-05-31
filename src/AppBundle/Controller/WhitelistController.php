@@ -16,8 +16,8 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @Route("/whitelist")
  */
-class WhitelistController extends Controller {
-
+class WhitelistController extends Controller
+{
     /**
      * Lists all Whitelist entities.
      *
@@ -26,9 +26,11 @@ class WhitelistController extends Controller {
      * @Template()
      * 
      * @param Request $request
+     *
      * @return array
      */
-    public function indexAction(Request $request) {
+    public function indexAction(Request $request)
+    {
         $em = $this->getDoctrine()->getManager();
         $dql = 'SELECT e FROM AppBundle:Whitelist e';
         $query = $em->createQuery($dql);
@@ -39,7 +41,6 @@ class WhitelistController extends Controller {
             25
         );
         $journalRepo = $em->getRepository('AppBundle:Journal');
-
 
         return array(
             'entities' => $entities,
@@ -55,9 +56,11 @@ class WhitelistController extends Controller {
      * @Template("AppBundle:Whitelist:new.html.twig")
      * 
      * @param Request $request
+     *
      * @return array
      */
-    public function createAction(Request $request) {
+    public function createAction(Request $request)
+    {
         $entity = new Whitelist();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
@@ -67,6 +70,7 @@ class WhitelistController extends Controller {
             $em->persist($entity);
             $em->flush();
             $this->addFlash('success', 'The whitelist entry has been saved.');
+
             return $this->redirect($this->generateUrl('whitelist_show', array('id' => $entity->getId())));
         }
 
@@ -83,7 +87,8 @@ class WhitelistController extends Controller {
      *
      * @return Form The form
      */
-    private function createCreateForm(Whitelist $entity) {
+    private function createCreateForm(Whitelist $entity)
+    {
         $form = $this->createForm(new WhitelistType(), $entity, array(
             'action' => $this->generateUrl('whitelist_create'),
             'method' => 'POST',
@@ -103,7 +108,8 @@ class WhitelistController extends Controller {
      * 
      * @return array
      */
-    public function newAction() {
+    public function newAction()
+    {
         $entity = new Whitelist();
         $form = $this->createCreateForm($entity);
 
@@ -113,21 +119,23 @@ class WhitelistController extends Controller {
         );
     }
 
-	/**
+    /**
      * Search for a whitelist entry by uuid, url, or comment.
      * 
-	 * @Route("/search", name="whitelist_search")
-	 * @Method("GET")
-	 * @Template()
+     * @Route("/search", name="whitelist_search")
+     * @Method("GET")
+     * @Template()
      * 
      * @param Request $request
+     *
      * @return array
-	 */
-	public function searchAction(Request $request) {
-		$em = $this->getDoctrine()->getManager();
-		$q = $request->query->get('q', '');
-		
-		$repo = $em->getRepository('AppBundle:Whitelist');
+     */
+    public function searchAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $q = $request->query->get('q', '');
+
+        $repo = $em->getRepository('AppBundle:Whitelist');
         $paginator = $this->get('knp_paginator');
 
         $entities = array();
@@ -145,9 +153,9 @@ class WhitelistController extends Controller {
         return array(
             'q' => $q,
             'count' => count($results),
-            'entities' => $entities
+            'entities' => $entities,
         );
-	}
+    }
 
     /**
      * Finds and displays a Whitelist entity.
@@ -157,9 +165,11 @@ class WhitelistController extends Controller {
      * @Template()
      * 
      * @param string $id
+     *
      * @return array
      */
-    public function showAction($id) {
+    public function showAction($id)
+    {
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AppBundle:Whitelist')->find($id);
@@ -167,16 +177,16 @@ class WhitelistController extends Controller {
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Whitelist entity.');
         }
-		
-		$journal = $em->getRepository('AppBundle:Journal')->findOneBy(array(
-			'uuid' => $entity->getUuid()
-		));
+
+        $journal = $em->getRepository('AppBundle:Journal')->findOneBy(array(
+            'uuid' => $entity->getUuid(),
+        ));
 
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
             'entity' => $entity,
-			'journal' => $journal,
+            'journal' => $journal,
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -189,9 +199,11 @@ class WhitelistController extends Controller {
      * @Template()
      * 
      * @param string $id
+     *
      * @return array
      */
-    public function editAction($id) {
+    public function editAction($id)
+    {
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AppBundle:Whitelist')->find($id);
@@ -217,7 +229,8 @@ class WhitelistController extends Controller {
      *
      * @return Form The form
      */
-    private function createEditForm(Whitelist $entity) {
+    private function createEditForm(Whitelist $entity)
+    {
         $form = $this->createForm(new WhitelistType(), $entity, array(
             'action' => $this->generateUrl('whitelist_update', array('id' => $entity->getId())),
             'method' => 'PUT',
@@ -236,11 +249,12 @@ class WhitelistController extends Controller {
      * @Template("AppBundle:Whitelist:edit.html.twig")
      * 
      * @param Request $request
-     * @param string $id
+     * @param string  $id
      * 
      * @return array
      */
-    public function updateAction(Request $request, $id) {
+    public function updateAction(Request $request, $id)
+    {
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AppBundle:Whitelist')->find($id);
@@ -256,6 +270,7 @@ class WhitelistController extends Controller {
         if ($editForm->isValid()) {
             $em->flush();
             $this->addFlash('success', 'The whitelist entry has been updated.');
+
             return $this->redirect($this->generateUrl('whitelist_show', array('id' => $entity->getId())));
         }
 
@@ -272,11 +287,12 @@ class WhitelistController extends Controller {
      * @Route("/{id}/delete", name="whitelist_delete")
      * 
      * @param Request $request
-     * @param string $id
+     * @param string  $id
      * 
      * @return array
      */
-    public function deleteAction(Request $request, $id) {
+    public function deleteAction(Request $request, $id)
+    {
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('AppBundle:Whitelist')->find($id);
 
@@ -298,7 +314,8 @@ class WhitelistController extends Controller {
      *
      * @return Form The form
      */
-    private function createDeleteForm($id) {
+    private function createDeleteForm($id)
+    {
         return $this->createFormBuilder()
                         ->setAction($this->generateUrl('whitelist_delete', array('id' => $id)))
                         ->setMethod('DELETE')

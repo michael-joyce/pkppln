@@ -13,13 +13,13 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
  * Doctrine event listener to record term history. Configured as a service in
  * services.yml.
  */
-class TermsOfUseListener {
-
+class TermsOfUseListener
+{
     /**
      * @var Logger
      */
     private $logger;
-    
+
     /**
      * @var TokenStorage
      */
@@ -30,7 +30,8 @@ class TermsOfUseListener {
      *
      * @param Logger $logger
      */
-    public function setLogger(Logger $logger) {
+    public function setLogger(Logger $logger)
+    {
         $this->logger = $logger;
     }
 
@@ -39,7 +40,8 @@ class TermsOfUseListener {
      *
      * @param TokenStorage $tokenStorage
      */
-    public function setTokenStorage(TokenStorage $tokenStorage) {
+    public function setTokenStorage(TokenStorage $tokenStorage)
+    {
         $this->tokenStorage = $tokenStorage;
     }
 
@@ -47,11 +49,13 @@ class TermsOfUseListener {
      * Get an array describing the changes.
      *
      * @param UnitOfWork $unitOfWork
-     * @param TermOfUse $entity
-     * @param string $action
+     * @param TermOfUse  $entity
+     * @param string     $action
+     *
      * @return array
      */
-    protected function getChangeSet(UnitOfWork $unitOfWork, TermOfUse $entity, $action) {
+    protected function getChangeSet(UnitOfWork $unitOfWork, TermOfUse $entity, $action)
+    {
         switch ($action) {
             case 'create':
                 return array(
@@ -82,9 +86,10 @@ class TermsOfUseListener {
      * Save a history event for a term of use.
      *
      * @param LifecycleEventArgs $args
-     * @param string $action
+     * @param string             $action
      */
-    protected function saveHistory(LifecycleEventArgs $args, $action) {
+    protected function saveHistory(LifecycleEventArgs $args, $action)
+    {
         $entity = $args->getEntity();
         if (!$entity instanceof TermOfUse) {
             return;
@@ -99,7 +104,7 @@ class TermsOfUseListener {
         $history->setAction($action);
         $history->setChangeSet($changeSet);
         $token = $this->tokenStorage->getToken();
-        if($token) {
+        if ($token) {
             $history->setUser($token->getUsername());
         } else {
             $history->setUser('console');
@@ -113,7 +118,8 @@ class TermsOfUseListener {
      *
      * @param LifecycleEventArgs $args
      */
-    public function postPersist(LifecycleEventArgs $args) {
+    public function postPersist(LifecycleEventArgs $args)
+    {
         $this->saveHistory($args, 'create');
     }
 
@@ -122,7 +128,8 @@ class TermsOfUseListener {
      *
      * @param LifecycleEventArgs $args
      */
-    public function postUpdate(LifecycleEventArgs $args) {
+    public function postUpdate(LifecycleEventArgs $args)
+    {
         $this->saveHistory($args, 'update');
     }
 
@@ -131,7 +138,8 @@ class TermsOfUseListener {
      *
      * @param LifecycleEventArgs $args
      */
-    public function preRemove(LifecycleEventArgs $args) {
+    public function preRemove(LifecycleEventArgs $args)
+    {
         $this->saveHistory($args, 'delete');
     }
 }

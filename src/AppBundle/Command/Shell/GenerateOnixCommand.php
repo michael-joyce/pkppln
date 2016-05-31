@@ -16,8 +16,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * 
  * @see http://www.editeur.org/127/ONIX-PH/
  */
-class GenerateOnixCommand extends ContainerAwareCommand {
-
+class GenerateOnixCommand extends ContainerAwareCommand
+{
     /**
      * @var TwigEngine
      */
@@ -28,7 +28,7 @@ class GenerateOnixCommand extends ContainerAwareCommand {
      */
     private $logger;
 
-   /**
+    /**
      * @var Registry
      */
     protected $em;
@@ -38,7 +38,8 @@ class GenerateOnixCommand extends ContainerAwareCommand {
      *
      * @param ContainerInterface $container
      */
-    public function setContainer(ContainerInterface $container = null) {
+    public function setContainer(ContainerInterface $container = null)
+    {
         parent::setContainer($container);
         $this->templating = $container->get('templating');
         $this->logger = $container->get('logger');
@@ -46,20 +47,22 @@ class GenerateOnixCommand extends ContainerAwareCommand {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function configure() {
+    public function configure()
+    {
         $this->setName('pln:onix');
         $this->setDescription('Generate ONIX-PH feed.');
         $this->addArgument('file', InputArgument::OPTIONAL, 'File to write the feed to.');
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
         $file = $input->getArgument('file');
-        if(! $file) {
+        if (!$file) {
             $fp = $this->getContainer()->get('filepaths');
             $file = $fp->getOnixPath();
         }

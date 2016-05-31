@@ -3,7 +3,6 @@
 namespace AppBundle\Command\Processing;
 
 use AppBundle\Entity\Deposit;
-use AppBundle\Entity\DepositRepository;
 use AppBundle\Services\FilePaths;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Exception;
@@ -21,8 +20,8 @@ use Symfony\Component\Filesystem\Filesystem;
  * provides common functions for updating status, and will automatically
  * fetch the deposits needing to be processed.
  */
-abstract class AbstractProcessingCmd extends ContainerAwareCommand {
-
+abstract class AbstractProcessingCmd extends ContainerAwareCommand
+{
     /**
      * @var Registry
      */
@@ -48,33 +47,35 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      */
     protected $depositDir;
 
-	/**
-	 * @var FilePaths
-	 */
-	protected $filePaths;
+    /**
+     * @var FilePaths
+     */
+    protected $filePaths;
 
     /**
      * Set the service container, and initialize the command.
      *
      * @param ContainerInterface $container
      */
-    public function setContainer(ContainerInterface $container = null) {
+    public function setContainer(ContainerInterface $container = null)
+    {
         parent::setContainer($container);
         $this->container = $container;
         $this->logger = $container->get('monolog.logger.processing');
         $this->em = $container->get('doctrine')->getManager();
-		$this->filePaths = $container->get('filepaths');
+        $this->filePaths = $container->get('filepaths');
         $this->fs = new Filesystem();
     }
 
     /**
      * Set the command-line options for the processing commands.
      */
-    protected function configure() {
+    protected function configure()
+    {
         $this->addOption(
-            'retry', 
-            'r', 
-            InputOption::VALUE_NONE, 
+            'retry',
+            'r',
+            InputOption::VALUE_NONE,
             'Retry failed deposits'
         );
         $this->addOption(
@@ -96,7 +97,8 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      * 
      * @param Deposit[] $deposits
      */
-    protected function preprocessDeposits($deposits = array()) {
+    protected function preprocessDeposits($deposits = array())
+    {
         // do nothing by default.
     }
 
@@ -104,52 +106,56 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      * Process one deposit return true on success and false on failure.
      *
      * @param Deposit $deposit
-     * @return boolean
+     *
+     * @return bool
      */
     abstract protected function processDeposit(Deposit $deposit);
 
     /**
      * Deposits in this state will be processed by the commands.
      */
-    abstract function processingState();
+    abstract public function processingState();
 
     /**
      * Successfully processed deposits will be given this state.
      */
-    abstract function nextState();
-    
+    abstract public function nextState();
+
     /**
      * Deposits which generate errors will be given this state.
      */
-    abstract function errorState();
+    abstract public function errorState();
 
     /**
      * Successfully processed deposits will be given this log message.
      */
-    abstract function successLogMessage();
+    abstract public function successLogMessage();
 
     /**
      * Failed deposits will be given this log message.
      */
-    abstract function failureLogMessage();
+    abstract public function failureLogMessage();
 
     /**
      * Code to run before executing the command.
      */
-    protected function preExecute() {
+    protected function preExecute()
+    {
         // do nothing, let subclasses override if needed.
     }
-    
+
     /**
      * @return Deposit[]
      */
-    final public function getDeposits($retry = false) {
+    final public function getDeposits($retry = false)
+    {
         $repo = $this->em->getRepository('AppBundle:Deposit');
-        if($retry) {
+        if ($retry) {
             $deposits = $repo->findByState($this->errorState());
         } else {
             $deposits = $repo->findByState($this->processingState());
         }
+
         return $deposits;
     }
 
@@ -157,45 +163,46 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      * Execute the command. Get all the deposits needing to be harvested. Each
      * deposit will be passed to the commands processDeposit() function.
      *
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      */
-    final protected function execute(InputInterface $input, OutputInterface $output) {
+    final protected function execute(InputInterface $input, OutputInterface $output)
+    {
         $this->preExecute();
         $deposits = $this->getDeposits($input->getOption('retry'));
-        
-        if($input->hasOption('limit')) {
+
+        if ($input->hasOption('limit')) {
             $deposits = array_slice($deposits, 0, $input->getOption('limit'));
         }
-        
+
         $count = count($deposits);
 
         $this->logger->info("Processing {$count} deposits.");
         $this->preprocessDeposits($deposits);
 
         foreach ($deposits as $deposit) {
-			try {
-				$result = $this->processDeposit($deposit);
-			} catch(Exception $e) {
-				$this->logger->error($e->getMessage());
+            try {
+                $result = $this->processDeposit($deposit);
+            } catch (Exception $e) {
+                $this->logger->error($e->getMessage());
                 $deposit->setState($this->errorState());
                 $deposit->addToProcessingLog($this->failureLogMessage());
-                $deposit->addErrorLog(get_class($e) . $e->getMessage());
+                $deposit->addErrorLog(get_class($e).$e->getMessage());
                 $this->em->flush($deposit);
                 continue;
-			}
-			
+            }
+
             if ($input->getOption('dry-run')) {
                 continue;
             }
-            
+
             if ($result) {
                 $deposit->setState($this->nextState());
                 $deposit->addToProcessingLog($this->successLogMessage());
             } else {
                 $deposit->addToProcessingLog($this->failureLogMessage());
             }
-			$this->em->flush($deposit);
+            $this->em->flush($deposit);
         }
     }
 }

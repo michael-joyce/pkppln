@@ -3,36 +3,36 @@
 namespace AppBundle\Command\Processing;
 
 use AppBundle\Entity\Deposit;
-use AppBundle\Services\FilePaths;
 use AppBundle\Services\SwordClient;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Send a fully processed deposit to LOCKSSOMatic.
  * 
  * @see SwordClient
  */
-class DepositCommand extends AbstractProcessingCmd {
-
+class DepositCommand extends AbstractProcessingCmd
+{
     /**
      * @var SwordClient
      */
     private $client;
-    
+
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    protected function configure() {
+    protected function configure()
+    {
         $this->setName('pln:deposit');
         $this->setDescription('Send deposits to LockssOMatic.');
         parent::configure();
     }
-    
+
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function setContainer(ContainerInterface $container = null) {
+    public function setContainer(ContainerInterface $container = null)
+    {
         parent::setContainer($container);
         $this->client = $container->get('sword_client');
         $this->client->setLogger($this->logger);
@@ -43,45 +43,53 @@ class DepositCommand extends AbstractProcessingCmd {
      * Updates the deposit status.
      *
      * @param Deposit $deposit
+     *
      * @return type
      */
-    protected function processDeposit(Deposit $deposit) {
+    protected function processDeposit(Deposit $deposit)
+    {
         $this->logger->notice("Sending deposit {$deposit->getDepositUuid()}");
-        return $this->client->createDeposit($deposit);            
+
+        return $this->client->createDeposit($deposit);
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function nextState() {
-        return "deposited";
+    public function nextState()
+    {
+        return 'deposited';
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function processingState() {
-        return "reserialized";
+    public function processingState()
+    {
+        return 'reserialized';
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function failureLogMessage() {
-        return "Deposit to Lockssomatic failed.";
+    public function failureLogMessage()
+    {
+        return 'Deposit to Lockssomatic failed.';
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function successLogMessage() {
-        return "Deposit to Lockssomatic succeeded.";
+    public function successLogMessage()
+    {
+        return 'Deposit to Lockssomatic succeeded.';
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function errorState() {
-        return "deposit-error";
+    public function errorState()
+    {
+        return 'deposit-error';
     }
 }

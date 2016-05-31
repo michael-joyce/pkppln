@@ -8,38 +8,41 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Func;
 
 /**
- * JournalRepository
+ * JournalRepository.
  *
  * This class adds a simple journal search.
  */
-class JournalRepository extends EntityRepository {
-
+class JournalRepository extends EntityRepository
+{
     /**
      * Search for a journal by title, uuid, issn, url, email, or publisher.
      *
      * @param string $q
+     *
      * @return Collection|Journal[]
      */
-    public function search($q) {
+    public function search($q)
+    {
         $qb = $this->createQueryBuilder('j');
         $qb->where(
             $qb->expr()->like(
                 new Func(
                     'CONCAT',
                     array(
-                        'j.title', 
-						'j.uuid',
-                        'j.issn', 
-                        'j.url', 
-                        'j.email', 
-						'j.publisherName'
-					)
+                        'j.title',
+                        'j.uuid',
+                        'j.issn',
+                        'j.url',
+                        'j.email',
+                        'j.publisherName',
+                    )
                 ),
                 "'%$q%'"
             )
         );
         $query = $qb->getQuery();
         $journals = $query->getResult();
+
         return $journals;
     }
 
@@ -47,9 +50,11 @@ class JournalRepository extends EntityRepository {
      * Find journals by status.
      *
      * @param string $status
+     *
      * @return Collection|Journal[]
      */
-    public function findByStatus($status) {
+    public function findByStatus($status)
+    {
         return $this->findBy(array(
             'status' => $status,
         ));
@@ -60,26 +65,31 @@ class JournalRepository extends EntityRepository {
      * 
      * @return array
      */
-    public function statusSummary() {
+    public function statusSummary()
+    {
         $qb = $this->createQueryBuilder('e');
         $qb->select('e.status, count(e) as ct')
             ->groupBy('e.status')
             ->orderBy('e.status');
+
         return $qb->getQuery()->getResult();
     }
 
     /**
      * Find journals that haven't contacted the PLN in $days.
      * 
-     * @param integer $days
+     * @param int $days
+     *
      * @return Collection|Journal[]
      */
-    public function findSilent($days) {
+    public function findSilent($days)
+    {
         $dt = new DateTime("-{$days} day");
 
         $qb = $this->createQueryBuilder('e');
         $qb->andWhere('e.contacted < :dt');
         $qb->setParameter('dt', $dt);
+
         return $qb->getQuery()->getResult();
     }
 
@@ -88,27 +98,33 @@ class JournalRepository extends EntityRepository {
      * for, but they have not been updated yet.
      * 
      * @param int $days
+     *
      * @return Collection|Journal[]
      */
-    public function findOverdue($days) {
+    public function findOverdue($days)
+    {
         $dt = new DateTime("-{$days} day");
         $qb = $this->createQueryBuilder('e');
         $qb->Where('e.notified < :dt');
         $qb->setParameter('dt', $dt);
+
         return $qb->getQUery()->getResult();
     }
-    
-	/**
-	 * @todo This method should be called findRecent(). It does not find
-	 * journals with status=new.
-	 * 
-	 * @param type $limit
+
+    /**
+     * @todo This method should be called findRecent(). It does not find
+     * journals with status=new.
+     * 
+     * @param type $limit
+     *
      * @return Collection|Journal[]
-	 */
-    public function findNew($limit = 5) {
+     */
+    public function findNew($limit = 5)
+    {
         $qb = $this->createQueryBuilder('e');
         $qb->orderBy('e.id', 'DESC');
         $qb->setMaxResults($limit);
+
         return $qb->getQuery()->getResult();
     }
 }

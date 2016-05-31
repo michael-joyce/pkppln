@@ -6,80 +6,81 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Help Document
+ * Help Document.
  *
  * @ORM\Table()
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks
  */
-class Document {
-
-	/**
-	 * Database ID
-	 * 
-	 * @var integer
-	 *
-	 * @ORM\Column(name="id", type="integer")
-	 * @ORM\Id
-	 * @ORM\GeneratedValue(strategy="AUTO")
-	 */
-	private $id;
-
-	/**
-     * Document title
+class Document
+{
+    /**
+     * Database ID.
      * 
-	 * @var string
-	 * @ORM\Column(type="string", nullable=false)
-	 */
-	private $title;
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
 
-	/**
-     * The URL slug for the document
+    /**
+     * Document title.
      * 
-	 * @var string
-	 * @ORM\Column(type="string", nullable=false)
-	 */
-	private $path;
-	
-	/**
-     * A brief summary to display on the list of documents
-     * 
-	 * @var string
-	 * @ORM\Column(type="text", nullable=false)
-	 */
-	private $summary;
-	
-	/**
-     * The content
-     * 
-	 * @var string
-	 * @ORM\Column(type="text", nullable=false)
-	 */
-	private $content;
+     * @var string
+     * @ORM\Column(type="string", nullable=false)
+     */
+    private $title;
 
-	/**
+    /**
+     * The URL slug for the document.
+     * 
+     * @var string
+     * @ORM\Column(type="string", nullable=false)
+     */
+    private $path;
+
+    /**
+     * A brief summary to display on the list of documents.
+     * 
+     * @var string
+     * @ORM\Column(type="text", nullable=false)
+     */
+    private $summary;
+
+    /**
+     * The content.
+     * 
+     * @var string
+     * @ORM\Column(type="text", nullable=false)
+     */
+    private $content;
+
+    /**
      * Date when the document was updated.
      * 
-	 * @var DateTime
-	 * @ORM\Column(type="datetime", nullable=false)
-	 */
-	private $updated;
+     * @var DateTime
+     * @ORM\Column(type="datetime", nullable=false)
+     */
+    private $updated;
 
-	/**
+    /**
      * Automatically called to update the timestamps before insert/update 
      * operations.
      * 
-	 * @ORM\PrePersist
-	 * @ORM\PreUpdate
-	 */
-	public function setUpdated() {
-		$this->updated = new DateTime();
-	}
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function setUpdated()
+    {
+        $this->updated = new DateTime();
+    }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer 
+     * @return int
      */
     public function getId()
     {
@@ -87,9 +88,10 @@ class Document {
     }
 
     /**
-     * Set title
+     * Set title.
      *
      * @param string $title
+     *
      * @return Document
      */
     public function setTitle($title)
@@ -100,9 +102,9 @@ class Document {
     }
 
     /**
-     * Get title
+     * Get title.
      *
-     * @return string 
+     * @return string
      */
     public function getTitle()
     {
@@ -110,9 +112,10 @@ class Document {
     }
 
     /**
-     * Set path
+     * Set path.
      *
      * @param string $path
+     *
      * @return Document
      */
     public function setPath($path)
@@ -123,9 +126,9 @@ class Document {
     }
 
     /**
-     * Get path
+     * Get path.
      *
-     * @return string 
+     * @return string
      */
     public function getPath()
     {
@@ -133,9 +136,10 @@ class Document {
     }
 
     /**
-     * Set content
+     * Set content.
      *
      * @param string $content
+     *
      * @return Document
      */
     public function setContent($content)
@@ -146,9 +150,9 @@ class Document {
     }
 
     /**
-     * Get content
+     * Get content.
      *
-     * @return string 
+     * @return string
      */
     public function getContent()
     {
@@ -156,9 +160,9 @@ class Document {
     }
 
     /**
-     * Get updated
+     * Get updated.
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdated()
     {
@@ -166,9 +170,10 @@ class Document {
     }
 
     /**
-     * Set summary
+     * Set summary.
      *
      * @param string $summary
+     *
      * @return Document
      */
     public function setSummary($summary)
@@ -179,9 +184,9 @@ class Document {
     }
 
     /**
-     * Get summary
+     * Get summary.
      *
-     * @return string 
+     * @return string
      */
     public function getSummary()
     {

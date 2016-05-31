@@ -15,14 +15,15 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class AuContainerController extends Controller
 {
-
     /**
      * Lists all AuContainer entities.
      *
      * @Route("/", name="aucontainer")
      * @Method("GET")
      * @Template()
+     *
      * @param Request $request
+     *
      * @return array
      */
     public function indexAction(Request $request)
@@ -36,9 +37,8 @@ class AuContainerController extends Controller
             $request->query->getInt('page', 1),
             25
         );
-        
-        $openContainer = $em->getRepository('AppBundle:AuContainer')->getOpenContainer();
 
+        $openContainer = $em->getRepository('AppBundle:AuContainer')->getOpenContainer();
 
         return array(
             'entities' => $entities,
@@ -52,7 +52,9 @@ class AuContainerController extends Controller
      * @Route("/{id}", name="aucontainer_show")
      * @Method("GET")
      * @Template()
+     *
      * @param string $id
+     *
      * @return array
      */
     public function showAction($id)
@@ -67,7 +69,7 @@ class AuContainerController extends Controller
         }
 
         return array(
-            'entity'      => $entity,
+            'entity' => $entity,
             'openContainer' => $openContainer,
         );
     }

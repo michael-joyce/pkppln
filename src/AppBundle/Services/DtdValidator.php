@@ -7,8 +7,8 @@ use DOMDocument;
 /**
  * Simple wrapper around around DOMDocument->validate().
  */
-class DtdValidator {
-
+class DtdValidator
+{
     /**
      * @var array
      */
@@ -17,7 +17,8 @@ class DtdValidator {
     /**
      * Construct a validator.
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->errors = array();
     }
 
@@ -30,7 +31,8 @@ class DtdValidator {
      * @param string $line
      * @param string $context
      */
-    public function validationError($n, $message, $file, $line, $context) {
+    public function validationError($n, $message, $file, $line, $context)
+    {
         $lxml = libxml_get_last_error();
 
         if ($lxml) {
@@ -52,13 +54,14 @@ class DtdValidator {
      * Validate a DOM document.
      *
      * @param DOMDocument $dom
-     * @param boolean $clearErrors
+     * @param bool        $clearErrors
      */
-    public function validate(DOMDocument $dom, $clearErrors = true) {
-        if($clearErrors) {
+    public function validate(DOMDocument $dom, $clearErrors = true)
+    {
+        if ($clearErrors) {
             $this->clearErrors();
         }
-        if($dom->doctype === null) {
+        if ($dom->doctype === null) {
             return;
         }
         $oldHandler = set_error_handler(array($this, 'validationError'));
@@ -69,9 +72,10 @@ class DtdValidator {
     /**
      * Return true if the document had errors.
      *
-     * @return boolean
+     * @return bool
      */
-    public function hasErrors() {
+    public function hasErrors()
+    {
         return count($this->errors) > 0;
     }
 
@@ -80,7 +84,8 @@ class DtdValidator {
      *
      * @return int
      */
-    public function countErrors() {
+    public function countErrors()
+    {
         return count($this->errors);
     }
 
@@ -89,14 +94,16 @@ class DtdValidator {
      *
      * @return array
      */
-    public function getErrors() {
+    public function getErrors()
+    {
         return $this->errors;
     }
 
     /**
      * Clear out the errors and start fresh.
      */
-    public function clearErrors() {
+    public function clearErrors()
+    {
         $this->errors = array();
     }
 }

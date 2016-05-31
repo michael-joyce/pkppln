@@ -13,8 +13,8 @@ use Symfony\Component\HttpKernel\Tests\Logger;
 /**
  * Summarize the processing status for the deposits.
  */
-class SummarizeDepositsCommand extends ContainerAwareCommand {
-
+class SummarizeDepositsCommand extends ContainerAwareCommand
+{
     /**
      * @var Registry
      */
@@ -30,33 +30,36 @@ class SummarizeDepositsCommand extends ContainerAwareCommand {
      *
      * @param ContainerInterface $container
      */
-    public function setContainer(ContainerInterface $container = null) {
+    public function setContainer(ContainerInterface $container = null)
+    {
         parent::setContainer($container);
         $this->logger = $container->get('monolog.logger.processing');
         $this->em = $container->get('doctrine')->getManager();
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function configure() {
+    public function configure()
+    {
         $this->setName('pln:summary');
         $this->setDescription('Summarize deposits.');
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
 
         /** @var DepositRepository $repo */
         $repo = $this->em->getRepository('AppBundle:Deposit');
-		$summary = $repo->stateSummary();
-		$count = 0;
-		foreach($summary as $row) {
-			$output->writeln(sprintf("%6d - %s", $row['ct'], $row['state']));
-			$count += $row['ct'];
-		}
-		$output->writeln(sprintf("%6d - total", $count));
+        $summary = $repo->stateSummary();
+        $count = 0;
+        foreach ($summary as $row) {
+            $output->writeln(sprintf('%6d - %s', $row['ct'], $row['state']));
+            $count += $row['ct'];
+        }
+        $output->writeln(sprintf('%6d - total', $count));
     }
 }

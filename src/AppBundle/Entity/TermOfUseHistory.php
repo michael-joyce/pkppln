@@ -6,7 +6,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * TermOfUseHistory
+ * TermOfUseHistory.
  * 
  * A new TermOfUseHistory object is created every time a Term of Use is created,
  * updated, or deleted. The history object is created by an event listener.
@@ -20,24 +20,24 @@ use Doctrine\ORM\Mapping as ORM;
 class TermOfUseHistory
 {
     /**
-     * Database ID
+     * Database ID.
      * 
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-    
+
     /**
      * A term ID, similar to the OJS translation keys.
      * 
-     * @var integer
+     * @var int
      * @ORM\Column(type="integer")
      */
     private $termId;
-    
+
     /**
      * @var string
      * 
@@ -69,24 +69,24 @@ class TermOfUseHistory
      * @var string
      * 
      * @ORM\Column(type="array")
-     */    
+     */
     private $changeSet;
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer 
+     * @return int
      */
     public function getId()
     {
         return $this->id;
     }
 
-
     /**
-     * Set action, one of create, update, delete
+     * Set action, one of create, update, delete.
      *
      * @param string $action
+     *
      * @return TermOfUseHistory
      */
     public function setAction($action)
@@ -97,9 +97,9 @@ class TermOfUseHistory
     }
 
     /**
-     * Get action
+     * Get action.
      *
-     * @return string 
+     * @return string
      */
     public function getAction()
     {
@@ -107,9 +107,10 @@ class TermOfUseHistory
     }
 
     /**
-     * Set user
+     * Set user.
      *
      * @param string $user
+     *
      * @return TermOfUseHistory
      */
     public function setUser($user)
@@ -120,9 +121,9 @@ class TermOfUseHistory
     }
 
     /**
-     * Get user
+     * Get user.
      *
-     * @return string 
+     * @return string
      */
     public function getUser()
     {
@@ -130,14 +131,15 @@ class TermOfUseHistory
     }
 
     /**
-     * Set created
+     * Set created.
      *
      * @param DateTime $created
+     *
      * @return TermOfUseHistory
      */
     public function setCreated($created)
     {
-        if($this->created === null) {
+        if ($this->created === null) {
             $this->created = $created;
         }
 
@@ -145,9 +147,9 @@ class TermOfUseHistory
     }
 
     /**
-     * Get created
+     * Get created.
      *
-     * @return DateTime 
+     * @return DateTime
      */
     public function getCreated()
     {
@@ -157,16 +159,18 @@ class TermOfUseHistory
     /**
      * @ORM\PrePersist
      */
-    public function persistCreated() {
-        if($this->created === null) {
+    public function persistCreated()
+    {
+        if ($this->created === null) {
             $this->created = new DateTime();
         }
     }
-    
+
     /**
-     * Set changeSet
+     * Set changeSet.
      *
      * @param array $changeSet
+     *
      * @return TermOfUseHistory
      */
     public function setChangeSet($changeSet)
@@ -177,9 +181,9 @@ class TermOfUseHistory
     }
 
     /**
-     * Get changeSet
+     * Get changeSet.
      *
-     * @return array 
+     * @return array
      */
     public function getChangeSet()
     {
@@ -187,7 +191,7 @@ class TermOfUseHistory
     }
 
     /**
-     * Set term id
+     * Set term id.
      *
      * @return TermOfUseHistory
      */
@@ -199,9 +203,9 @@ class TermOfUseHistory
     }
 
     /**
-     * Get term id
+     * Get term id.
      *
-     * @return TermOfUse 
+     * @return TermOfUse
      */
     public function getTermId()
     {

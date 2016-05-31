@@ -8,45 +8,47 @@ use AppBundle\Services\SwordClient;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Check the status of deposits in LOCKSSOMatic.
  * 
  * @see SwordClient
  */
-class StatusCommand extends AbstractProcessingCmd {
-
+class StatusCommand extends AbstractProcessingCmd
+{
     /**
      * @var SwordClient
      */
     private $client;
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $cleanup;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function __construct($name = null) {
+    public function __construct($name = null)
+    {
         parent::__construct($name);
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    protected function configure() {
+    protected function configure()
+    {
         $this->setName('pln:status');
         $this->setDescription('Check the status of deposits in LOCKSSOMatic.');
         parent::configure();
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function setContainer(ContainerInterface $container = null) {
+    public function setContainer(ContainerInterface $container = null)
+    {
         parent::setContainer($container);
         $this->cleanup = !$this->container->getParameter('remove_complete_deposits');
         $this->client = $container->get('sword_client');
@@ -56,7 +58,8 @@ class StatusCommand extends AbstractProcessingCmd {
     /**
      * Remove a directory and its contents recursively. Use with caution. 
      */
-    private function delTree($path) {
+    private function delTree($path)
+    {
         $directoryIterator = new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS);
         $fileIterator = new RecursiveIteratorIterator($directoryIterator, RecursiveIteratorIterator::CHILD_FIRST);
         foreach ($fileIterator as $file) {
@@ -75,9 +78,11 @@ class StatusCommand extends AbstractProcessingCmd {
      * LOCKSSOatic reports agreement.
      *
      * @param Deposit $deposit
+     *
      * @return type
      */
-    protected function processDeposit(Deposit $deposit) {
+    protected function processDeposit(Deposit $deposit)
+    {
         $this->logger->notice("Checking deposit {$deposit->getDepositUuid()}");
         $statement = $this->client->statement($deposit);
         $status = (string) $statement->xpath('//atom:category[@scheme="http://purl.org/net/sword/terms/state"]/@term')[0];
@@ -87,43 +92,50 @@ class StatusCommand extends AbstractProcessingCmd {
             unlink($this->filePaths->getHarvestFile($deposit));
             $this->deltree($this->filePaths->getProcessingBagPath($deposit));
             unlink($this->filePaths->getStagingBagPath($deposit));
+
             return true;
         }
+
         return false;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function nextState() {
-        return "complete";
+    public function nextState()
+    {
+        return 'complete';
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function processingState() {
-        return "deposited";
+    public function processingState()
+    {
+        return 'deposited';
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function failureLogMessage() {
-        return "Deposit status failed.";
+    public function failureLogMessage()
+    {
+        return 'Deposit status failed.';
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function successLogMessage() {
-        return "Deposit status succeeded.";
+    public function successLogMessage()
+    {
+        return 'Deposit status succeeded.';
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function errorState() {
-        return "status-error";
+    public function errorState()
+    {
+        return 'status-error';
     }
 }

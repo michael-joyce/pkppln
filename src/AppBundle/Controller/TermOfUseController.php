@@ -20,8 +20,8 @@ use Symfony\Component\HttpFoundation\Request;
  * @see TermsOfUseListener
  * @Route("/termofuse")
  */
-class TermOfUseController extends Controller {
-
+class TermOfUseController extends Controller
+{
     /**
      * Lists all TermOfUse entities.
      * 
@@ -31,7 +31,8 @@ class TermOfUseController extends Controller {
      * @Method("GET")
      * @Template()
      */
-    public function indexAction(Request $request) {
+    public function indexAction(Request $request)
+    {
         $em = $this->getDoctrine()->getManager();
         $entities = $em->getRepository('AppBundle:TermOfUse')->getTerms();
 
@@ -49,22 +50,24 @@ class TermOfUseController extends Controller {
      * 
      * @param Request $request
      */
-    public function sortAction(Request $request) {
+    public function sortAction(Request $request)
+    {
         $em = $this->getDoctrine()->getManager();
         $repo = $em->getRepository('AppBundle:TermOfUse');
 
-        if ($request->getMethod() === "POST") {
-            $order = $request->request->get("order");
-            $list = explode(",", $order);
-            for ($i = 0; $i < count($list); $i++) {
+        if ($request->getMethod() === 'POST') {
+            $order = $request->request->get('order');
+            $list = explode(',', $order);
+            for ($i = 0; $i < count($list); ++$i) {
                 $term = $repo->find($list[$i]);
                 $term->setWeight($i);
                 $em->flush(); // flush the terms individually - the postUpdate event causes problems here.
             }
-            $this->addFlash("success", "The terms of use have been sorted.");
+            $this->addFlash('success', 'The terms of use have been sorted.');
         }
 
-        $entities = $em->getRepository("AppBundle:TermOfUse")->getTerms();
+        $entities = $em->getRepository('AppBundle:TermOfUse')->getTerms();
+
         return array('entities' => $entities);
     }
 
@@ -77,7 +80,8 @@ class TermOfUseController extends Controller {
      * @Method("POST")
      * @Template("AppBundle:TermOfUse:new.html.twig")
      */
-    public function createAction(Request $request) {
+    public function createAction(Request $request)
+    {
         $entity = new TermOfUse();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
@@ -104,7 +108,8 @@ class TermOfUseController extends Controller {
      *
      * @return Form The form
      */
-    private function createCreateForm(TermOfUse $entity) {
+    private function createCreateForm(TermOfUse $entity)
+    {
         $defaultLocale = $this->container->getParameter('terms_of_use_default_locale');
         $form = $this->createForm(new TermOfUseType($defaultLocale), $entity, array(
             'action' => $this->generateUrl('termofuse_create'),
@@ -123,7 +128,8 @@ class TermOfUseController extends Controller {
      * @Method("GET")
      * @Template()
      */
-    public function newAction() {
+    public function newAction()
+    {
         $entity = new TermOfUse();
         $form = $this->createCreateForm($entity);
 
@@ -140,7 +146,8 @@ class TermOfUseController extends Controller {
      * @Method("GET")
      * @Template()
      */
-    public function allHistoryAction() {
+    public function allHistoryAction()
+    {
         $em = $this->getDoctrine()->getManager();
         $repo = $em->getRepository('AppBundle:TermOfUseHistory');
         $list = $repo->createQueryBuilder('h')
@@ -150,7 +157,7 @@ class TermOfUseController extends Controller {
                 ->getResult();
 
         return array(
-            'list' => $list
+            'list' => $list,
         );
     }
 
@@ -163,12 +170,14 @@ class TermOfUseController extends Controller {
      * @Method("GET")
      * @Template()
      */
-    public function historyAction($id) {
+    public function historyAction($id)
+    {
         $em = $this->getDoctrine()->getManager();
         $repo = $em->getRepository('AppBundle:TermOfUseHistory');
         $entities = $repo->findBy(array(
-            'termId' => $id
+            'termId' => $id,
         ));
+
         return array(
             'entities' => $entities,
         );
@@ -183,7 +192,8 @@ class TermOfUseController extends Controller {
      * @Method("GET")
      * @Template()
      */
-    public function showAction($id) {
+    public function showAction($id)
+    {
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AppBundle:TermOfUse')->find($id);
@@ -209,7 +219,8 @@ class TermOfUseController extends Controller {
      * @Method("GET")
      * @Template()
      */
-    public function editAction($id) {
+    public function editAction($id)
+    {
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AppBundle:TermOfUse')->find($id);
@@ -235,7 +246,8 @@ class TermOfUseController extends Controller {
      *
      * @return Form The form
      */
-    private function createEditForm(TermOfUse $entity) {
+    private function createEditForm(TermOfUse $entity)
+    {
         $defaultLocale = $this->container->getParameter('terms_of_use_default_locale');
         $form = $this->createForm(new TermOfUseType($defaultLocale), $entity, array(
             'action' => $this->generateUrl('termofuse_update', array('id' => $entity->getId())),
@@ -251,13 +263,14 @@ class TermOfUseController extends Controller {
      * Edits an existing TermOfUse entity.
      *
      * @param Request $request
-     * @param string $id
+     * @param string  $id
      *
      * @Route("/{id}", name="termofuse_update")
      * @Method("PUT")
      * @Template("AppBundle:TermOfUse:edit.html.twig")
      */
-    public function updateAction(Request $request, $id) {
+    public function updateAction(Request $request, $id)
+    {
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('AppBundle:TermOfUse')->find($id);
@@ -273,6 +286,7 @@ class TermOfUseController extends Controller {
         if ($editForm->isValid()) {
             $em->flush();
             $this->addFlash('success', 'The terms of use entry has been updated.');
+
             return $this->redirect($this->generateUrl('termofuse_show', array('id' => $entity->getId())));
         }
 
@@ -287,11 +301,12 @@ class TermOfUseController extends Controller {
      * Deletes a TermOfUse entity.
      *
      * @param Request $request
-     * @param string $id
+     * @param string  $id
      *
      * @Route("/{id}/delete", name="termofuse_delete")
      */
-    public function deleteAction(Request $request, $id) {
+    public function deleteAction(Request $request, $id)
+    {
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('AppBundle:TermOfUse')->find($id);
 
@@ -312,7 +327,8 @@ class TermOfUseController extends Controller {
      *
      * @return Form The form
      */
-    private function createDeleteForm($id) {
+    private function createDeleteForm($id)
+    {
         return $this->createFormBuilder()
                         ->setAction($this->generateUrl('termofuse_delete', array('id' => $id)))
                         ->setMethod('DELETE')

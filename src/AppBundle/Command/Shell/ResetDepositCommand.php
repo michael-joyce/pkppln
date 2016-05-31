@@ -3,7 +3,6 @@
 namespace AppBundle\Command\Shell;
 
 use AppBundle\Entity\Deposit;
-use AppBundle\Entity\DepositRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Monolog\Registry;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -17,8 +16,8 @@ use Symfony\Component\HttpKernel\Tests\Logger;
 /**
  * Reset the processing status for one or more deposit.
  */
-class ResetDepositCommand extends ContainerAwareCommand {
-
+class ResetDepositCommand extends ContainerAwareCommand
+{
     /**
      * @var Registry
      */
@@ -34,16 +33,18 @@ class ResetDepositCommand extends ContainerAwareCommand {
      *
      * @param ContainerInterface $container
      */
-    public function setContainer(ContainerInterface $container = null) {
+    public function setContainer(ContainerInterface $container = null)
+    {
         parent::setContainer($container);
         $this->logger = $container->get('monolog.logger.processing');
         $this->em = $container->get('doctrine')->getManager();
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function configure() {
+    public function configure()
+    {
         $this->setName('pln:reset');
         $this->setDescription('Reset deposits.');
         $this->addOption('clear', 'c', InputOption::VALUE_NONE, 'Clear error log and processing log for deposit.');
@@ -58,37 +59,40 @@ class ResetDepositCommand extends ContainerAwareCommand {
             'Deposit UUID(s) to process'
         );
     }
-    
+
     /**
      * @return Deposit[]|ArrayCollection
      */
-    protected function getDeposits($uuids = array()) {
+    protected function getDeposits($uuids = array())
+    {
         $repo = $this->em->getRepository('AppBundle:Deposit');
-		$deposits = array();
-		if(count($uuids) > 0) {
-			$deposits = $repo->findBy(array('depositUuid' => $uuids));
-		} else {
-			$deposits = $repo->findAll();
-		}
+        $deposits = array();
+        if (count($uuids) > 0) {
+            $deposits = $repo->findBy(array('depositUuid' => $uuids));
+        } else {
+            $deposits = $repo->findAll();
+        }
+
         return $deposits;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
         $state = $input->getArgument('state');
         $uuids = $input->getArgument('deposit');
         $deposits = $this->getDeposits($uuids);
-        foreach($deposits as $deposit) {
+        foreach ($deposits as $deposit) {
             $this->logger->notice("Setting {$deposit->getDepositUuid()} to {$state}");
             $deposit->setState($state);
-            if($input->getOption('clear')) {
+            if ($input->getOption('clear')) {
                 $deposit->setErrorLog(array());
                 $deposit->setPackageSize(null);
                 $deposit->setPlnState(null);
                 $deposit->setProcessingLog('');
-                $deposit->addToProcessingLog("Deposit reset.");
+                $deposit->addToProcessingLog('Deposit reset.');
                 $deposit->setAuContainer(null);
             }
         }
