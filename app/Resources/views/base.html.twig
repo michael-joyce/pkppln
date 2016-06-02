@@ -59,6 +59,15 @@
 									<li><a href='{{ path('aucontainer')}}'>AU Containers</a></li>
 								</ul>
 							</li>
+							<li>
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Feeds <span class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li><a href="{{ path('feed_terms', {'_format': 'rss'}) }}">Terms RSS</a></li>
+									<li><a href="{{ path('feed_terms', {'_format': 'json'}) }}">Terms JSON</a></li>
+									<li><a href="{{ path('feed_terms', {'_format': 'atom'}) }}">Terms ATOM</a></li>
+									<li><a href="{{ path('onix', {'_format': 'xml'}) }}">ONIX</a></li>
+								</ul>
+							</li>
 
                             {% if app.user is not null and is_granted("ROLE_ADMIN") %}
                                 <li>
