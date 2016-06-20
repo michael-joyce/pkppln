@@ -2,11 +2,11 @@
 
 namespace AppBundle\Services;
 
-use Exception;
 use AppBundle\Entity\Deposit;
 use AppBundle\Entity\Journal;
 use AppBundle\Utility\Namespaces;
 use DateTime;
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Stream\Stream;
@@ -313,6 +313,8 @@ class SwordClient
      * @todo complete this stub.
      * 
      * @param Deposit $deposit
+     * 
+     * @return \SimpleXMLElement
      */
     public function statement(Deposit $deposit)
     {

@@ -127,6 +127,15 @@ class FilePaths
 
         return realpath($path);
     }
+    
+    public function getRestoreDir(Journal $journal) {
+        $path = $this->absolutePath('restore', $journal);
+        if( ! $this->fs->exists($path)) {
+            $this->logger->notice("Creating directory {$path}");
+            $this->fs->mkdir($path);
+        }
+        return $path;
+    }
 
     /**
      * Get the harvest directory.
