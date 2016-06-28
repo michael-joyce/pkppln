@@ -79,7 +79,8 @@ class PingWhitelistCommand extends ContainerAwareCommand
         $router = $this->getContainer()->get('router');
         $bwlist = $this->getContainer()->get('blackwhitelist');
         $ping = $this->getContainer()->get('ping');
-
+		$ping->setLogger($this->logger);
+		
         /*
          * @var Journal[] 
          */
@@ -101,7 +102,9 @@ class PingWhitelistCommand extends ContainerAwareCommand
             $uuid = $journal->getUuid();
             if (!$all && $journal->getStatus() === 'ping-error') {
                 $this->logger->notice("{$fmt}/{$count} - skipped (previous ping-error) - - {$journal->getUrl()}");
+                continue;
             }
+            
             if (!$all && $bwlist->isWhitelisted($uuid)) {
                 $this->logger->notice("{$fmt}/{$count} - skipped (whitelisted) - - {$journal->getUrl()}");
                 continue;
