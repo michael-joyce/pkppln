@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Deposit.
+ * A single Deposit from a journal.
  *
  * @ORM\Table()
  * @ORM\HasLifecycleCallbacks

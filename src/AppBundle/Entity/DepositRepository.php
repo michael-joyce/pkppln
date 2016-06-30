@@ -5,7 +5,7 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\EntityRepository;
 
 /**
- * DepositRepository.
+ * DepositRepository provides some useful functions for querying deposits.
  */
 class DepositRepository extends EntityRepository
 {

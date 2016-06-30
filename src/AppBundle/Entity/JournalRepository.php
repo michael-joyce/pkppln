@@ -10,7 +10,7 @@ use Doctrine\ORM\Query\Expr\Func;
 /**
  * JournalRepository.
  *
- * This class adds a simple journal search.
+ * This class adds a simple journal search and a few other easy queries.
  */
 class JournalRepository extends EntityRepository
 {

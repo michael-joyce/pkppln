@@ -18,7 +18,7 @@ use Symfony\Component\HttpKernel\Tests\Logger;
  * was useful during development.
  * 
  * This isn't particularly useful once a deposit has been sent to LOCKSS, unless
- * the deposit's status is reset to reserialized or less.
+ * the deposit's status is reset to reserialized or something like it.
  */
 class UpdateChecksumsCommand extends ContainerAwareCommand
 {

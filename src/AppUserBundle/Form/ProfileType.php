@@ -7,7 +7,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Overrides the ProfileType from FOSUserBundle.
+ * Overrides the ProfileType from FOSUserBundle so admins can 
+ * edit profiles.
  */
 class ProfileType extends AbstractType
 {

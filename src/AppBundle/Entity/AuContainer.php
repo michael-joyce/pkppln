@@ -7,7 +7,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * AuContainer.
+ * AuContainer organizes the deposits by size to abstract the responsibility 
+ * away from LOCKSSOMatic.
  *
  * @ORM\Table()
  * @ORM\HasLifecycleCallbacks
