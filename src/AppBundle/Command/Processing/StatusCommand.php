@@ -92,11 +92,8 @@ class StatusCommand extends AbstractProcessingCmd
             unlink($this->filePaths->getHarvestFile($deposit));
             $this->deltree($this->filePaths->getProcessingBagPath($deposit));
             unlink($this->filePaths->getStagingBagPath($deposit));
-
-            return true;
         }
-
-        return false;
+        return true;
     }
 
     /**
