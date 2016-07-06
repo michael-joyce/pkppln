@@ -93,7 +93,7 @@ class StatusCommand extends AbstractProcessingCmd
             $this->deltree($this->filePaths->getProcessingBagPath($deposit));
             unlink($this->filePaths->getStagingBagPath($deposit));
         }
-        return true;
+		return $status === 'agreement';
     }
 
     /**
