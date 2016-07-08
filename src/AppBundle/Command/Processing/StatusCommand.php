@@ -50,7 +50,7 @@ class StatusCommand extends AbstractProcessingCmd
     public function setContainer(ContainerInterface $container = null)
     {
         parent::setContainer($container);
-        $this->cleanup = !$this->container->getParameter('remove_complete_deposits');
+        $this->cleanup = $this->container->getParameter('remove_complete_deposits');
         $this->client = $container->get('sword_client');
         $this->client->setLogger($this->logger);
     }
@@ -86,6 +86,7 @@ class StatusCommand extends AbstractProcessingCmd
         $this->logger->notice("Checking deposit {$deposit->getDepositUuid()}");
         $statement = $this->client->statement($deposit);
         $status = (string) $statement->xpath('//atom:category[@scheme="http://purl.org/net/sword/terms/state"]/@term')[0];
+        $this->logger->notice("Deposit is " . $status);
         $deposit->setPlnState($status);
         if ($status === 'agreement' && $this->cleanup) {
             $this->logger->notice("Deposit complete. Removing processing files for deposit {$deposit->getId()}.");
