@@ -102,11 +102,11 @@ class JournalBuilder
         }
         $journal->setUuid($journal_uuid);
         $journal->setTitle($this->getXmlValue($xml, '//atom:title'));
-        $journal->setUrl($this->getXmlValue($xml, '//pkp:journal_url'));
+        $journal->setUrl(html_entity_decode($this->getXmlValue($xml, '//pkp:journal_url'))); // &amp; -> &
         $journal->setEmail($this->getXmlValue($xml, '//atom:email'));
         $journal->setIssn($this->getXmlValue($xml, '//pkp:issn'));
         $journal->setPublisherName($this->getXmlValue($xml, '//pkp:publisherName'));
-        $journal->setPublisherUrl($this->getXmlValue($xml, '//pkp:publisherUrl'));
+        $journal->setPublisherUrl(html_entity_decode($this->getXmlValue($xml, '//pkp:publisherUrl'))); // &amp; -> &
         $this->em->persist($journal);
         $this->em->flush($journal);
 
