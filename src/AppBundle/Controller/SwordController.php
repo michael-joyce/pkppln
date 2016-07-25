@@ -4,9 +4,8 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Deposit;
 use AppBundle\Entity\Journal;
-use AppBundle\Entity\TermOfUseRepository;
+use AppBundle\Entity\TermOfUse;
 use AppBundle\Exception\SwordException;
-use AppBundle\Services\BlackWhitelist;
 use AppBundle\Utility\Namespaces;
 use DateTime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -15,7 +14,6 @@ use SimpleXMLElement;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Log\LoggerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -264,9 +262,13 @@ class SwordController extends Controller
         }
 
         $xml = $this->parseXml($request->getContent());
-        $journal = $this->get('journalbuilder')->fromXml($xml, $journal_uuid);
-        $journal->setStatus('healthy');
-        $deposit = $this->get('depositbuilder')->fromXml($journal, $xml);
+        try {
+            $journal = $this->get('journalbuilder')->fromXml($xml, $journal_uuid);
+            $journal->setStatus('healthy');
+            $deposit = $this->get('depositbuilder')->fromXml($journal, $xml);
+        } catch (\Exception $e) {
+            throw new SwordException(500, $e->getMessage(), $e);
+        }
 
         /* @var Response */
         $response = $this->statementAction($request, $journal->getUuid(), $deposit->getDepositUuid());
