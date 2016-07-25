@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Blacklist.
+ * Misbehaving journals may be Blacklisted until they correct what ails them.
  *
  * @ORM\Table()
  * @ORM\HasLifecycleCallbacks

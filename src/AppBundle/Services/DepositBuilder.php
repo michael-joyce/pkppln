@@ -159,7 +159,7 @@ class DepositBuilder
         $deposit->setPubDate(new DateTime($this->getXmlValue($xml, 'pkp:content/@pubdate')));
         $deposit->setJournal($journal);
         $deposit->setSize($this->getXmlValue($xml, 'pkp:content/@size'));
-        $deposit->setUrl($this->getXmlValue($xml, 'pkp:content'));
+        $deposit->setUrl(html_entity_decode($this->getXmlValue($xml, 'pkp:content')));
         $deposit->setDepositReceipt($this->buildDepositReceiptUrl($deposit));
 
         $this->getLicensingInfo($deposit, $xml);

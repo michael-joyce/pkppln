@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Func;
 
 /**
- * BlacklistRepository.
+ * BlacklistRepository makes it easy to search for blacklist entities.
  */
 class BlacklistRepository extends EntityRepository
 {

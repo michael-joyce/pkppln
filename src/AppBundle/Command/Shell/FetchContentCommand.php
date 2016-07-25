@@ -9,7 +9,7 @@ use AppBundle\Services\SwordClient;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Collections\Collection;
 use Exception;
-use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp\Client;
 use Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -18,8 +18,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
-// fetch the content for one journal. Stores it to 
-// path/to/data/restored/journalId/*.zip
+/**
+ * Fetch all the content of one or more journals from LOCKSS via LOCKSSOMatic. 
+ */
 class FetchContentCommand extends ContainerAwareCommand {
     
     /**
@@ -67,23 +68,43 @@ class FetchContentCommand extends ContainerAwareCommand {
         $this->fs = new Filesystem();
     }
 
+    /**
+     * Configure the command.
+     */
     public function configure() {
         $this->setName('pln:fetch');
         $this->setDescription('Download the archived content for one or more journals.');
         $this->addArgument('journals', InputArgument::IS_ARRAY, 'The database ID of one or more journals.');
     }
     
+    /**
+     * Set the HTTP client for contacting LOCKSSOMatic. 
+     * 
+     * @param Client $httpClient
+     */
     public function setHttpClient(Client $httpClient) {
         $this->httpClient = $httpClient;
     }
-    
+
+    /**
+     * Build and configure and return an HTTP client. Uses the client set 
+     * from setHttpClient() if available.
+     * 
+     * @return Client
+     */
     public function getHttpClient() {
         if( ! $this->httpClient) {
-            $this->httpClient = new HttpClient();
+            $this->httpClient = new Client();
         } 
         return $this->httpClient;
     }
     
+    /**
+     * Fetch one deposit from LOCKSSOMatic.
+     * 
+     * @param Deposit $deposit
+     * @param string $href
+     */
     public function fetch(Deposit $deposit, $href) {
         $client = $this->getHttpClient();
         $filepath = $this->filePaths->getRestoreDir($deposit->getJournal()) . '/' . basename($href);
@@ -103,6 +124,14 @@ class FetchContentCommand extends ContainerAwareCommand {
         }
     }
     
+    /**
+     * Download all the content from one journal. 
+     * 
+     * Requests a SWORD deposit statement from LOCKSSOMatic, and uses the 
+     * sword:originalDeposit element to fetch the content.
+     * 
+     * @param Journal $journal
+     */
     public function downloadJournal(Journal $journal) {
         foreach($journal->getDeposits() as $deposit) {
             $statement = $this->swordClient->statement($deposit);
@@ -115,6 +144,7 @@ class FetchContentCommand extends ContainerAwareCommand {
     }
     
     /**
+     * Get a list of journals to download.
      * 
      * @param array $journalIds
      * @return Collection|Journal[]
@@ -123,13 +153,18 @@ class FetchContentCommand extends ContainerAwareCommand {
         return $this->em->getRepository('AppBundle:Journal')->findBy(array('id' => $journalIds));
     }
     
+    /**
+     * Execute the command.
+     * 
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
     public function execute(InputInterface $input, OutputInterface $output) {
         $journalIds = $input->getArgument('journals');
         $journals = $this->getJournals($journalIds);
         foreach($journals as $journal) {
             $this->downloadJournal($journal);
         }
-        //     save to path/journalId/filename.zip
     }
     
 }

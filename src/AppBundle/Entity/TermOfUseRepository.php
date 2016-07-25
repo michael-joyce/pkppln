@@ -6,7 +6,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityRepository;
 
 /**
- * TermOfUseRepository.
+ * TermOfUseRepository makes fetching the terms in weight order easy.
  */
 class TermOfUseRepository extends EntityRepository
 {

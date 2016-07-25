@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Func;
 
 /**
- * WhitelistRepository.
+ * WhitelistRepository makes searching whitelisted entities easier.
  */
 class WhitelistRepository extends EntityRepository
 {

@@ -6,7 +6,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityRepository;
 
 /**
- * TermOfUseRepository.
+ * TermOfUseRepository makes it easy to fetch a term.
  */
 class TermOfUseHistoryRepository extends EntityRepository
 {

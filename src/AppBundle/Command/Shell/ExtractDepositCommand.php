@@ -1,11 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace AppBundle\Command\Shell;
 
 use DOMDocument;
@@ -23,7 +17,8 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Tests\Logger;
 
 /**
- * Description of ExtractDepositCommand.
+ * Extract the content of a deposit, including the embedded and encoded
+ * content in the deposit's export XML.
  *
  * @author mjoyce
  */

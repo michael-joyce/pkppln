@@ -157,6 +157,8 @@ class TermOfUseHistory
     }
 
     /**
+     * Automatically sets the created date.
+     * 
      * @ORM\PrePersist
      */
     public function persistCreated()

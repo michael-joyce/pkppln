@@ -7,7 +7,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Override the PasswordType form.
+ * Override the PasswordType form so admins can change passwords.
  */
 class PasswordType extends AbstractType
 {

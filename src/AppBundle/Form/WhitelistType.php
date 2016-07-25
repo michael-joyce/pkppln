@@ -7,7 +7,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Build a whitelsit form.
+ * Build a whitelist form.
  */
 class WhitelistType extends AbstractType
 {
