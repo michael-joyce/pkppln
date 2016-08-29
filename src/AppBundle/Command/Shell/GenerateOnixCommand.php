@@ -74,13 +74,10 @@ class GenerateOnixCommand extends ContainerAwareCommand
      * @param type $filePath
      */
     protected function generateCsv($filePath) {
+        $handle = fopen($filePath, 'w');
         $journals = $this->getJournals();
-        $rows = [];
-        $rows[] = array(
-            'Generated',
-            date('Y-m-d'),
-        );
-        $rows[] = array(
+        fputcsv($handle, array('Generated', date('Y-m-d')));
+        fputcsv($handle, array(
             'ISSN', 
             'Title', 
             'Publisher', 
@@ -89,14 +86,17 @@ class GenerateOnixCommand extends ContainerAwareCommand
             'No', 
             'Published', 
             'Deposited'
-        );
+        ));
         foreach($journals as $journal) {
             $deposits = $journal->getSentDeposits();
             if($deposits->count() === 0) {
                 continue;
             }
             foreach($deposits as $deposit) {
-                $rows[] = array(
+              if($deposit->getDepositDate() === null) {
+                continue;
+              }
+              fputcsv($handle, array(
                     $journal->getIssn(),
                     $journal->getTitle(),
                     $journal->getPublisherName(),
@@ -105,12 +105,8 @@ class GenerateOnixCommand extends ContainerAwareCommand
                     $deposit->getIssue(),
                     $deposit->getPubDate()->format('Y-m-d'),
                     $deposit->getDepositDate()->format('Y-m-d'),
-                );
-            }
-        }
-        $handle = fopen($filePath, 'w');
-        foreach($rows as $row) {
-            fputcsv($handle, $row);
+              ));            
+           }
         }
     }
     
@@ -124,7 +120,9 @@ class GenerateOnixCommand extends ContainerAwareCommand
         $onix = $this->templating->render('AppBundle:Onix:onix.xml.twig', array(
             'journals' => $journals,
         ));
-        file_put_contents($filePath, $onix);
+        $fh = fopen($filePath, 'w');
+        fwrite($fh, $onix);
+        fclose($fh);
     }
 
     /**
@@ -132,6 +130,7 @@ class GenerateOnixCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+      ini_set('memory_limit', '512M');
         $files = $input->getArgument('file');
         if (!$files || count($files) === 0) {
             $fp = $this->getContainer()->get('filepaths');
@@ -140,6 +139,7 @@ class GenerateOnixCommand extends ContainerAwareCommand
         }
         
         foreach($files as $file) {
+            $this->logger->info("Writing {$file}");
             $ext = pathinfo($file, PATHINFO_EXTENSION);
             switch($ext) {
                 case 'xml':
