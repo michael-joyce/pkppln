@@ -2,7 +2,9 @@
 
 namespace AppBundle\Command\Shell;
 
+use AppBundle\Entity\Journal;
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Collections\Collection;
 use Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Bundle\TwigBundle\TwigEngine;
@@ -53,7 +55,76 @@ class GenerateOnixCommand extends ContainerAwareCommand
     {
         $this->setName('pln:onix');
         $this->setDescription('Generate ONIX-PH feed.');
-        $this->addArgument('file', InputArgument::OPTIONAL, 'File to write the feed to.');
+        $this->addArgument('file', InputArgument::IS_ARRAY, 'File(s) to write the feed to.');
+    }
+
+    /**
+     * Get the journals to process.
+     * 
+     * @return Collection|Journal[]
+     */
+    protected function getJournals() {
+        $journals = $this->em->getRepository('AppBundle:Journal')->findAll();
+        return $journals;
+    }
+    
+    /**
+     * Generate a CSV file at $filePath.
+     * 
+     * @param type $filePath
+     */
+    protected function generateCsv($filePath) {
+        $journals = $this->getJournals();
+        $rows = [];
+        $rows[] = array(
+            'Generated',
+            date('Y-m-d'),
+        );
+        $rows[] = array(
+            'ISSN', 
+            'Title', 
+            'Publisher', 
+            'Url', 
+            'Vol', 
+            'No', 
+            'Published', 
+            'Deposited'
+        );
+        foreach($journals as $journal) {
+            $deposits = $journal->getSentDeposits();
+            if($deposits->count() === 0) {
+                continue;
+            }
+            foreach($deposits as $deposit) {
+                $rows[] = array(
+                    $journal->getIssn(),
+                    $journal->getTitle(),
+                    $journal->getPublisherName(),
+                    $journal->getUrl(),
+                    $deposit->getVolume(),
+                    $deposit->getIssue(),
+                    $deposit->getPubDate()->format('Y-m-d'),
+                    $deposit->getDepositDate()->format('Y-m-d'),
+                );
+            }
+        }
+        $handle = fopen($filePath, 'w');
+        foreach($rows as $row) {
+            fputcsv($handle, $row);
+        }
+    }
+    
+    /**
+     * Generate an XML file at $filePath.
+     * 
+     * @param string $filePath
+     */
+    protected function generateXml($filePath) {
+        $journals = $this->getJournals();
+        $onix = $this->templating->render('AppBundle:Onix:onix.xml.twig', array(
+            'journals' => $journals,
+        ));
+        file_put_contents($filePath, $onix);
     }
 
     /**
@@ -61,17 +132,26 @@ class GenerateOnixCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $file = $input->getArgument('file');
-        if (!$file) {
+        $files = $input->getArgument('file');
+        if (!$files || count($files) === 0) {
             $fp = $this->getContainer()->get('filepaths');
-            $file = $fp->getOnixPath();
+            $files[] = $fp->getOnixPath('xml');
+            $files[] = $fp->getOnixPath('csv');
         }
-        $journals = $this->em->getRepository('AppBundle:Journal')->findAll();
-        $onix = $this->templating->render('AppBundle:Onix:onix.xml.twig', array(
-            'journals' => $journals,
-        ));
-        $fh = fopen($file, 'w');
-        fwrite($fh, $onix);
-        fclose($fh);
+        
+        foreach($files as $file) {
+            $ext = pathinfo($file, PATHINFO_EXTENSION);
+            switch($ext) {
+                case 'xml':
+                    $this->generateXml($file);
+                    break;
+                case 'csv':
+                    $this->generateCsv($file);
+                    break;
+                default:
+                    $this->logger->error("Cannot generate {$ext} ONIX format.");
+                    break;
+            }
+        }
     }
 }

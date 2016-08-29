@@ -236,12 +236,14 @@ class FilePaths
     }
 
     /**
-     * Get the path to the onix feed XML file.
+     * Get the path to the onix feed file.
+     * 
+     * @param string $_format
      * 
      * @return string
      */
-    public function getOnixPath()
+    public function getOnixPath($_format = 'xml')
     {
-        return $this->rootPath().'/onix.xml';
+        return $this->rootPath().'/onix.' . $_format;
     }
 }

@@ -172,19 +172,28 @@ class DefaultController extends Controller
      * @see http://www.editeur.org/127/ONIX-PH/
      * 
      * @param Request $request
-     * @Route("/feeds/onix.{_format}", name="onix", requirements={"_format":"xml"})
+     * @Route("/feeds/onix.{_format}", name="onix", requirements={"_format":"xml|csv"})
      */
-    public function onyxFeedAction()
+    public function onyxFeedAction($_format)
     {
-        $path = $this->container->get('filepaths')->getOnixPath();
+        $path = $this->container->get('filepaths')->getOnixPath($_format);
         $fs = new Filesystem();
         if (!$fs->exists($path)) {
             $this->container->get('logger')->critical("The ONIX-PH file could not be found at {$path}");
             throw new NotFoundHttpException('The ONIX-PH file could not be found.');
         }
-
+        
+        $contentType = '';
+        switch($_format) {
+            case 'xml':
+                $contentType = 'text/xml';
+                break;
+            case 'csv':
+                $contentType = 'text/csv';
+                break;
+        }
         return new BinaryFileResponse($path, 200, array(
-            'Content-Type' => 'text/xml',
+            'Content-Type' => $contentType,
         ));
     }
 
