@@ -114,7 +114,7 @@ class HarvestCommand extends AbstractProcessingCmd
         } catch (Exception $e) {
             $this->logger->error($e);
             if ($e->hasResponse()) {
-                $this->logger->error($e->getResponse()->getStatusCode().' '.$this->logger->error($e->getResponse()->getReasonPhrase()));
+                $this->logger->error($e->getResponse()->getStatusCode().' '.$e->getResponse()->getReasonPhrase());
             } else {
                 $this->logger->error("Harvest - {$url} - $e->getMessage()");
             }
@@ -152,7 +152,7 @@ class HarvestCommand extends AbstractProcessingCmd
         } catch (RequestException $e) {
             $response = $e->getResponse();
             if ($response !== null) {
-                $this->logger->critical($e->getResponse()->getStatusCode().' '.$this->logger->error($e->getResponse()->getReasonPhrase()));
+                $this->logger->critical($e->getResponse()->getStatusCode().' '.$e->getResponse()->getReasonPhrase());
             } else {
                 $this->logger->critical($e->getMessage());
             }
