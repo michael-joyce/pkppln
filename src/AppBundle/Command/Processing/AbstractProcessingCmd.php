@@ -8,6 +8,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Exception;
 use Symfony\Bridge\Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -90,6 +91,7 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand
             InputOption::VALUE_OPTIONAL,
             'Only process $limit deposits.'
         );
+        $this->addArgument('deposit-id', InputArgument::IS_ARRAY, 'One or more deposit database IDs to process');
     }
 
     /**
@@ -145,18 +147,22 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand
     }
 
     /**
+     * @param bool $retry retry failed deposits 
+     * @param int[] $depositIds zero or more deposit Ids to filter.
      * @return Deposit[]
      */
-    final public function getDeposits($retry = false)
+    final public function getDeposits($retry = false, $depositIds = array())
     {
         $repo = $this->em->getRepository('AppBundle:Deposit');
-        if ($retry) {
-            $deposits = $repo->findByState($this->errorState());
-        } else {
-            $deposits = $repo->findByState($this->processingState());
+        $state = $this->processingState();
+        if($retry) {
+            $state = $this->errorState();
         }
-
-        return $deposits;
+        $query = array('state' => $state);
+        if(count($depositIds) > 0) {
+            $query['id'] = $depositIds;
+        }
+        return $repo->findBy($query);
     }
 
     /**
@@ -169,7 +175,10 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand
     final protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->preExecute();
-        $deposits = $this->getDeposits($input->getOption('retry'));
+        $deposits = $this->getDeposits(
+            $input->getOption('retry'),
+            $input->getArgument('deposit-id')
+        );
 
         if ($input->hasOption('limit')) {
             $deposits = array_slice($deposits, 0, $input->getOption('limit'));
