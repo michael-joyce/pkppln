@@ -44,13 +44,10 @@ class HarvestCommand extends AbstractProcessingCmd
     public function getClient()
     {
         if (!$this->client) {
-            $this->client = new Client(
-                array('default' => array(
-                    'headers' => array(
-                        'User-Agent' => 'PkpPlnBot 1.0; http://pkp.sfu.ca',
-                        'Accept' => 'application/xml,text/xml,*/*;q=0.1',
-                ), ))
-            );
+            $this->client = new Client();
+            $headers = $this->client->getDefaultOption('headers');
+            $headers['User-Agent'] = 'PkpPlnBot 1.0; http://pkp.sfu.ca';
+            $this->client->setDefaultOption('headers', $headers);
         }
 
         return $this->client;
