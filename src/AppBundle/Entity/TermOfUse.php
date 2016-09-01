@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ class TermOfUse
 {
     /**
      * Database ID.
-     * 
+     *
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
@@ -48,25 +48,25 @@ class TermOfUse
      * The "weight" of the term. Heavier terms are sorted lower.
      *
      * @var int
-     * 
+     *
      * @ORM\Column(type="integer")
      */
     private $weight;
 
     /**
-     * The date the term was created. 
-     * 
+     * The date the term was created.
+     *
      * @var string
-     * 
+     *
      * @ORM\Column(type="datetime")
      */
     private $created;
 
     /**
-     * The date the term was updated. 
+     * The date the term was updated.
      *
      * @var string
-     * 
+     *
      * @ORM\Column(type="datetime")
      */
     private $updated;
@@ -76,7 +76,7 @@ class TermOfUse
      * of a term.
      *
      * @var string
-     * 
+     *
      * @ORM\Column(type="string")
      */
     private $keyCode;
@@ -85,7 +85,7 @@ class TermOfUse
      * ISO language code.
      *
      * @var string
-     * 
+     *
      * @ORM\Column(type="string")
      */
     private $langCode;
@@ -94,7 +94,7 @@ class TermOfUse
      * The content of the term, in the language in $langCode.
      *
      * @var string
-     * 
+     *
      * @ORM\Column(type="text")
      */
     private $content;
@@ -218,7 +218,7 @@ class TermOfUse
     /**
      * Called automatically before the database entry is updated or created to
      * set the timestamps.
-     * 
+     *
      * @ORM\PrePersist
      */
     public function setCreatedTimestamp()
@@ -230,7 +230,7 @@ class TermOfUse
     /**
      * Called automatically before the database entry is updated or created to
      * set the timestamps.
-     * 
+     *
      * @ORM\PreUpdate
      */
     public function setUpdatedTimestamp()

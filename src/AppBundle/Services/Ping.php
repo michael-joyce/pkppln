@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ class Ping
 
     /**
      * Set the ORM thing.
-     * 
+     *
      * @param Registry $registry
      */
     public function setManager(Registry $registry)
@@ -62,7 +62,7 @@ class Ping
 
     /**
      * Set the service logger.
-     * 
+     *
      * @param Logger $logger
      */
     public function setLogger(Logger $logger)
@@ -72,7 +72,7 @@ class Ping
 
     /**
      * Set the HTTP client.
-     * 
+     *
      * @param Client $client
      */
     public function setClient(Client $client)
@@ -94,7 +94,7 @@ class Ping
 
     /**
      * Ping a journal, check on it's health, etc.
-     * 
+     *
      * @param Journal $journal
      *
      * @return PingResult

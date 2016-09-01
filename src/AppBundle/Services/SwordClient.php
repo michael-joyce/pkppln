@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -82,7 +82,7 @@ class SwordClient
 
     /**
      * Mapping of prefix => URIs for XML namespaces.
-     * 
+     *
      * @var Namespaces
      */
     private $namespaces;
@@ -121,7 +121,7 @@ class SwordClient
     private $filePaths;
 
     /**
-     * If true, save the deposit XML in a file in the same directory as the 
+     * If true, save the deposit XML in a file in the same directory as the
      * serialized deposit bag.
      *
      * @var bool
@@ -130,7 +130,7 @@ class SwordClient
 
     /**
      * Construct a sword client.
-     * 
+     *
      * @param string $sdIri
      * @param string $serverUuid
      * @param bool   $saveDepositXml
@@ -146,7 +146,7 @@ class SwordClient
 
     /**
      * Set the HTTP client.
-     * 
+     *
      * @param Client $client
      */
     public function setClient(Client $client)
@@ -168,7 +168,7 @@ class SwordClient
 
     /**
      * Set the PLN Journal Title.
-     * 
+     *
      * @param string $plnJournalTitle
      */
     public function setPlnJournalTitle($plnJournalTitle)
@@ -178,7 +178,7 @@ class SwordClient
 
     /**
      * Set the logger.
-     * 
+     *
      * @param Logger $logger
      */
     public function setLogger(Logger $logger)
@@ -188,7 +188,7 @@ class SwordClient
 
     /**
      * Set the templating engine.
-     * 
+     *
      * @param TwigEngine $templating
      */
     public function setTemplating(TwigEngine $templating)
@@ -198,7 +198,7 @@ class SwordClient
 
     /**
      * Set the router for the PLN.
-     * 
+     *
      * @param Router $router
      */
     public function setRouter(Router $router)
@@ -208,7 +208,7 @@ class SwordClient
 
     /**
      * Set the FilePaths service.
-     * 
+     *
      * @param FilePaths $filePaths
      */
     public function setFilePaths(FilePaths $filePaths)
@@ -218,7 +218,7 @@ class SwordClient
 
     /**
      * Convenience method to log a message.
-     * 
+     *
      * @param string $message
      * @param array  $context
      * @param string $level
@@ -230,7 +230,7 @@ class SwordClient
 
     /**
      * Fetch the service document by HTTP.
-     * 
+     *
      * @param Journal $journal
      *
      * @throws RequestException
@@ -263,10 +263,10 @@ class SwordClient
 
     /**
      * Send a deposit to LOM via HTTP.
-     * 
+     *
      * @param Deposit $deposit
      *
-     * @return bool true on success.
+     * @return bool true on success
      */
     public function createDeposit(Deposit $deposit)
     {
@@ -326,11 +326,11 @@ class SwordClient
 
     /**
      * Fetch the SWORD statement.
-     * 
-     * @todo complete this stub.
-     * 
+     *
+     * @todo complete this stub
+     *
      * @param Deposit $deposit
-     * 
+     *
      * @return \SimpleXMLElement
      */
     public function statement(Deposit $deposit)
@@ -348,7 +348,7 @@ class SwordClient
 
     /**
      * Get the site name, as used in deposits.
-     * 
+     *
      * @return string
      */
     public function getSiteName()
@@ -358,7 +358,7 @@ class SwordClient
 
     /**
      * Get the collection IRI.
-     * 
+     *
      * @return type
      */
     public function getColIri()
@@ -368,7 +368,7 @@ class SwordClient
 
     /**
      * Get the maximum upload size.
-     * 
+     *
      * @return int
      */
     public function getMaxUpload()
@@ -378,7 +378,7 @@ class SwordClient
 
     /**
      * Get the checksum type expected by LOCKSSOMatic for uploads.
-     * 
+     *
      * @return string
      */
     public function getUploadChecksum()

@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ class DocumentController extends Controller
      * @Route("/", name="admin_document")
      * @Method("GET")
      * @Template()
-     * 
+     *
      * @param Request $request
      *
      * @return array
@@ -68,7 +68,7 @@ class DocumentController extends Controller
      * @Route("/", name="admin_document_create")
      * @Method("POST")
      * @Template("AppBundle:Document:new.html.twig")
-     * 
+     *
      * @param Request $request
      *
      * @return array
@@ -118,7 +118,7 @@ class DocumentController extends Controller
      * @Route("/new", name="admin_document_new")
      * @Method("GET")
      * @Template()
-     * 
+     *
      * @return array
      */
     public function newAction()
@@ -138,9 +138,9 @@ class DocumentController extends Controller
      * @Route("/{id}", name="admin_document_show")
      * @Method("GET")
      * @Template()
-     * 
+     *
      * @param string $id
-     * 
+     *
      * @return array
      */
     public function showAction($id)
@@ -167,9 +167,9 @@ class DocumentController extends Controller
      * @Route("/{id}/edit", name="admin_document_edit")
      * @Method("GET")
      * @Template()
-     * 
+     *
      * @param string $id
-     * 
+     *
      * @return array
      */
     public function editAction($id)
@@ -217,10 +217,10 @@ class DocumentController extends Controller
      * @Route("/{id}", name="admin_document_update")
      * @Method("PUT")
      * @Template("AppBundle:Document:edit.html.twig")
-     * 
+     *
      * @param Request $request
      * @param string  $id
-     * 
+     *
      * @return array
      */
     public function updateAction(Request $request, $id)
@@ -253,10 +253,10 @@ class DocumentController extends Controller
      * Deletes a Document entity.
      *
      * @Route("/{id}/delete", name="admin_document_delete")
-     * 
+     *
      * @param Request $request
      * @param string  $id
-     * 
+     *
      * @return array
      */
     public function deleteAction(Request $request, $id)

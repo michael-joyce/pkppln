@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ class Document
 {
     /**
      * Database ID.
-     * 
+     *
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
@@ -44,7 +44,7 @@ class Document
 
     /**
      * Document title.
-     * 
+     *
      * @var string
      * @ORM\Column(type="string", nullable=false)
      */
@@ -52,7 +52,7 @@ class Document
 
     /**
      * The URL slug for the document.
-     * 
+     *
      * @var string
      * @ORM\Column(type="string", nullable=false)
      */
@@ -60,7 +60,7 @@ class Document
 
     /**
      * A brief summary to display on the list of documents.
-     * 
+     *
      * @var string
      * @ORM\Column(type="text", nullable=false)
      */
@@ -68,7 +68,7 @@ class Document
 
     /**
      * The content.
-     * 
+     *
      * @var string
      * @ORM\Column(type="text", nullable=false)
      */
@@ -76,16 +76,16 @@ class Document
 
     /**
      * Date when the document was updated.
-     * 
+     *
      * @var DateTime
      * @ORM\Column(type="datetime", nullable=false)
      */
     private $updated;
 
     /**
-     * Automatically called to update the timestamps before insert/update 
+     * Automatically called to update the timestamps before insert/update
      * operations.
-     * 
+     *
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */

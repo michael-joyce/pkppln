@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ class BlacklistRepository extends EntityRepository
 {
     /**
      * Search for blacklist entries by uuid or comment.
-     * 
+     *
      * @param string $q
      *
      * @return Collection|Blacklist[]

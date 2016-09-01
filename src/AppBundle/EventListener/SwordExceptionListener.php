@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -39,14 +39,14 @@ class SwordExceptionListener
 
     /**
      * Symfony Controller that generated the exception.
-     * 
+     *
      * @var ControllerInterface
      */
     private $controller;
 
     /**
      * Monolog logger.
-     * 
+     *
      * @var Logger
      */
     private $logger;
@@ -70,7 +70,7 @@ class SwordExceptionListener
 
     /**
      * Set the Twig Engine for templating and output.
-     * 
+     *
      * @param TwigEngine $templating
      */
     public function setTemplating(TwigEngine $templating)
@@ -80,7 +80,7 @@ class SwordExceptionListener
 
     /**
      * Set the request stack, so it may be interrogated later.
-     * 
+     *
      * @param RequestStack $requestStack
      */
     public function setRequestStack(RequestStack $requestStack)

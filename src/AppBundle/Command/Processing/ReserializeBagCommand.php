@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ class ReserializeBagCommand extends AbstractProcessingCmd
 
     /**
      * Add the metadata from the database to the bag-info.txt file.
-     * 
+     *
      * @param BagIt   $bag
      * @param Deposit $deposit
      */

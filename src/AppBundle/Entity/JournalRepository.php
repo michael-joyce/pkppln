@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -79,7 +79,7 @@ class JournalRepository extends EntityRepository
 
     /**
      * Summarize the journal statuses, counting them by status.
-     * 
+     *
      * @return array
      */
     public function statusSummary()
@@ -94,7 +94,7 @@ class JournalRepository extends EntityRepository
 
     /**
      * Find journals that haven't contacted the PLN in $days.
-     * 
+     *
      * @param int $days
      *
      * @return Collection|Journal[]
@@ -113,7 +113,7 @@ class JournalRepository extends EntityRepository
     /**
      * Find journals that have gone silent and that notifications have been sent
      * for, but they have not been updated yet.
-     * 
+     *
      * @param int $days
      *
      * @return Collection|Journal[]
@@ -130,8 +130,8 @@ class JournalRepository extends EntityRepository
 
     /**
      * @todo This method should be called findRecent(). It does not find
-     * journals with status=new.
-     * 
+     * journals with status=new
+     *
      * @param type $limit
      *
      * @return Collection|Journal[]

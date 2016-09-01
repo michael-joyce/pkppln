@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ class JournalController extends Controller
      * @Route("/", name="journal")
      * @Method("GET")
      * @Template()
-     * 
+     *
      * @param Request $request
      *
      * @return array
@@ -80,14 +80,14 @@ class JournalController extends Controller
     }
 
     /**
-     * Search journals. 
-     * 
+     * Search journals.
+     *
      * In the JournalController, this action must appear before showAction().
-     * 
+     *
      * @Route("/search", name="journal_search")
      * @Method("GET")
      * @Template()
-     * 
+     *
      * @param Request $request
      *
      * @return array
@@ -125,7 +125,7 @@ class JournalController extends Controller
      * @Route("/{id}", name="journal_show")
      * @Method("GET")
      * @Template()
-     * 
+     *
      * @param string $id
      *
      * @return array
@@ -147,7 +147,7 @@ class JournalController extends Controller
 
     /**
      * Build and return a form to delete a journal.
-     * 
+     *
      * @param Journal $journal
      *
      * @return Form
@@ -175,10 +175,10 @@ class JournalController extends Controller
      * @Route("/{id}/delete", name="journal_delete")
      * @Method({"GET","DELETE"})
      * @Template()
-     * 
+     *
      * @param Request $request
      * @param string  $id
-     * 
+     *
      * @return array
      */
     public function deleteAction(Request $request, $id)
@@ -201,7 +201,7 @@ class JournalController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid() && $form->get('confirm')->getData()) {
-            //            Once JournalUrls are a thing, uncomment these lines.            
+            //            Once JournalUrls are a thing, uncomment these lines.
 //            foreach($entity->getUrls() as $url) {
 //                $em->remove($url);
 //            }
@@ -230,9 +230,9 @@ class JournalController extends Controller
 
     /**
      * Update a journal status.
-     * 
+     *
      * @Route("/{id}/status", name="journal_status")
-     * 
+     *
      * @param Request $request
      * @param string  $id
      */
@@ -261,7 +261,7 @@ class JournalController extends Controller
      * @Route("/ping/{id}", name="journal_ping")
      * @Method("GET")
      * @Template()
-     * 
+     *
      * @param string $id
      *
      * @return array
@@ -308,10 +308,10 @@ class JournalController extends Controller
      * @Route("/{id}/deposits", name="journal_deposits")
      * @Method("GET")
      * @Template()
-     * 
+     *
      * @param Request $request
      * @param string  $id
-     * 
+     *
      * @return array
      */
     public function showDepositsAction(Request $request, $id)

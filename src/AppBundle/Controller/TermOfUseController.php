@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ class TermOfUseController extends Controller
 {
     /**
      * Lists all TermOfUse entities.
-     * 
+     *
      * @param Request $request
      *
      * @Route("/", name="termofuse")
@@ -60,11 +60,11 @@ class TermOfUseController extends Controller
 
     /**
      * Sort the terms of use.
-     * 
+     *
      * @Route("/sort", name="termofuse_sort")
      * @Method({"GET", "POST"})
      * @Template()
-     * 
+     *
      * @param Request $request
      */
     public function sortAction(Request $request)
@@ -180,7 +180,7 @@ class TermOfUseController extends Controller
 
     /**
      * Show the edit history of a term.
-     * 
+     *
      * @param string $id
      *
      * @Route("/{id}/history", name="termofuse_history")

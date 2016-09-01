@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ class UserRepository extends EntityRepository
 {
     /**
      * Find the users that should be notified about a journal going dark.
-     * 
+     *
      * @return User[]
      */
     public function findUserToNotify()

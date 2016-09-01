@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Send a fully processed deposit to LOCKSSOMatic.
- * 
+ *
  * @see SwordClient
  */
 class DepositCommand extends AbstractProcessingCmd

@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -96,10 +96,10 @@ class PingWhitelistCommand extends ContainerAwareCommand
         $router = $this->getContainer()->get('router');
         $bwlist = $this->getContainer()->get('blackwhitelist');
         $ping = $this->getContainer()->get('ping');
-		$ping->setLogger($this->logger);
-		
+        $ping->setLogger($this->logger);
+
         /*
-         * @var Journal[] 
+         * @var Journal[]
          */
         $journals = $em->getRepository('AppBundle:Journal')->findAll();
         $minVersion = $input->getArgument('minVersion');
@@ -121,7 +121,7 @@ class PingWhitelistCommand extends ContainerAwareCommand
                 $this->logger->notice("{$fmt}/{$count} - skipped (previous ping-error) - - {$journal->getUrl()}");
                 continue;
             }
-            
+
             if (!$all && $bwlist->isWhitelisted($uuid)) {
                 $this->logger->notice("{$fmt}/{$count} - skipped (whitelisted) - - {$journal->getUrl()}");
                 continue;

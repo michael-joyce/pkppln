@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ class JournalBuilder
 
     /**
      * Set the service logger.
-     * 
+     *
      * @param Logger $logger
      */
     public function setLogger(Logger $logger)
@@ -59,7 +59,7 @@ class JournalBuilder
 
     /**
      * Set the ORM thing.
-     * 
+     *
      * @param Registry $registry
      */
     public function setManager(Registry $registry)
@@ -68,10 +68,10 @@ class JournalBuilder
     }
 
     /**
-     * Set the router. 
-     * 
+     * Set the router.
+     *
      * @todo why does the journal builder need a router?
-     * 
+     *
      * @param Router $router
      */
     public function setRouter(Router $router)
@@ -81,7 +81,7 @@ class JournalBuilder
 
     /**
      * Fetch a single XML value from a SimpleXMLElement.
-     * 
+     *
      * @param SimpleXMLElement $xml
      * @param string           $xpath
      *
@@ -103,7 +103,7 @@ class JournalBuilder
 
     /**
      * Build and persist a journal from XML.
-     * 
+     *
      * @param SimpleXMLElement $xml
      * @param string           $journal_uuid
      *

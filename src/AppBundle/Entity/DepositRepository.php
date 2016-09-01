@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,9 +28,9 @@ class DepositRepository extends EntityRepository
 {
     /**
      * Find deposits by state.
-     * 
+     *
      * @param string $state
-     * 
+     *
      * @return Collection|Deposit[]
      */
     public function findByState($state)
@@ -42,7 +42,7 @@ class DepositRepository extends EntityRepository
 
     /**
      * Summarize deposits by counting them by state.
-     * 
+     *
      * @return array
      */
     public function stateSummary()
@@ -57,9 +57,9 @@ class DepositRepository extends EntityRepository
 
     /**
      * Search for deposits by UUID or part of a UUID.
-     * 
+     *
      * @param string $q
-     * 
+     *
      * @return Collection|Deposit[]
      */
     public function search($q)
@@ -72,10 +72,10 @@ class DepositRepository extends EntityRepository
     }
 
     /**
-     * Return some recent deposits. 
-     * 
-     * @todo this should be called findRecent.
-     * 
+     * Return some recent deposits.
+     *
+     * @todo this should be called findRecent
+     *
      * @param type $limit
      *
      * @return Collection|Deposit[]

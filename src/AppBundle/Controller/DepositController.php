@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ class DepositController extends Controller
      * @Route("/", name="deposit")
      * @Method("GET")
      * @Template()
-     * 
+     *
      * @param Request $request
      *
      * @return array
@@ -76,11 +76,11 @@ class DepositController extends Controller
 
     /**
      * Search for a deposit.
-     * 
+     *
      * @Route("/search", name="deposit_search")
      * @Method("GET")
      * @Template()
-     * 
+     *
      * @param Request $request
      *
      * @return array
@@ -115,7 +115,7 @@ class DepositController extends Controller
      * @Route("/{id}", name="deposit_show")
      * @Method("GET")
      * @Template()
-     * 
+     *
      * @param string $id
      *
      * @return array

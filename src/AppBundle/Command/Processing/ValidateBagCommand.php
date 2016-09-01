@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 namespace AppBundle\Command\Processing;
 
-// sigh. Something isn't autoloading here. 
+// sigh. Something isn't autoloading here.
 require_once 'vendor/scholarslab/bagit/lib/bagit.php';
 
 use AppBundle\Entity\Deposit;
@@ -65,7 +65,7 @@ class ValidateBagCommand extends AbstractProcessingCmd
             $this->logger->warning("{$extractedPath} is not empty. Removing it.");
             $this->fs->remove($extractedPath);
         }
-        // dirname() is neccessary here - extractTo will create one layer too many 
+        // dirname() is neccessary here - extractTo will create one layer too many
         // directories otherwise.
         if ($zipFile->extractTo(dirname($extractedPath)) === false) {
             throw new Exception("Cannot extract to {$extractedPath} ".$zipFile->getStatusString());

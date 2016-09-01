@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -87,7 +87,7 @@ class HealthCheckCommand extends ContainerAwareCommand
 
     /**
      * Send the notifications.
-     * 
+     *
      * @param int       $days
      * @param User[]    $users
      * @param Journal[] $journals
@@ -114,8 +114,8 @@ class HealthCheckCommand extends ContainerAwareCommand
 
     /**
      * Request a ping from a journal.
-     * 
-     * @todo Use the Ping service.
+     *
+     * @todo Use the Ping service
      *
      * @param Journal $journal
      *

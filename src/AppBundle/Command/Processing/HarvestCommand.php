@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ class HarvestCommand extends AbstractProcessingCmd
 
     /**
      * Set the HTTP client, usually based on Guzzle.
-     * 
+     *
      * @param Client $client
      */
     public function setClient(Client $client)
@@ -55,7 +55,7 @@ class HarvestCommand extends AbstractProcessingCmd
     /**
      * Get a configured client, creating one if one hasn't been set by
      * setClient().
-     * 
+     *
      * @return Client
      */
     public function getClient()
@@ -144,7 +144,7 @@ class HarvestCommand extends AbstractProcessingCmd
     /**
      * Send an HTTP HEAD request to get the deposit's host to get an estimate
      * of the download size.
-     * 
+     *
      * @param type $deposit
      *
      * @throws Exception

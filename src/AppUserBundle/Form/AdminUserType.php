@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ class AdminUserType extends AbstractType
 
     /**
      * Get the name of the form.
-     * 
+     *
      * @return string
      */
     public function getName()

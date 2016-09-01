@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ use Symfony\Component\HttpKernel\Tests\Logger;
 /**
  * Update the checksums for the deposits. This shouldn't be necessary, but
  * was useful during development.
- * 
+ *
  * This isn't particularly useful once a deposit has been sent to LOCKSS, unless
  * the deposit's status is reset to reserialized or something like it.
  */
@@ -84,7 +84,7 @@ class UpdateChecksumsCommand extends ContainerAwareCommand
 
     /**
      * Get the checksum for a harvested deposit file.
-     * 
+     *
      * @param Deposit $deposit
      *
      * @return string

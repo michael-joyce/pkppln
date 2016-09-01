@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * User.
- * 
- * Adds fullname and institution. Overrides functionality to make username 
+ *
+ * Adds fullname and institution. Overrides functionality to make username
  * and email synonymous.
  *
  * @ORM\Table(name="appuser")
@@ -35,7 +35,7 @@ class User extends BaseUser
 {
     /**
      * Database ID.
-     * 
+     *
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
@@ -86,7 +86,7 @@ class User extends BaseUser
 
     /**
      * Set the email and username.
-     * 
+     *
      * @param string $email
      *
      * @return User
@@ -100,7 +100,7 @@ class User extends BaseUser
 
     /**
      * Set the canonical email address.
-     * 
+     *
      * @param string $emailCanonical
      *
      * @return User

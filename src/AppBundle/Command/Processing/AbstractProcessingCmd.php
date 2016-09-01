@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -112,8 +112,8 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand
     }
 
     /**
-     * Preprocess the list of deposits. 
-     * 
+     * Preprocess the list of deposits.
+     *
      * @param Deposit[] $deposits
      */
     protected function preprocessDeposits($deposits = array())
@@ -164,21 +164,23 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand
     }
 
     /**
-     * @param bool $retry retry failed deposits 
-     * @param int[] $depositIds zero or more deposit Ids to filter.
+     * @param bool  $retry      retry failed deposits
+     * @param int[] $depositIds zero or more deposit Ids to filter
+     *
      * @return Deposit[]
      */
     final public function getDeposits($retry = false, $depositIds = array())
     {
         $repo = $this->em->getRepository('AppBundle:Deposit');
         $state = $this->processingState();
-        if($retry) {
+        if ($retry) {
             $state = $this->errorState();
         }
         $query = array('state' => $state);
-        if(count($depositIds) > 0) {
+        if (count($depositIds) > 0) {
             $query['id'] = $depositIds;
         }
+
         return $repo->findBy($query);
     }
 

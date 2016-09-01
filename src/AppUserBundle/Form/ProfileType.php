@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Overrides the ProfileType from FOSUserBundle so admins can 
+ * Overrides the ProfileType from FOSUserBundle so admins can
  * edit profiles.
  */
 class ProfileType extends AbstractType
@@ -55,7 +55,7 @@ class ProfileType extends AbstractType
 
     /**
      * Get the parent form.
-     * 
+     *
      * @return string
      */
     public function getParent()
@@ -65,7 +65,7 @@ class ProfileType extends AbstractType
 
     /**
      * Get the form name.
-     * 
+     *
      * @return string
      */
     public function getName()

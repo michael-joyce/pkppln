@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ class Blacklist
 {
     /**
      * Database ID.
-     * 
+     *
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
@@ -67,7 +67,7 @@ class Blacklist
      * The date the blacklist entry was created.
      *
      * @var string
-     * 
+     *
      * @ORM\Column(type="datetime")
      */
     private $created;
@@ -132,9 +132,9 @@ class Blacklist
 
     /**
      * Set the created timestamp. Called automatically.
-     * 
-     * @todo figure out consistent naming for the timestamping functions.
-     * 
+     *
+     * @todo figure out consistent naming for the timestamping functions
+     *
      * @ORM\PrePersist
      */
     public function setTimestamp()

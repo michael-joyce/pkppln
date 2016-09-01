@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ class WhitelistController extends Controller
      * @Route("/", name="whitelist")
      * @Method("GET")
      * @Template()
-     * 
+     *
      * @param Request $request
      *
      * @return array
@@ -71,7 +71,7 @@ class WhitelistController extends Controller
      * @Route("/", name="whitelist_create")
      * @Method("POST")
      * @Template("AppBundle:Whitelist:new.html.twig")
-     * 
+     *
      * @param Request $request
      *
      * @return array
@@ -122,7 +122,7 @@ class WhitelistController extends Controller
      * @Route("/new", name="whitelist_new")
      * @Method("GET")
      * @Template()
-     * 
+     *
      * @return array
      */
     public function newAction()
@@ -138,11 +138,11 @@ class WhitelistController extends Controller
 
     /**
      * Search for a whitelist entry by uuid, url, or comment.
-     * 
+     *
      * @Route("/search", name="whitelist_search")
      * @Method("GET")
      * @Template()
-     * 
+     *
      * @param Request $request
      *
      * @return array
@@ -180,7 +180,7 @@ class WhitelistController extends Controller
      * @Route("/{id}", name="whitelist_show")
      * @Method("GET")
      * @Template()
-     * 
+     *
      * @param string $id
      *
      * @return array
@@ -214,7 +214,7 @@ class WhitelistController extends Controller
      * @Route("/{id}/edit", name="whitelist_edit")
      * @Method("GET")
      * @Template()
-     * 
+     *
      * @param string $id
      *
      * @return array
@@ -264,10 +264,10 @@ class WhitelistController extends Controller
      * @Route("/{id}", name="whitelist_update")
      * @Method("PUT")
      * @Template("AppBundle:Whitelist:edit.html.twig")
-     * 
+     *
      * @param Request $request
      * @param string  $id
-     * 
+     *
      * @return array
      */
     public function updateAction(Request $request, $id)
@@ -302,10 +302,10 @@ class WhitelistController extends Controller
      * Deletes a Whitelist entity.
      *
      * @Route("/{id}/delete", name="whitelist_delete")
-     * 
+     *
      * @param Request $request
      * @param string  $id
-     * 
+     *
      * @return array
      */
     public function deleteAction(Request $request, $id)

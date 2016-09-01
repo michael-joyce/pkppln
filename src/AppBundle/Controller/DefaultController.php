@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -44,9 +44,9 @@ class DefaultController extends Controller
     /**
      * Home page. There's different content for anonymous users vs logged in
      * users.
-     * 
+     *
      * @Route("/", name="home")
-     * 
+     *
      * @return Response
      */
     public function indexAction()
@@ -70,7 +70,7 @@ class DefaultController extends Controller
 
     /**
      * View one document.
-     * 
+     *
      * @param string $path
      * @Route("/docs/{path}", name="doc_view")
      * @Template()
@@ -108,7 +108,7 @@ class DefaultController extends Controller
 
     /**
      * Return the permission statement for LOCKSS.
-     * 
+     *
      * @Route("/permission", name="lockss_permission")
      *
      * @param Request $request
@@ -127,7 +127,7 @@ class DefaultController extends Controller
 
     /**
      * Fetch a processed and packaged deposit.
-     * 
+     *
      * @Route("/fetch/{journalUuid}/{depositUuid}.zip", name="fetch")
      *
      * @param Request $request
@@ -166,9 +166,9 @@ class DefaultController extends Controller
     /**
      * The ONIX-PH was hosted at /onix.xml which was a dumb thing. Redirect to
      * the proper URL at /feeds/onix.xml.
-     * 
+     *
      * This URI must be public in security.yml
-     * 
+     *
      * @Route("/onix.xml")
      */
     public function onyxRedirect()
@@ -182,12 +182,12 @@ class DefaultController extends Controller
     /**
      * Fetch the current ONYX-PH metadata file and serve it up. The file is big
      * and nasty. It isn't generated on the fly - there must be a cron tab to
-     * generate the file once in a while. 
-     * 
+     * generate the file once in a while.
+     *
      * This URI must be public in security.yml
-     * 
+     *
      * @see http://www.editeur.org/127/ONIX-PH/
-     * 
+     *
      * @param Request $request
      * @Route("/feeds/onix.{_format}", name="onix", requirements={"_format":"xml|csv"})
      */
@@ -199,9 +199,9 @@ class DefaultController extends Controller
             $this->container->get('logger')->critical("The ONIX-PH file could not be found at {$path}");
             throw new NotFoundHttpException('The ONIX-PH file could not be found.');
         }
-        
+
         $contentType = '';
-        switch($_format) {
+        switch ($_format) {
             case 'xml':
                 $contentType = 'text/xml';
                 break;
@@ -209,21 +209,22 @@ class DefaultController extends Controller
                 $contentType = 'text/csv';
                 break;
         }
+
         return new BinaryFileResponse($path, 200, array(
             'Content-Type' => $contentType,
         ));
     }
 
     /**
-     * Someone requested an RSS feed of the Terms of Use. This route generates 
+     * Someone requested an RSS feed of the Terms of Use. This route generates
      * the feed in a RSS, Atom, and a custom JSON format as requested. It might
      * not be used anywhere.
-     * 
+     *
      * This URI must be public in security.yml
-     * 
-     * @Route("/feeds/terms.{_format}", 
-     *      defaults={"_format"="atom"}, 
-     *      name="feed_terms", 
+     *
+     * @Route("/feeds/terms.{_format}",
+     *      defaults={"_format"="atom"},
+     *      name="feed_terms",
      *      requirements={"_format"="json|rss|atom"}
      * )
      * @Template()

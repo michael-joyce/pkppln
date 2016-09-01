@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -35,9 +35,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * SWORD v2 Controller to receive deposits.
- * 
+ *
  * See http://swordapp.org/sword-v2/sword-v2-specifications/
- * 
+ *
  * Set a prefix for all routes in this controller.
  *
  * @Route("/api/sword/2.0")
@@ -116,9 +116,9 @@ class SwordController extends Controller
     }
 
     /**
-     * The journal with UUID $uuid has contacted the PLN. Add a record for the 
+     * The journal with UUID $uuid has contacted the PLN. Add a record for the
      * journal if there isn't one, otherwise update the timestamp.
-     * 
+     *
      * @param string $uuid
      * @param string $url
      *
@@ -159,9 +159,9 @@ class SwordController extends Controller
 
     /**
      * Fetch the terms of use from the database.
-     * 
+     *
      * @todo does this really need to be a function?
-     * 
+     *
      * @return TermOfUse[]
      */
     private function getTermsOfUse()
@@ -176,7 +176,7 @@ class SwordController extends Controller
 
     /**
      * Figure out which message to return for the network status widget in OJS.
-     * 
+     *
      * @param Journal $journal
      *
      * @return string
@@ -199,7 +199,7 @@ class SwordController extends Controller
      *
      * @Route("/sd-iri", name="service_document")
      * @Method("GET")
-     * 
+     *
      * @param Request $request
      *
      * @return Response
@@ -251,10 +251,10 @@ class SwordController extends Controller
      *
      * @Route("/col-iri/{journal_uuid}", name="create_deposit")
      * @Method("POST")
-     * 
+     *
      * @param Request $request
      * @param string  $journal_uuid
-     * 
+     *
      * @return Response
      */
     public function createDepositAction(Request $request, $journal_uuid)
@@ -304,11 +304,11 @@ class SwordController extends Controller
      *
      * @Route("/cont-iri/{journal_uuid}/{deposit_uuid}/state", name="statement")
      * @Method("GET")
-     * 
+     *
      * @param Request $request
      * @param string  $journal_uuid
      * @param string  $deposit_uuid
-     * 
+     *
      * @return Response
      */
     public function statementAction(Request $request, $journal_uuid, $deposit_uuid)
@@ -364,11 +364,11 @@ class SwordController extends Controller
      *
      * @Route("/cont-iri/{journal_uuid}/{deposit_uuid}/edit")
      * @Method("PUT")
-     * 
+     *
      * @param Request $request
      * @param string  $journal_uuid
      * @param string  $deposit_uuid
-     * 
+     *
      * @return Response
      */
     public function editAction(Request $request, $journal_uuid, $deposit_uuid)

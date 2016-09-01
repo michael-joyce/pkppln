@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ use FOS\UserBundle\Model\UserManagerInterface;
 /**
  * Custom user manipulator which adds support for fullname and institution, which
  * are not part of the stock FOSUserBundle.
- * 
+ *
  * http://stackoverflow.com/questions/11595261/override-symfony2-console-commands
  */
 class UserManipulator

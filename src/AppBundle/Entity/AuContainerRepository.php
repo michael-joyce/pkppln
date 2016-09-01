@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ class AuContainerRepository extends EntityRepository
      * Find the open container with the lowest database ID. There should only
      * ever be one open container, but finding the one with lowest database ID
      * guarantees it.
-     * 
+     *
      * @return Collection|AuContainer[]
      */
     public function getOpenContainer()
