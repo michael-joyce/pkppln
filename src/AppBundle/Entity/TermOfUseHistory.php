@@ -1,5 +1,22 @@
 <?php
 
+/*
+ * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 namespace AppBundle\Entity;
 
 use DateTime;
@@ -7,12 +24,12 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * TermOfUseHistory.
- * 
+ *
  * A new TermOfUseHistory object is created every time a Term of Use is created,
  * updated, or deleted. The history object is created by an event listener.
  *
  * @see AppBundle\EventListener\TermsOfUseListener
- * 
+ *
  * @ORM\Table()
  * @ORM\HasLifecycleCallbacks
  * @ORM\Entity(repositoryClass="TermOfUseHistoryRepository")
@@ -21,7 +38,7 @@ class TermOfUseHistory
 {
     /**
      * Database ID.
-     * 
+     *
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
@@ -32,7 +49,7 @@ class TermOfUseHistory
 
     /**
      * A term ID, similar to the OJS translation keys.
-     * 
+     *
      * @var int
      * @ORM\Column(type="integer")
      */
@@ -40,25 +57,25 @@ class TermOfUseHistory
 
     /**
      * @var string
-     * 
+     *
      * @ORM\Column(type="string")
      */
     private $action;
 
     /**
      * The user who added/edited/deleted the term of use.
-     * 
+     *
      * @var string
      * @ORM\Column(type="string")
      */
     private $user;
 
     /**
-     * The date the term was created. Terms are never updated - new ones 
+     * The date the term was created. Terms are never updated - new ones
      * are created as needed.
      *
      * @var string
-     * 
+     *
      * @ORM\Column(type="datetime")
      */
     private $created;
@@ -67,7 +84,7 @@ class TermOfUseHistory
      * The change set, as computed by Doctrine.
      *
      * @var string
-     * 
+     *
      * @ORM\Column(type="array")
      */
     private $changeSet;
@@ -158,7 +175,7 @@ class TermOfUseHistory
 
     /**
      * Automatically sets the created date.
-     * 
+     *
      * @ORM\PrePersist
      */
     public function persistCreated()

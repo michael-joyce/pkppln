@@ -1,5 +1,22 @@
 <?php
 
+/*
+ * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Deposit;
@@ -18,9 +35,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * SWORD v2 Controller to receive deposits.
- * 
+ *
  * See http://swordapp.org/sword-v2/sword-v2-specifications/
- * 
+ *
  * Set a prefix for all routes in this controller.
  *
  * @Route("/api/sword/2.0")
@@ -99,9 +116,9 @@ class SwordController extends Controller
     }
 
     /**
-     * The journal with UUID $uuid has contacted the PLN. Add a record for the 
+     * The journal with UUID $uuid has contacted the PLN. Add a record for the
      * journal if there isn't one, otherwise update the timestamp.
-     * 
+     *
      * @param string $uuid
      * @param string $url
      *
@@ -142,9 +159,9 @@ class SwordController extends Controller
 
     /**
      * Fetch the terms of use from the database.
-     * 
+     *
      * @todo does this really need to be a function?
-     * 
+     *
      * @return TermOfUse[]
      */
     private function getTermsOfUse()
@@ -159,7 +176,7 @@ class SwordController extends Controller
 
     /**
      * Figure out which message to return for the network status widget in OJS.
-     * 
+     *
      * @param Journal $journal
      *
      * @return string
@@ -182,7 +199,7 @@ class SwordController extends Controller
      *
      * @Route("/sd-iri", name="service_document")
      * @Method("GET")
-     * 
+     *
      * @param Request $request
      *
      * @return Response
@@ -234,10 +251,10 @@ class SwordController extends Controller
      *
      * @Route("/col-iri/{journal_uuid}", name="create_deposit")
      * @Method("POST")
-     * 
+     *
      * @param Request $request
      * @param string  $journal_uuid
-     * 
+     *
      * @return Response
      */
     public function createDepositAction(Request $request, $journal_uuid)
@@ -287,11 +304,11 @@ class SwordController extends Controller
      *
      * @Route("/cont-iri/{journal_uuid}/{deposit_uuid}/state", name="statement")
      * @Method("GET")
-     * 
+     *
      * @param Request $request
      * @param string  $journal_uuid
      * @param string  $deposit_uuid
-     * 
+     *
      * @return Response
      */
     public function statementAction(Request $request, $journal_uuid, $deposit_uuid)
@@ -347,11 +364,11 @@ class SwordController extends Controller
      *
      * @Route("/cont-iri/{journal_uuid}/{deposit_uuid}/edit")
      * @Method("PUT")
-     * 
+     *
      * @param Request $request
      * @param string  $journal_uuid
      * @param string  $deposit_uuid
-     * 
+     *
      * @return Response
      */
     public function editAction(Request $request, $journal_uuid, $deposit_uuid)

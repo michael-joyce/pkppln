@@ -1,5 +1,22 @@
 <?php
 
+/*
+ * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 namespace AppBundle\Command\Shell;
 
 use AppBundle\Entity\Journal;
@@ -70,7 +87,7 @@ class HealthCheckCommand extends ContainerAwareCommand
 
     /**
      * Send the notifications.
-     * 
+     *
      * @param int       $days
      * @param User[]    $users
      * @param Journal[] $journals
@@ -97,8 +114,8 @@ class HealthCheckCommand extends ContainerAwareCommand
 
     /**
      * Request a ping from a journal.
-     * 
-     * @todo Use the Ping service.
+     *
+     * @todo Use the Ping service
      *
      * @param Journal $journal
      *

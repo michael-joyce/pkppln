@@ -1,5 +1,22 @@
 <?php
 
+/*
+ * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 namespace AppUserBundle\Controller;
 
 use AppUserBundle\Entity\User;
@@ -24,7 +41,7 @@ class AdminUserController extends Controller
      * @Route("/", name="user")
      * @Method("GET")
      * @Template()
-     * 
+     *
      * @return array
      */
     public function indexAction()
@@ -43,7 +60,7 @@ class AdminUserController extends Controller
      * @Route("/", name="user_create")
      * @Method("POST")
      * @Template("AppUserBundle:User:new.html.twig")
-     * 
+     *
      * @param Request $request
      *
      * @return array
@@ -96,7 +113,7 @@ class AdminUserController extends Controller
      * @Route("/new", name="user_new")
      * @Method("GET")
      * @Template()
-     * 
+     *
      * @return array
      */
     public function newAction()
@@ -117,7 +134,7 @@ class AdminUserController extends Controller
      * @Route("/{id}", name="user_show")
      * @Method("GET")
      * @Template()
-     * 
+     *
      * @param string $id
      *
      * @return array
@@ -146,7 +163,7 @@ class AdminUserController extends Controller
      * @Route("/{id}/edit", name="user_edit")
      * @Method("GET")
      * @Template()
-     * 
+     *
      * @param string $id
      *
      * @return array
@@ -196,7 +213,7 @@ class AdminUserController extends Controller
      * @Route("/{id}", name="user_update")
      * @Method("PUT")
      * @Template("AppUserBundle:User:edit.html.twig")
-     * 
+     *
      * @param Request $request
      * @param string  $id
      *
@@ -234,7 +251,7 @@ class AdminUserController extends Controller
      * Deletes a User entity.
      *
      * @Route("/{id}/delete", name="user_delete")
-     * 
+     *
      * @param string $id
      *
      * @return array
@@ -274,11 +291,11 @@ class AdminUserController extends Controller
 
     /**
      * Change a user's password.
-     * 
+     *
      * @Route("/{id}/password", name="admin_user_password")
      * @Method({"GET", "POST"})
      * @Template()
-     * 
+     *
      * @param Request $request
      * @param int     $id
      *

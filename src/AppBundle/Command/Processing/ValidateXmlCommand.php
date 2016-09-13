@@ -1,5 +1,22 @@
 <?php
 
+/*
+ * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 namespace AppBundle\Command\Processing;
 
 require_once 'vendor/scholarslab/bagit/lib/bagit.php';
@@ -43,16 +60,16 @@ class ValidateXmlCommand extends AbstractProcessingCmd
     /**
      * Load the XML document into a DOM and return it. Errors are appended to
      * the $report parameter.
-     * 
+     *
      * For reasons beyond anyone's apparent control, the export may contain
      * invalid UTF-8 characters. If the file cannot be parsed as XML, the
      * function will attempt to filter out invalid UTF-8 characters and then
      * try to load the XML again.
-     * 
+     *
      * Other errors in the XML, beyond the bad UTF-8, will not be tolerated.
-     * 
+     *
      * @return DOMDocument
-     * 
+     *
      * @param Deposit $deposit
      * @param string  $filename
      * @param string  $report

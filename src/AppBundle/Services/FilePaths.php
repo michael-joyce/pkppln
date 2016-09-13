@@ -1,5 +1,22 @@
 <?php
 
+/*
+ * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 namespace AppBundle\Services;
 
 use AppBundle\Entity\Deposit;
@@ -48,7 +65,7 @@ class FilePaths
 
     /**
      * Set the service logger.
-     * 
+     *
      * @param Logger $logger
      */
     public function setLogger(Logger $logger)
@@ -58,7 +75,7 @@ class FilePaths
 
     /**
      * Set the kernel environment.
-     * 
+     *
      * @param string $env
      */
     public function setKernelEnv($env)
@@ -73,7 +90,7 @@ class FilePaths
 
     /**
      * Set the file system base directory.
-     * 
+     *
      * @param type $dir
      */
     public function setBaseDir($dir)
@@ -87,7 +104,7 @@ class FilePaths
 
     /**
      * Get the root dir, based on the baseDir.
-     * 
+     *
      * @return string
      */
     public function rootPath($mkdir = true)
@@ -106,7 +123,7 @@ class FilePaths
 
     /**
      * Get an absolute path to a processing directory for the journal.
-     * 
+     *
      * @param string  $dirname
      * @param Journal $journal
      *
@@ -127,13 +144,15 @@ class FilePaths
 
         return realpath($path);
     }
-    
-    public function getRestoreDir(Journal $journal) {
+
+    public function getRestoreDir(Journal $journal)
+    {
         $path = $this->absolutePath('restore', $journal);
-        if( ! $this->fs->exists($path)) {
+        if (!$this->fs->exists($path)) {
             $this->logger->notice("Creating directory {$path}");
             $this->fs->mkdir($path);
         }
+
         return $path;
     }
 
@@ -159,7 +178,7 @@ class FilePaths
 
     /**
      * Get the path to a harvested deposit.
-     * 
+     *
      * @param Deposit $deposit
      *
      * @return type
@@ -191,7 +210,7 @@ class FilePaths
 
     /**
      * Get the path to a deposit bag being processed.
-     * 
+     *
      * @param Deposit $deposit
      *
      * @return type
@@ -223,7 +242,7 @@ class FilePaths
 
     /**
      * Get the path to a processed, staged, bag.
-     * 
+     *
      * @param Deposit $deposit
      *
      * @return type
@@ -237,13 +256,13 @@ class FilePaths
 
     /**
      * Get the path to the onix feed file.
-     * 
+     *
      * @param string $_format
-     * 
+     *
      * @return string
      */
     public function getOnixPath($_format = 'xml')
     {
-        return $this->rootPath().'/onix.' . $_format;
+        return $this->rootPath().'/onix.'.$_format;
     }
 }

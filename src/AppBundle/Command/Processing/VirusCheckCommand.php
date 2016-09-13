@@ -1,5 +1,22 @@
 <?php
 
+/*
+ * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 namespace AppBundle\Command\Processing;
 
 require_once 'vendor/scholarslab/bagit/lib/bagit.php';
@@ -17,7 +34,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Run a clamAV virus check on a deposit. Checks all the files in a deposit
- * as well as all the embedded files, which are extracted and processed on 
+ * as well as all the embedded files, which are extracted and processed on
  * their own.
  */
 class VirusCheckCommand extends AbstractProcessingCmd
@@ -61,10 +78,10 @@ class VirusCheckCommand extends AbstractProcessingCmd
 
     /**
      * Scan a file path for viruses. Logs any that are found.
-     * 
+     *
      * @param type $path
      *
-     * @return true if the scan was clean.
+     * @return true if the scan was clean
      */
     private function scan($path)
     {
@@ -79,9 +96,9 @@ class VirusCheckCommand extends AbstractProcessingCmd
     }
 
     /**
-     * Load the XML from a file and return a DOM. Errors are appended to 
+     * Load the XML from a file and return a DOM. Errors are appended to
      * the $report string.
-     * 
+     *
      * @return DOMDocument
      *
      * @param Deposit $deposit
@@ -147,7 +164,7 @@ class VirusCheckCommand extends AbstractProcessingCmd
             $chunkSize = 1024 * 1024; // 1MB chunks.
             $length = $xp->evaluate('string-length(./text())', $embedded);
             $offset = 1; // xpath string offsets start at 1, not zero.
-            // Stream the embedded content out of the file. It could be any 
+            // Stream the embedded content out of the file. It could be any
             // size, and may not fit in memory.
             while ($offset < $length) {
                 $end = $offset + $chunkSize;

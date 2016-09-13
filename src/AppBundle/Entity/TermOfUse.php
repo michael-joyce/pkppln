@@ -1,5 +1,22 @@
 <?php
 
+/*
+ * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 namespace AppBundle\Entity;
 
 use DateTime;
@@ -18,7 +35,7 @@ class TermOfUse
 {
     /**
      * Database ID.
-     * 
+     *
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
@@ -31,25 +48,25 @@ class TermOfUse
      * The "weight" of the term. Heavier terms are sorted lower.
      *
      * @var int
-     * 
+     *
      * @ORM\Column(type="integer")
      */
     private $weight;
 
     /**
-     * The date the term was created. 
-     * 
+     * The date the term was created.
+     *
      * @var string
-     * 
+     *
      * @ORM\Column(type="datetime")
      */
     private $created;
 
     /**
-     * The date the term was updated. 
+     * The date the term was updated.
      *
      * @var string
-     * 
+     *
      * @ORM\Column(type="datetime")
      */
     private $updated;
@@ -59,7 +76,7 @@ class TermOfUse
      * of a term.
      *
      * @var string
-     * 
+     *
      * @ORM\Column(type="string")
      */
     private $keyCode;
@@ -68,7 +85,7 @@ class TermOfUse
      * ISO language code.
      *
      * @var string
-     * 
+     *
      * @ORM\Column(type="string")
      */
     private $langCode;
@@ -77,7 +94,7 @@ class TermOfUse
      * The content of the term, in the language in $langCode.
      *
      * @var string
-     * 
+     *
      * @ORM\Column(type="text")
      */
     private $content;
@@ -201,7 +218,7 @@ class TermOfUse
     /**
      * Called automatically before the database entry is updated or created to
      * set the timestamps.
-     * 
+     *
      * @ORM\PrePersist
      */
     public function setCreatedTimestamp()
@@ -213,7 +230,7 @@ class TermOfUse
     /**
      * Called automatically before the database entry is updated or created to
      * set the timestamps.
-     * 
+     *
      * @ORM\PreUpdate
      */
     public function setUpdatedTimestamp()

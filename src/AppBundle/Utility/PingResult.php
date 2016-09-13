@@ -1,5 +1,22 @@
 <?php
 
+/*
+ * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 namespace AppBundle\Utility;
 
 use Exception;
@@ -41,7 +58,7 @@ class PingResult
 
     /**
      * Construct a Ping response from an HTTP response.
-     * 
+     *
      * @param Response $response
      */
     public function __construct(Response $response)
@@ -62,7 +79,7 @@ class PingResult
 
     /**
      * Get the body of a ping response, optionally stripping out tags.
-     * 
+     *
      * @param type $stripTags
      *
      * @return type
@@ -78,10 +95,10 @@ class PingResult
 
     /**
      * Get an XML value.
-     * 
-     * @param string $q XPath query.
      *
-     * @return string|null.
+     * @param string $q XPath query
+     *
+     * @return string|null
      */
     private function simpleQuery($q)
     {
@@ -98,7 +115,7 @@ class PingResult
 
     /**
      * Return true if the response contained valid XML.
-     * 
+     *
      * @return bool
      */
     public function hasXml()
@@ -116,7 +133,7 @@ class PingResult
 
     /**
      * Fetch a named header.
-     * 
+     *
      * @param string $name
      *
      * @return string|null
@@ -128,7 +145,7 @@ class PingResult
 
     /**
      * Return true if the response was an error.
-     * 
+     *
      * @return bool
      */
     public function hasError()
@@ -138,7 +155,7 @@ class PingResult
 
     /**
      * Return the HTTP status code.
-     * 
+     *
      * @return int
      */
     public function getHttpStatus()
@@ -148,7 +165,7 @@ class PingResult
 
     /**
      * Return the HTTP error if there was one.
-     * 
+     *
      * @return string|null
      */
     public function getError()
@@ -158,7 +175,7 @@ class PingResult
 
     /**
      * Get the OJS release version.
-     * 
+     *
      * @return string
      */
     public function getOjsRelease()
@@ -168,7 +185,7 @@ class PingResult
 
     /**
      * Get the plugin release version.
-     * 
+     *
      * @return string
      */
     public function getPluginReleaseVersion()
@@ -178,7 +195,7 @@ class PingResult
 
     /**
      * Get the release date for the plugin as a string.
-     * 
+     *
      * @return string
      */
     public function getPluginReleaseDate()
@@ -188,7 +205,7 @@ class PingResult
 
     /**
      * Return 'Yes' if the plugin reports itself as current.
-     * 
+     *
      * @return string
      */
     public function isPluginCurrent()
@@ -202,7 +219,7 @@ class PingResult
 
     /**
      * Return 'Yes' if the plugin reports the terms are accepted.
-     * 
+     *
      * @return string
      */
     public function areTermsAccepted()
@@ -212,7 +229,7 @@ class PingResult
 
     /**
      * Return the journal title.
-     * 
+     *
      * @return string
      */
     public function getJournalTitle($default = null)
@@ -227,7 +244,7 @@ class PingResult
 
     /**
      * Return the article count.
-     * 
+     *
      * @return int
      */
     public function getArticleCount()
@@ -237,7 +254,7 @@ class PingResult
 
     /**
      * Return a list of the article titles in the ping.
-     * 
+     *
      * @return array
      */
     public function getArticleTitles()

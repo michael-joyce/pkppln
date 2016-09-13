@@ -1,5 +1,22 @@
 <?php
 
+/*
+ * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\TermOfUse;
@@ -24,7 +41,7 @@ class TermOfUseController extends Controller
 {
     /**
      * Lists all TermOfUse entities.
-     * 
+     *
      * @param Request $request
      *
      * @Route("/", name="termofuse")
@@ -43,11 +60,11 @@ class TermOfUseController extends Controller
 
     /**
      * Sort the terms of use.
-     * 
+     *
      * @Route("/sort", name="termofuse_sort")
      * @Method({"GET", "POST"})
      * @Template()
-     * 
+     *
      * @param Request $request
      */
     public function sortAction(Request $request)
@@ -163,7 +180,7 @@ class TermOfUseController extends Controller
 
     /**
      * Show the edit history of a term.
-     * 
+     *
      * @param string $id
      *
      * @Route("/{id}/history", name="termofuse_history")

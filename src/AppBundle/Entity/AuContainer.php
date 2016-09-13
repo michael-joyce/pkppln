@@ -1,5 +1,22 @@
 <?php
 
+/*
+ * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -7,7 +24,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * AuContainer organizes the deposits by size to abstract the responsibility 
+ * AuContainer organizes the deposits by size to abstract the responsibility
  * away from LOCKSSOMatic.
  *
  * @ORM\Table()
@@ -18,7 +35,7 @@ class AuContainer
 {
     /**
      * Database ID.
-     * 
+     *
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
@@ -37,7 +54,7 @@ class AuContainer
 
     /**
      * True if the container can accept more deposits.
-     * 
+     *
      * @var bool
      * @ORM\Column(type="boolean")
      */
@@ -99,7 +116,7 @@ class AuContainer
     /**
      * Set open. An open container can be made closed, but a closed container
      * cannot be reopened.
-     * 
+     *
      * @param type $open
      *
      * @return AuContainer
@@ -116,7 +133,7 @@ class AuContainer
 
     /**
      * Get open.
-     * 
+     *
      * @return bool
      */
     public function isOpen()
@@ -126,7 +143,7 @@ class AuContainer
 
     /**
      * Get the size of the container in bytes.
-     * 
+     *
      * @return int
      */
     public function getSize()
@@ -141,7 +158,7 @@ class AuContainer
 
     /**
      * Count the deposits in the container.
-     * 
+     *
      * @return int
      */
     public function countDeposits()

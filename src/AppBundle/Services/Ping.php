@@ -1,5 +1,22 @@
 <?php
 
+/*
+ * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 namespace AppBundle\Services;
 
 use AppBundle\Entity\Journal;
@@ -35,7 +52,7 @@ class Ping
 
     /**
      * Set the ORM thing.
-     * 
+     *
      * @param Registry $registry
      */
     public function setManager(Registry $registry)
@@ -45,7 +62,7 @@ class Ping
 
     /**
      * Set the service logger.
-     * 
+     *
      * @param Logger $logger
      */
     public function setLogger(Logger $logger)
@@ -55,7 +72,7 @@ class Ping
 
     /**
      * Set the HTTP client.
-     * 
+     *
      * @param Client $client
      */
     public function setClient(Client $client)
@@ -77,7 +94,7 @@ class Ping
 
     /**
      * Ping a journal, check on it's health, etc.
-     * 
+     *
      * @param Journal $journal
      *
      * @return PingResult

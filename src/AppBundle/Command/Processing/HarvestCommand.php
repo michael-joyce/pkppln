@@ -1,5 +1,22 @@
 <?php
 
+/*
+ * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 namespace AppBundle\Command\Processing;
 
 use AppBundle\Entity\Deposit;
@@ -27,7 +44,7 @@ class HarvestCommand extends AbstractProcessingCmd
 
     /**
      * Set the HTTP client, usually based on Guzzle.
-     * 
+     *
      * @param Client $client
      */
     public function setClient(Client $client)
@@ -38,7 +55,7 @@ class HarvestCommand extends AbstractProcessingCmd
     /**
      * Get a configured client, creating one if one hasn't been set by
      * setClient().
-     * 
+     *
      * @return Client
      */
     public function getClient()
@@ -127,7 +144,7 @@ class HarvestCommand extends AbstractProcessingCmd
     /**
      * Send an HTTP HEAD request to get the deposit's host to get an estimate
      * of the download size.
-     * 
+     *
      * @param type $deposit
      *
      * @throws Exception

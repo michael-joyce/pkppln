@@ -1,5 +1,22 @@
 <?php
 
+/*
+ * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 namespace AppBundle\Entity;
 
 use DateTime;
@@ -62,7 +79,7 @@ class JournalRepository extends EntityRepository
 
     /**
      * Summarize the journal statuses, counting them by status.
-     * 
+     *
      * @return array
      */
     public function statusSummary()
@@ -77,7 +94,7 @@ class JournalRepository extends EntityRepository
 
     /**
      * Find journals that haven't contacted the PLN in $days.
-     * 
+     *
      * @param int $days
      *
      * @return Collection|Journal[]
@@ -96,7 +113,7 @@ class JournalRepository extends EntityRepository
     /**
      * Find journals that have gone silent and that notifications have been sent
      * for, but they have not been updated yet.
-     * 
+     *
      * @param int $days
      *
      * @return Collection|Journal[]
@@ -113,8 +130,8 @@ class JournalRepository extends EntityRepository
 
     /**
      * @todo This method should be called findRecent(). It does not find
-     * journals with status=new.
-     * 
+     * journals with status=new
+     *
      * @param type $limit
      *
      * @return Collection|Journal[]

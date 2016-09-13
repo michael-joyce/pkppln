@@ -1,5 +1,22 @@
 <?php
 
+/*
+ * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 namespace AppUserBundle\Entity;
 
 use FOS\UserBundle\Model\User as BaseUser;
@@ -7,8 +24,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * User.
- * 
- * Adds fullname and institution. Overrides functionality to make username 
+ *
+ * Adds fullname and institution. Overrides functionality to make username
  * and email synonymous.
  *
  * @ORM\Table(name="appuser")
@@ -18,7 +35,7 @@ class User extends BaseUser
 {
     /**
      * Database ID.
-     * 
+     *
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
@@ -69,7 +86,7 @@ class User extends BaseUser
 
     /**
      * Set the email and username.
-     * 
+     *
      * @param string $email
      *
      * @return User
@@ -83,7 +100,7 @@ class User extends BaseUser
 
     /**
      * Set the canonical email address.
-     * 
+     *
      * @param string $emailCanonical
      *
      * @return User

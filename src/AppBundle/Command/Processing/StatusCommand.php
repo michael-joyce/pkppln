@@ -1,5 +1,22 @@
 <?php
 
+/*
+ * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 namespace AppBundle\Command\Processing;
 
 use AppBundle\Entity\Deposit;
@@ -11,7 +28,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Check the status of deposits in LOCKSSOMatic.
- * 
+ *
  * @see SwordClient
  */
 class StatusCommand extends AbstractProcessingCmd
@@ -56,7 +73,7 @@ class StatusCommand extends AbstractProcessingCmd
     }
 
     /**
-     * Remove a directory and its contents recursively. Use with caution. 
+     * Remove a directory and its contents recursively. Use with caution.
      */
     private function delTree($path)
     {
@@ -74,7 +91,7 @@ class StatusCommand extends AbstractProcessingCmd
 
     /**
      * Process one deposit. Fetch the data and write it to the file system.
-     * Updates the deposit status, and may remove the processing files if 
+     * Updates the deposit status, and may remove the processing files if
      * LOCKSSOatic reports agreement.
      *
      * @param Deposit $deposit
@@ -86,7 +103,7 @@ class StatusCommand extends AbstractProcessingCmd
         $this->logger->notice("Checking deposit {$deposit->getDepositUuid()}");
         $statement = $this->client->statement($deposit);
         $status = (string) $statement->xpath('//atom:category[@scheme="http://purl.org/net/sword/terms/state"]/@term')[0];
-        $this->logger->notice("Deposit is " . $status);
+        $this->logger->notice('Deposit is '.$status);
         $deposit->setPlnState($status);
         if ($status === 'agreement' && $this->cleanup) {
             $this->logger->notice("Deposit complete. Removing processing files for deposit {$deposit->getId()}.");
@@ -94,7 +111,8 @@ class StatusCommand extends AbstractProcessingCmd
             $this->deltree($this->filePaths->getProcessingBagPath($deposit));
             unlink($this->filePaths->getStagingBagPath($deposit));
         }
-		return $status === 'agreement';
+
+        return $status === 'agreement';
     }
 
     /**

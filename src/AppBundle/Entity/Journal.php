@@ -1,5 +1,22 @@
 <?php
 
+/*
+ * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 namespace AppBundle\Entity;
 
 use DateTime;
@@ -22,7 +39,7 @@ class Journal
 {
     /**
      * List of states where a deposit has been sent to LOCKSSOMatic.
-     * 
+     *
      * This should be a constant array, but those aren't supported in PHP 5.4.
      *
      * @var array
@@ -36,14 +53,14 @@ class Journal
     /**
      * The URL suffix for the ping gateway, appened to the Journal's URL for the
      * ping.
-     * 
-     * @todo remove this, and use the gateway url reported in deposits.
+     *
+     * @todo remove this, and use the gateway url reported in deposits
      */
     const GATEWAY_URL_SUFFIX = '/gateway/plugin/PLNGatewayPlugin';
 
     /**
      * Database ID.
-     * 
+     *
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
@@ -104,14 +121,14 @@ class Journal
      * The journal's URL.
      *
      * @var string
-     * 
+     *
      * @Assert\Url
      * @ORM\Column(type="string", nullable=false)
      */
     private $url;
 
     /**
-     * The status of the journal's health. One of new, healthy, unhealthy, 
+     * The status of the journal's health. One of new, healthy, unhealthy,
      * triggered, or abandoned.
      *
      * @var string
@@ -120,7 +137,7 @@ class Journal
     private $status = 'healthy';
 
     /**
-     * True if a ping reports that the journal manager has accepts the terms of 
+     * True if a ping reports that the journal manager has accepts the terms of
      * use.
      *
      * @var bool
@@ -332,7 +349,7 @@ class Journal
 
     /**
      * Get the plugin's Gateway URL to ping the journal.
-     * 
+     *
      * @return type
      */
     public function getGatewayUrl()
@@ -439,7 +456,7 @@ class Journal
     /**
      * Called automatically when the journal is updated, to set the contacted
      * timestamp.
-     * 
+     *
      * @ORM\PrePersist
      */
     public function setTimestamp()
@@ -483,7 +500,7 @@ class Journal
 
     /**
      * Get the deposits which have been sent to LOCKSSOMatic.
-     * 
+     *
      * @return ArrayCollection|Deposit[]
      */
     public function getCompletedDeposits()
@@ -498,10 +515,10 @@ class Journal
     /**
      * Get the deposits which have been set to LOCKSSOMatic, but which may not have
      * achieved agreement yet.
-     * 
+     *
      * Deposits returned will be in state deposited, complete, or status-error. Those
      * have all been sent to lockss.
-     * 
+     *
      * @return ArrayCollection|Deposit[]
      */
     public function getSentDeposits()

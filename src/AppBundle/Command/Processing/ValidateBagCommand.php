@@ -1,8 +1,25 @@
 <?php
 
+/*
+ * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 namespace AppBundle\Command\Processing;
 
-// sigh. Something isn't autoloading here. 
+// sigh. Something isn't autoloading here.
 require_once 'vendor/scholarslab/bagit/lib/bagit.php';
 
 use AppBundle\Entity\Deposit;
@@ -48,7 +65,7 @@ class ValidateBagCommand extends AbstractProcessingCmd
             $this->logger->warning("{$extractedPath} is not empty. Removing it.");
             $this->fs->remove($extractedPath);
         }
-        // dirname() is neccessary here - extractTo will create one layer too many 
+        // dirname() is neccessary here - extractTo will create one layer too many
         // directories otherwise.
         if ($zipFile->extractTo(dirname($extractedPath)) === false) {
             throw new Exception("Cannot extract to {$extractedPath} ".$zipFile->getStatusString());
