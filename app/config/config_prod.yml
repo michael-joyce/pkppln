@@ -17,11 +17,11 @@ monolog:
     handlers:
         main:
             type:         rotating_file
-            action_level: error
+            level: error
             handler:      nested
         nested:
             type:  rotating_file
             path:  "%kernel.logs_dir%/%kernel.environment%.log"
-            level: debug
+            level: error
         console:
             type:  console

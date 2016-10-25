@@ -88,7 +88,10 @@ class CleanupCommand extends ContainerAwareCommand
                 }
             }
         }
-        rmdir($path);
+        $this->logger->info("d: {$file->getRealPath()}");
+        if($force === true) {
+          rmdir($path);
+        }
     }
 
     /**
@@ -106,10 +109,10 @@ class CleanupCommand extends ContainerAwareCommand
             $this->logger->notice($deposit->getDepositUuid());
             $this->delFileTree($this->filePaths->getHarvestFile($deposit), $force);
             $this->delFileTree($this->filePaths->getProcessingBagPath($deposit), $force);
-            $this->delFileTree($this->filePaths->getStagingBagPath($deposit), $force);
+            // $this->delFileTree($this->filePaths->getStagingBagPath($deposit), $force);
         }
     }
-    
+
     /**
      * Execute the command. Get all the deposits needing to be harvested. Each
      * deposit will be passed to the commands processDeposit() function.
@@ -120,11 +123,20 @@ class CleanupCommand extends ContainerAwareCommand
     final protected function execute(InputInterface $input, OutputInterface $output)
     {
         $force = $input->getOption('force');
-        $repo = $this->em->getRepository('AppBundle:Deposit');
-        $deposits = $repo->findAll();
+        $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
+        $q = $this->em->createQuery('SELECT d FROM AppBundle\Entity\Deposit d where d.plnState = :state');
+        $q->setParameter('state', 'agreement');
+        $iterator = $q->iterate();
 
-        foreach ($deposits as $deposit) {
+        $i = 0;
+        foreach ($iterator as $row) {
+            $deposit = $row[0];
             $this->processDeposit($deposit, $force);
+            $i++;
+            if(($i % 50) === 0) {
+                $this->em->clear();
+                gc_collect_cycles();
+            }
         }
     }
 
