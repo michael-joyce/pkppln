@@ -14,8 +14,7 @@ $iterator = Finder::create()
     ->in(__DIR__ . '/src');
 
 return new Sami($iterator, array(
-    'title' => 'PKP PLN Staging Server API',
+    'title' => 'CEWW API',
     'build_dir' => __DIR__ . '/docs/api',
-    'cache_dir' => __DIR__ . '/app/cache/sami',
-    'remote_repository' => new GitHubRemoteRepository('ubermichael/pkppln-php', __DIR__),    
+    'cache_dir' => __DIR__ . '/var/cache/sami',
 ));
