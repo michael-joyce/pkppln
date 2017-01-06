@@ -35,7 +35,7 @@ class HarvestCommand extends AbstractProcessingCmd
      * File sizes reported via HTTP HEAD must this close to to the file size
      * as reported in the deposit. Threshold = 0.02 is 2%.
      */
-    const FILE_SIZE_THRESHOLD = 0.02;
+    const FILE_SIZE_THRESHOLD = 0.08;
 
     /**
      * @var Client
@@ -157,14 +157,16 @@ class HarvestCommand extends AbstractProcessingCmd
             if ($head->getStatusCode() !== 200) {
                 throw new Exception("HTTP HEAD request cannot check file size: HTTP {$head->getStatusCode()} - {$head->getReasonPhrase()} - {$deposit->getUrl()}");
             }
-            $size = $head->getHeader('Content-Length');
-            if ($size === null || $size === '') {
+            $reportedSize = $head->getHeader('Content-Length');
+            if ($reportedSize === null || $reportedSize === '') {
                 throw new Exception("HTTP HEAD response does not include file size - {$deposit->getUrl()}");
             }
-            $expectedSize = $deposit->getSize() * 1000;
-            if (abs($expectedSize - $size) / $size > self::FILE_SIZE_THRESHOLD) {
-                $deposit->addErrorLog("Expected file size {$expectedSize} is not close to reported size {$size}");
-                $this->logger->warning("Harvest - {$deposit->getUrl()} - Expected file size {$expectedSize} is not close to reported size {$size}");
+            
+            $expectedSize = ceil($reportedSize / 1000); // This is how the pln plugin does it.
+            $difference = abs($expectedSize - $deposit->getSize()) / max([$expectedSize, $deposit->getSize()]);
+            if ($difference > self::FILE_SIZE_THRESHOLD) {
+                $deposit->addErrorLog("Expected file size {$expectedSize} is not close to reported size {$reportedSize}");
+                $this->logger->warning("Harvest - {$deposit->getUrl()} - Expected file size {$expectedSize} is not close to reported size {$reportedSize}");
             }
         } catch (RequestException $e) {
             $response = $e->getResponse();
