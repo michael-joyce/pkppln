@@ -133,7 +133,8 @@ class CleanupCommand extends ContainerAwareCommand
             $deposit = $row[0];
             $this->processDeposit($deposit, $force);
             $i++;
-            if(($i % 50) === 0) {
+            if(($i % 10) === 0) {
+                $this->em->flush();
                 $this->em->clear();
                 gc_collect_cycles();
             }

@@ -159,7 +159,12 @@ class HarvestCommand extends AbstractProcessingCmd
             }
             $reportedSize = $head->getHeader('Content-Length');
             if ($reportedSize === null || $reportedSize === '') {
-                throw new Exception("HTTP HEAD response does not include file size - {$deposit->getUrl()}");
+                $message = "HTTP HEAD response does not include file size\n{$deposit->getUrl()}";
+                $message .= "\n" . $head->getStatusCode() . " " . $head->getReasonPhrase() . " " . $head->getProtocolVersion();
+                foreach($head->getHeaders() as $key => $value) {
+                    $message .= "\n{$key}: " . implode('; ', $value);
+                }
+                throw new Exception($message);
             }
             
             $expectedSize = ceil($reportedSize / 1000); // This is how the pln plugin does it.

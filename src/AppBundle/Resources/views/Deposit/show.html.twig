@@ -91,7 +91,7 @@
                     {% else %}
                         <ol>
                             {% for error in entity.errorLog %}
-                                <li>{{ error }}</li>
+                                <li>{{ error|nl2br }}</li>
                             {% endfor %}
                         </ol>
                         <p><a href="https://curl.haxx.se/libcurl/c/libcurl-errors.html">cURL errors are described here</a>.</p>
