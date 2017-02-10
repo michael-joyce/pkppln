@@ -133,7 +133,7 @@ class HarvestCommand extends AbstractProcessingCmd
             if ($e->hasResponse()) {
                 $this->logger->error($e->getResponse()->getStatusCode().' '.$e->getResponse()->getReasonPhrase());
             } else {
-                $this->logger->error("Harvest - {$url} - $e->getMessage()");
+                $this->logger->error("Harvest - {$url} - {$e->getMessage()}");
             }
             throw $e;
         }
