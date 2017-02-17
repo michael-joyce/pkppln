@@ -20,8 +20,8 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Journal;
+use AppBundle\Form\JournalType;
 use DateTime;
-use Doctrine\ORM\EntityManager;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -170,6 +170,53 @@ class JournalController extends Controller
     }
 
     /**
+     * Creates a form to edit a Journal entity.
+     *
+     * @param Document $entity The entity
+     *
+     * @return Form The form
+     */
+    private function createEditForm(Journal $entity)
+    {
+        $form = $this->createForm(new JournalType(), $entity, array(
+            'action' => $this->generateUrl('journal_edit', array('id' => $entity->getId())),
+            'method' => 'PUT',
+        ));
+
+        $form->add('submit', 'submit', array('label' => 'Update'));
+
+        return $form;
+    }
+
+    /**
+     * Displays a form to edit an existing Journal entity.
+     *
+     * @Route("/{id}/edit", name="journal_edit")
+     * @Method({"GET", "PUT"})
+     * @Template()
+	 * @param Request $request
+	 * @param Page $page
+     */
+    public function editAction(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository('AppBundle:Journal')->find($id);
+        $editForm = $this->createEditForm($entity);
+        $editForm->handleRequest($request);
+
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            $em->flush();
+            $this->addFlash('success', 'The journal has been updated.');
+            return $this->redirectToRoute('journal_show', array('id' => $id));
+        }
+
+        return array(
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
+        );
+    }
+
+    /**
      * Finds and displays a Journal entity.
      *
      * @Route("/{id}/delete", name="journal_delete")
@@ -287,6 +334,7 @@ class JournalController extends Controller
             }
             $entity->setContacted(new DateTime());
             $entity->setTitle($result->getJournalTitle());
+            $entity->setStatus('healthy');
             $em->flush($entity);
 
             return array(
