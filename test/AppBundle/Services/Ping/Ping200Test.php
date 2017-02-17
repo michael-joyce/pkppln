@@ -87,7 +87,7 @@ class Ping200Test extends AbstractTestCase {
 		$this->assertEquals('GET', $request->getMethod());
 		$this->assertEquals('PkpPlnBot 1.0; http://pkp.sfu.ca', $request->getHeader('User-Agent'));
 	}
-	
+	    
 	public function testUpdatedContacted() {
 		$this->em->clear();
 		$journal = $this->em->getRepository('AppBundle:Journal')->find(1);

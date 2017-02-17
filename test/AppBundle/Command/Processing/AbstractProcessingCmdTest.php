@@ -133,7 +133,7 @@ class AbstractProcessingCmdTest extends AbstractCommandTestCase {
 		));
 
 		$updatedDeposit = $this->em->getRepository('AppBundle:Deposit')->find(1);
-		$this->assertEquals('test0', $updatedDeposit->getState());
+		$this->assertEquals('test0-error', $updatedDeposit->getState());
 	}
 
 	public function testExecuteDryRun() {
