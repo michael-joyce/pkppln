@@ -108,7 +108,7 @@ class Ping
         $client = $this->getClient();
         try {
             $response = $client->get($url, array(
-                'allow_redirects' => false,
+                'allow_redirects' => true,
                 'headers' => array(
                     'User-Agent' => 'PkpPlnBot 1.0; http://pkp.sfu.ca',
                     'Accept' => 'application/xml,text/xml,*/*;q=0.1',

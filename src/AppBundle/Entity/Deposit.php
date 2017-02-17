@@ -261,6 +261,12 @@ class Deposit
      * @ORM\Column(type="text")
      */
     private $processingLog;
+    
+    /**
+     * @var integer
+     * @ORM\Column(type="integer")
+     */
+    private $harvestAttempts;
 
     /**
      * Construct an empty deposit.
@@ -273,6 +279,7 @@ class Deposit
         $this->state = 'depositedByJournal';
         $this->errorLog = array();
         $this->errorCount = 0;
+        $this->harvestAttempts = 0;
     }
 
     /**
@@ -985,5 +992,28 @@ class Deposit
     public function getAuContainer()
     {
         return $this->auContainer;
+    }
+
+    /**
+     * Set harvestAttempts
+     *
+     * @param integer $harvestAttempts
+     * @return Deposit
+     */
+    public function setHarvestAttempts($harvestAttempts)
+    {
+        $this->harvestAttempts = $harvestAttempts;
+
+        return $this;
+    }
+
+    /**
+     * Get harvestAttempts
+     *
+     * @return integer 
+     */
+    public function getHarvestAttempts()
+    {
+        return $this->harvestAttempts;
     }
 }

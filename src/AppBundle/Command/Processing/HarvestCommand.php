@@ -24,6 +24,7 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Message\Response;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Harvest a deposit from a journal. Attempts to check file sizes via HTTP HEAD
@@ -41,7 +42,17 @@ class HarvestCommand extends AbstractProcessingCmd
      * @var Client
      */
     private $client;
+    
+    /**
+     * @var integer
+     */
+    private $maxAttempts;
 
+    public function setContainer(ContainerInterface $container = null) {
+        parent::setContainer($container);
+        $this->maxAttempts = $this->container->getParameter('max_harvest_attempts');
+    }
+    
     /**
      * Set the HTTP client, usually based on Guzzle.
      *
@@ -221,6 +232,11 @@ class HarvestCommand extends AbstractProcessingCmd
     protected function processDeposit(Deposit $deposit)
     {
         $this->logger->notice("harvest - {$deposit->getDepositUuid()}");
+        if($deposit->getHarvestAttempts() > $this->maxAttempts) {
+            $this->logger->notice("skipping - {$deposit->getDepositUuid()} - too many failed harvests.");
+            return;
+        }
+        $deposit->setHarvestAttempts($deposit->getHarvestAttempts() + 1);
         $this->checkSize($deposit);
         $response = $this->fetchDeposit($deposit->getUrl(), $deposit->getSize());
         $deposit->setFileType($response->getHeader('Content-Type'));
