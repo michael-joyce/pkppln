@@ -109,7 +109,7 @@ class CleanupCommand extends ContainerAwareCommand
             $this->logger->notice($deposit->getDepositUuid());
             $this->delFileTree($this->filePaths->getHarvestFile($deposit), $force);
             $this->delFileTree($this->filePaths->getProcessingBagPath($deposit), $force);
-            // $this->delFileTree($this->filePaths->getStagingBagPath($deposit), $force);
+            $this->delFileTree($this->filePaths->getStagingBagPath($deposit), $force);
         }
     }
 
