@@ -33,6 +33,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Deposit
 {
     /**
+     * The journal version was added to the PKP PLN plugin in OJS version 3. If
+     * a deposit doesn't have a version attribute, then assume it is OJS 2.4.8.
+     */
+    const DEFAULT_JOURNAL_VERSION = '2.4.8';
+    
+    /**
      * Database ID.
      *
      * @var int
@@ -52,7 +58,7 @@ class Deposit
      * @ORM\JoinColumn(name="journal_id", referencedColumnName="id")
      */
     private $journal;
-
+    
     /**
      * The AuContainer that holds this deposit.
      *
@@ -62,6 +68,16 @@ class Deposit
      * @ORM\JoinColumn(name="au_container_id", referencedColumnName="id", nullable=true)
      */
     private $auContainer;
+
+    /**
+     * The version of OJS that made the deposit and created the export file. THe 
+     * default is 2.4.8. If annotations made use of class constants, it would use
+     * self::DEFAULT_JOURNAL_VERSION.
+     * 
+     * @var string
+     * @ORM\Column(type="string", length=15, nullable=false, options={"default": "2.4.8"})
+     */
+    private $journalVersion;
 
     /**
      * Serialized list of licensing terms as reported in the ATOM deposit.
@@ -1015,5 +1031,28 @@ class Deposit
     public function getHarvestAttempts()
     {
         return $this->harvestAttempts;
+    }
+
+    /**
+     * Set journalVersion
+     *
+     * @param string $journalVersion
+     * @return Deposit
+     */
+    public function setJournalVersion($journalVersion)
+    {
+        $this->journalVersion = $journalVersion;
+
+        return $this;
+    }
+
+    /**
+     * Get journalVersion
+     *
+     * @return string 
+     */
+    public function getJournalVersion()
+    {
+        return $this->journalVersion;
     }
 }

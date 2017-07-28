@@ -178,7 +178,13 @@ class DepositBuilder
         $deposit->setSize($this->getXmlValue($xml, 'pkp:content/@size'));
         $deposit->setUrl(html_entity_decode($this->getXmlValue($xml, 'pkp:content')));
         $deposit->setDepositReceipt($this->buildDepositReceiptUrl($deposit));
-
+        $ojsVersion = $this->getXmlValue($xml, 'pkp:content/@ojsVersion');
+        if($ojsVersion) {
+            $deposit->setJournalVersion($ojsVersion);
+        } else {
+            $deposit->setJournalVersion(Deposit::DEFAULT_JOURNAL_VERSION);
+        }
+        
         $this->getLicensingInfo($deposit, $xml);
 
         if ($action === 'add') {
