@@ -96,7 +96,7 @@ class StatusCommand extends AbstractProcessingCmd
      *
      * @param Deposit $deposit
      *
-     * @return type
+     * @return boolean|null
      */
     protected function processDeposit(Deposit $deposit)
     {
@@ -112,7 +112,10 @@ class StatusCommand extends AbstractProcessingCmd
             unlink($this->filePaths->getStagingBagPath($deposit));
         }
 
-        return $status === 'agreement';
+        if($status === 'agreement') {
+            return true;
+        }
+        return null;
     }
 
     /**
