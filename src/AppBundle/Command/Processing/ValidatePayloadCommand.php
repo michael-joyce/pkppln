@@ -36,6 +36,17 @@ class ValidatePayloadCommand extends AbstractProcessingCmd
         $this->setDescription('Validate PLN deposit packages.');
         parent::configure();
     }
+    
+    protected function hashFile($algorithm, $filepath) {
+        $handle = fopen($filepath, "r");
+        $context = hash_init($algorithm);
+        while(($data = fread($handle, 64 * 1024))) {
+            hash_update($context, $data);
+        }
+        $hash = hash_final($context);
+        fclose($handle); 
+        return $hash;
+    }
 
     /**
      * {@inheritdoc}
@@ -48,22 +59,11 @@ class ValidatePayloadCommand extends AbstractProcessingCmd
             throw new Exception("Cannot find deposit bag {$depositPath}");
         }
 
-        $checksumValue = null;
-        switch (strtoupper($deposit->getChecksumType())) {
-            case 'SHA-1':
-            case 'SHA1':
-                $checksumValue = sha1_file($depositPath);
-                break;
-            case 'MD5':
-                $checksumValue = md5_file($depositPath);
-                break;
-            default:
-                throw new Exception("Deposit checksum type {$deposit->getChecksumType()} unknown.");
-        }
-        if (strtoupper($checksumValue) !== $deposit->getChecksumValue()) {
+        $checksumValue = $this->hashFile($deposit->getChecksumType(),$depositPath);
+        if ($checksumValue !== $deposit->getChecksumValue()) {
             $deposit->addErrorLog("Deposit checksum does not match. Expected {$deposit->getChecksumValue()} != Actual ".strtoupper($checksumValue));
             $this->logger->warning("Deposit checksum does not match for deposit {$deposit->getDepositUuid()}");
-
+            
             return false;
         }
 
