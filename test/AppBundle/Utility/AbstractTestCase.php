@@ -16,99 +16,99 @@ use RecursiveIteratorIterator;
  */
 abstract class AbstractTestCase extends BaseTestCase {
 
-	/**
-	 * Location of testing source data. It may be copied to the right place
-	 * in a test set up function.
-	 */
-	const SRCDIR = "test/data-src";
+    /**
+     * Location of testing source data. It may be copied to the right place
+     * in a test set up function.
+     */
+    const SRCDIR = "test/data-src";
 
-	/**
-	 * Expected location of testing data.
-	 */
-	const DSTDIR = "test/data";
+    /**
+     * Expected location of testing data.
+     */
+    const DSTDIR = "test/data";
 
-	/**
-	 * @var ObjectManager
-	 */
-	protected $em;
+    /**
+     * @var ObjectManager
+     */
+    protected $em;
 
-	/**
-	 * As the fixtures load data, they save references. Use $this->references
-	 * to get them.
-	 * 
-	 * @var ReferenceRepository
-	 */
-	protected $references;
-	
-	/**
-	 * http://stackoverflow.com/a/32879462/9316
-	 * 
-	 * @var Closure
-	 */
-	private static $kernelModifier = null;
-	
-	public function setKernelModifier(Closure $kernelModifier) {
-		self::$kernelModifier = $kernelModifier;
-		$this->ensureKernelShutdown();
-	}
+    /**
+     * As the fixtures load data, they save references. Use $this->references
+     * to get them.
+     * 
+     * @var ReferenceRepository
+     */
+    protected $references;
 
-	protected static function createClient(array $options = [], array $server = []) {
-		static::bootKernel($options);
-		if (self::$kernelModifier !== null) {
-			self::$kernelModifier->__invoke();
-			self::$kernelModifier = null;
-		}
-		$client = static::$kernel->getContainer()->get('test.client');
-		$client->setServerParameters($server);
-		return $client;
-	}
+    /**
+     * http://stackoverflow.com/a/32879462/9316
+     * 
+     * @var Closure
+     */
+    private static $kernelModifier = null;
 
-	/**
-	 * Returns a list of data fixture classes for use in one test class. They 
-	 * will be loaded into the database before each test function in the class.
-	 * 
-	 * @return array()
-	 */
-	public function fixtures() {
-		return array();
-	}
+    public function setKernelModifier(Closure $kernelModifier) {
+        self::$kernelModifier = $kernelModifier;
+        $this->ensureKernelShutdown();
+    }
 
-	/**
-	 * Return an array(src => dst) of testing files, which will be copied from
-	 * src to dst before each test in the class. Source files starting with a
-	 * dot(.) will be skipped during copy, but the corresponding destination
-	 * file will be removed in test cleanup.
-	 * 
-	 * @see DefaultControllerAnonTest for example usage.
-	 * 
-	 * @return array()
-	 */
-	public function dataFiles() {
-		return array();
-	}
-	
-	/**
-	 * {@inheritDocs}
-	 */
-	protected function setUp() {
-		parent::setUp();
-		$fixtures = $this->fixtures();
-		if (count($fixtures) > 0) {
-			$this->references = $this->loadFixtures($fixtures)->getReferenceRepository();
-		}
-		$this->em = $this->getContainer()->get('doctrine')->getManager();
-		
-		foreach($this->dataFiles() as $src => $dst) {
-			if(substr($src, 0, 1) === '.') {
-				continue;
-			}
-			$dir = self::DSTDIR . '/' . dirname($dst);
-			if(! file_exists($dir)) {
-				mkdir($dir, 0755, true);
-			}
-			copy(self::SRCDIR . '/' . $src, self::DSTDIR . '/' . $dst);
-		}
-	}
+    protected static function createClient(array $options = [], array $server = []) {
+        static::bootKernel($options);
+        if (self::$kernelModifier !== null) {
+            self::$kernelModifier->__invoke();
+            self::$kernelModifier = null;
+        }
+        $client = static::$kernel->getContainer()->get('test.client');
+        $client->setServerParameters($server);
+        return $client;
+    }
+
+    /**
+     * Returns a list of data fixture classes for use in one test class. They 
+     * will be loaded into the database before each test function in the class.
+     * 
+     * @return array()
+     */
+    public function fixtures() {
+        return array();
+    }
+
+    /**
+     * Return an array(src => dst) of testing files, which will be copied from
+     * src to dst before each test in the class. Source files starting with a
+     * dot(.) will be skipped during copy, but the corresponding destination
+     * file will be removed in test cleanup.
+     * 
+     * @see DefaultControllerAnonTest for example usage.
+     * 
+     * @return array()
+     */
+    public function dataFiles() {
+        return array();
+    }
+
+    /**
+     * {@inheritDocs}
+     */
+    protected function setUp() {
+        parent::setUp();
+        $fixtures = $this->fixtures();
+        if (count($fixtures) > 0) {
+            $this->references = $this->loadFixtures($fixtures)->getReferenceRepository();
+        }
+        $this->em = $this->getContainer()->get('doctrine')->getManager();
+
+        foreach ($this->dataFiles() as $src => $dst) {
+            if (substr($src, 0, 1) === '.') {
+                continue;
+            }
+            $dir = self::DSTDIR . '/' . dirname($dst);
+            if (!file_exists($dir)) {
+                mkdir($dir, 0755, true);
+            }
+            copy(self::SRCDIR . '/' . $src, self::DSTDIR . '/' . $dst);
+        }
+    }
 
     private function delTree($path) {
         $directoryIterator = new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS);
@@ -122,21 +122,24 @@ abstract class AbstractTestCase extends BaseTestCase {
         }
         rmdir($path);
     }
-	
-	public function tearDown() {
-		parent::tearDown();
-		$this->em->clear();
-		$this->em->close();
-		
-		foreach($this->dataFiles() as $src => $dst) {
-			$path = self::DSTDIR . '/' . $dst;
-			if(file_exists($path)) {
-				if(is_dir($path)) {
-					$this->delTree($path);
-				} else {
-					unlink($path);			
-				}
-			}
-		}
-	}
+
+    public function tearDown() {
+        parent::tearDown();
+        if ($this->em) {
+            $this->em->clear();
+            $this->em->close();
+        }
+
+        foreach ($this->dataFiles() as $src => $dst) {
+            $path = self::DSTDIR . '/' . $dst;
+            if (file_exists($path)) {
+                if (is_dir($path)) {
+                    $this->delTree($path);
+                } else {
+                    unlink($path);
+                }
+            }
+        }
+    }
+
 }

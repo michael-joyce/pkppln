@@ -5,13 +5,15 @@ php:
   - 5.5
   - 5.6
   - 7.0
-
+  - 7.1
+  
 cache: apt
 
 env:
     global:
         - SYMFONY_ENV=test
         - CLAMSCAN_BIN="/usr/bin/clamdscan"
+        - COMPOSER_DISABLE_XDEBUG_WARN=1
 
 before_script:
   - sudo apt-get update

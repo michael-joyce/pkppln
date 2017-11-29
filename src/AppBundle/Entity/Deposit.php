@@ -296,6 +296,7 @@ class Deposit
         $this->errorLog = array();
         $this->errorCount = 0;
         $this->harvestAttempts = 0;
+        $this->journalVersion = '2.4.8';
     }
 
     /**

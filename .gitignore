@@ -13,3 +13,5 @@
 /docs/api
 /docs/build
 /test/data
+/nbproject/private/
+phpunit.xml
