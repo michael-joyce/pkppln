@@ -12,7 +12,6 @@ use DOMDocument;
 use DOMElement;
 use DOMXPath;
 use Exception;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ScanVirusesCommand extends AbstractProcessingCmd {
     
@@ -20,15 +19,17 @@ class ScanVirusesCommand extends AbstractProcessingCmd {
      * @var ClamAvAdapter
      */
     protected $scanner;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        parent::setContainer($container);
-        $scannerPath = $container->getParameter('clamdscan_path');
-        $this->scanner = new ClamAvAdapter($scannerPath);
+    
+    public function setScanner(ClamAvAdapter $scanner) {
+        $this->scanner = $scanner;
+    }
+    
+    public function getScanner() {
+        if( ! $this->scanner) {
+            $scannerPath = $this->getContainer()->getParameter('clamdscan_path');
+            $this->scanner = new ClamAvAdapter($scannerPath);
+        }
+        return $this->scanner;
     }
 
     /**
@@ -91,7 +92,7 @@ class ScanVirusesCommand extends AbstractProcessingCmd {
             fwrite($fh, base64_decode($chunk));
             $offset = $end;
         }
-        $result = $this->scanner->scan([$tmpPath]);
+        $result = $this->getSanner()->scan([$tmpPath]);
         if($result->hasVirus()) {
             $report .= "Virus infections found in embedded file:\n";
             foreach($result->getDetections() as $d) {
@@ -116,7 +117,7 @@ class ScanVirusesCommand extends AbstractProcessingCmd {
         $report = '';
         $extractedPath = $this->filePaths->getProcessingBagPath($deposit);
         
-        $result = $this->scanner->scan([$extractedPath]);
+        $result = $this->getScanner()->scan([$extractedPath]);
         if($result->hasVirus()) {
             $report .= "Virus infections found in bag files.\n";
             foreach($result->getDetections() as $d) {
