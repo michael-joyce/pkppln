@@ -16,16 +16,16 @@ env:
         - COMPOSER_DISABLE_XDEBUG_WARN=1
 
 before_script:
-  - sudo apt-get update
-  - sudo apt-get install clamav clamav-daemon -y
-  - sudo freshclam -v
-  - sudo service clamav-daemon restart
-
-  # make sure clamscan runs properly.
-  - clamscan composer.json
-
-  # make sure clamdscan also runs properly.
-  - clamdscan composer.lock
+#  - sudo apt-get update
+#  - sudo apt-get install clamav clamav-daemon -y
+#  - sudo freshclam -v
+#  - sudo service clamav-daemon restart
+#
+#  # make sure clamscan runs properly.
+#  - clamscan composer.json
+#
+#  # make sure clamdscan also runs properly.
+#  - clamdscan composer.lock
 
   - composer install -n -o
 
