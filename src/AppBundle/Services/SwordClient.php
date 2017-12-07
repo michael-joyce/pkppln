@@ -346,6 +346,30 @@ class SwordClient
         return $statementXml;
     }
 
+    public function fetch(Deposit $deposit) {
+        $statement = $this->statement($deposit);
+        $originals = $statement->xpath('//sword:originalDeposit');
+        if (count($originals) > 1) {
+            throw new Exception("Deposits with multiple content URLs are not supported.");
+        }
+        $element = $originals[0];
+        $href = $element['href'];
+        $client = $this->getClient();
+        $filepath = $this->filePaths->getRestoreDir($deposit->getProvider()) . '/' . basename($href);
+        $this->logger->notice("Saving {$deposit->getProvider()->getName()} deposit {$deposit->getid()} to {$filepath}");
+
+        $client->get($href, array(
+            'allow_redirects' => false,
+            'decode_content' => false,
+            'save_to' => $filepath,
+        ));
+        $hash = hash_file($deposit->getChecksumType(), $filepath);
+        if ($hash !== $deposit->getChecksumValue()) {
+            $this->logger->warning("Package checksum failed. Expected {$deposit->getChecksumValue()} but got {$hash}");
+        }
+        return $filepath;
+    }
+
     /**
      * Get the site name, as used in deposits.
      *

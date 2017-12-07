@@ -10,7 +10,7 @@
     
     <pkp:pln_accepting is_accepting="{{ accepting }}">{{ message }}</pkp:pln_accepting>
 
-    <pkp:terms_of_use>
+    <pkp:terms_of_use updated="{{ termsUpdated }}">
         {% for term in terms %}
         <pkp:{{term.keyCode}} updated="{{term.created|date('Y-m-d H:i:sP', 'UTC')}}">
             {{term.content}}

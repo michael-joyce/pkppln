@@ -29,6 +29,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use SimpleXMLElement;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -239,6 +240,7 @@ class SwordController extends Controller
                 UrlGeneratorInterface::ABSOLUTE_URL
             ),
             'terms' => $this->getTermsOfUse(),
+            'termsUpdated' => $this->getDoctrine()->getManager()->getRepository('AppBundle:TermOfUse')->getLastUpdated(),
         ));
         /* @var Response */
         $response->headers->set('Content-Type', 'text/xml');
@@ -426,4 +428,66 @@ class SwordController extends Controller
 
         return $response;
     }
+    
+    /**
+     * Attempt to fetch the original deposit from LOCKSS, store it to
+     * the file system in a temp file, and then serve it to the user agent.
+     *
+     * @Route("/original/{providerUuid}/{depositUuid}", name="original_deposit", requirements={
+     *      "providerUuid": ".{36}",
+     *      "depositUuid": ".{36}"
+     * })
+     *
+     * @param string $providerUuid
+     * @param string $depositUuid
+     *
+     * @return BinaryFileResponse
+     */
+    public function originalDepositAction(Request $request, $providerUuid, $depositUuid) {
+        /* @var LoggerInterface */
+        $logger = $this->get('monolog.logger.sword');
+        $providerUuid = strtoupper($providerUuid);
+        $depositUuid = strtoupper($depositUuid);
+        $accepting = $this->checkAccess($providerUuid);
+        $acceptingLog = 'not accepting';
+        if ($accepting) {
+            $acceptingLog = 'accepting';
+        }
+
+        $logger->notice("edit deposit - {$request->getClientIp()} - {$providerUuid} - {$acceptingLog}");
+        if (!$accepting) {
+            throw new SwordException(400, 'Not authorized to edit deposits.');
+        }
+
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var Provider $provider */
+        $provider = $em->getRepository('AppBundle:Provider')->findOneBy(array(
+            'uuid' => $providerUuid,
+        ));
+        if ($provider === null) {
+            throw new SwordException(400, 'Provider UUID not found.');
+        }
+
+        /** @var Deposit $deposit */
+        $deposit = $em->getRepository('AppBundle:Deposit')->findOneBy(array(
+            'depositUuid' => $depositUuid,
+        ));
+        if ($deposit === null) {
+            throw new SwordException(400, "Deposit UUID {$depositUuid} not found.");
+        }
+
+        if ($provider->getId() !== $deposit->getProvider()->getId()) {
+            throw new SwordException(400, 'Deposit does not belong to provider.');
+        }
+        
+        $swordClient = $this->get('sword_client');
+        $filepath = $swordClient->fetch($deposit);
+        
+        $response = new BinaryFileResponse($filepath);
+        $response->setStatusCode(Response::HTTP_OK);
+        $response->deleteFileAfterSend(true);
+        return $response;
+    }
+    
 }
