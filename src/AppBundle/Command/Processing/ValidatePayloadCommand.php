@@ -45,7 +45,7 @@ class ValidatePayloadCommand extends AbstractProcessingCmd
         }
         $hash = hash_final($context);
         fclose($handle); 
-        return $hash;
+        return strtoupper($hash);
     }
 
     /**
@@ -62,7 +62,7 @@ class ValidatePayloadCommand extends AbstractProcessingCmd
         $checksumValue = $this->hashFile($deposit->getChecksumType(),$depositPath);
         if ($checksumValue !== $deposit->getChecksumValue()) {
             $deposit->addErrorLog("Deposit checksum does not match. Expected {$deposit->getChecksumValue()} != Actual ".strtoupper($checksumValue));
-            $this->logger->warning("Deposit checksum does not match for deposit {$deposit->getDepositUuid()}");
+            $this->logger->warning("Deposit checksum does not match for deposit {$deposit->getDepositUuid()}. Expected {$deposit->getChecksumValue()} != Actual ".strtoupper($checksumValue));
             
             return false;
         }

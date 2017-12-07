@@ -5,7 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Utility\AbstractTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class DepositContainerControllerTest extends AbstractTestCase {
+class DepositControllerTest extends AbstractTestCase {
 
     protected $client;
 
