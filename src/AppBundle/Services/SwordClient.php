@@ -369,11 +369,16 @@ class SwordClient
         $filepath = $this->filePaths->getRestoreDir($deposit->getProvider()) . '/' . basename($href);
         $this->logger->notice("Saving {$deposit->getProvider()->getName()} deposit {$deposit->getid()} to {$filepath}");
 
+        try {
         $client->get($href, array(
             'allow_redirects' => false,
             'decode_content' => false,
             'save_to' => $filepath,
         ));
+        } catch(\Exception $e) {
+            $this->logger->critical("Cannot download content from {$href}: {$e->getMessage()}");
+            return null;
+        }
         $hash = $this->hashFile($deposit->getChecksumType(), $filepath);
         if ($hash !== $deposit->getChecksumValue()) {
             $this->logger->warning("Package checksum failed. Expected {$deposit->getChecksumValue()} but got {$hash}");
