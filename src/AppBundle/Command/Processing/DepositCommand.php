@@ -34,7 +34,9 @@ class DepositCommand extends AbstractProcessingCmd
      * @var SwordClient
      */
     private $client;
-
+    
+    private $heldVersions;
+    
     /**
      * {@inheritdoc}
      */
@@ -53,6 +55,7 @@ class DepositCommand extends AbstractProcessingCmd
         parent::setContainer($container);
         $this->client = $container->get('sword_client');
         $this->client->setLogger($this->logger);
+        $this->heldVersions = $container->getParameter('held_versions');
     }
 
     /**
@@ -64,9 +67,12 @@ class DepositCommand extends AbstractProcessingCmd
      * @return type
      */
     protected function processDeposit(Deposit $deposit)
-    {
+    {        
+        if($this->heldVersions && version_compare($deposit->getJournalVersion(), $this->heldVersions, ">=")) {
+            $this->logger->notice("Holding deposit {$deposit->getDepositUuid()}");        
+            return "hold";
+        }
         $this->logger->notice("Sending deposit {$deposit->getDepositUuid()}");
-
         return $this->client->createDeposit($deposit);
     }
 
