@@ -66,7 +66,6 @@ class DepositRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('d');
         $qb->where('d.depositUuid LIKE :q');
-		$qb->orWhere('d.depositUuid LIKE :q');
         $qb->setParameter('q', '%'.strtoupper($q).'%');
 
         return $qb->getQuery()->getResult();

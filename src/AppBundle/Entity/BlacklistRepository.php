@@ -37,18 +37,8 @@ class BlacklistRepository extends EntityRepository
     public function search($q)
     {
         $qb = $this->createQueryBuilder('b');
-        $qb->where(
-            $qb->expr()->like(
-                new Func(
-                    'CONCAT',
-                    array(
-                        'b.uuid',
-                        'b.comment',
-                    )
-                ),
-                "'%$q%'"
-            )
-        );
+        $qb->where('CONCAT(b.uuid, b.comment) LIKE :q');
+        $qb->setParameter('q', '%' . $q . '%');
         $query = $qb->getQuery();
         $listed = $query->getResult();
 

@@ -41,22 +41,8 @@ class JournalRepository extends EntityRepository
     public function search($q)
     {
         $qb = $this->createQueryBuilder('j');
-        $qb->where(
-            $qb->expr()->like(
-                new Func(
-                    'CONCAT',
-                    array(
-                        'j.title',
-                        'j.uuid',
-                        'j.issn',
-                        'j.url',
-                        'j.email',
-                        'j.publisherName',
-                    )
-                ),
-                "'%$q%'"
-            )
-        );
+        $qb->where('CONCAT(j.title, j.uuid, j.issn, j.url, j.email, j.publisherName) LIKE :q');
+        $qb->setParameter('q', '%' . $q . '%');
         $query = $qb->getQuery();
         $journals = $query->getResult();
 

@@ -37,18 +37,8 @@ class WhitelistRepository extends EntityRepository
     public function search($q)
     {
         $qb = $this->createQueryBuilder('w');
-        $qb->where(
-            $qb->expr()->like(
-                new Func(
-                    'CONCAT',
-                    array(
-                        'w.uuid',
-                        'w.comment',
-                    )
-                ),
-                "'%$q%'"
-            )
-        );
+        $qb->where('CONCAT(w.uuid, w.comment) LIKE :q');
+        $qb->setParameter('q', '%' . $q . '%');
         $query = $qb->getQuery();
         $listed = $query->getResult();
 
