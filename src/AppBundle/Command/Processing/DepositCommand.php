@@ -64,7 +64,7 @@ class DepositCommand extends AbstractProcessingCmd
      *
      * @param Deposit $deposit
      *
-     * @return type
+     * @return string|bool
      */
     protected function processDeposit(Deposit $deposit)
     {        

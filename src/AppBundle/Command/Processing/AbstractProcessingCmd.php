@@ -207,7 +207,7 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand
 
         $this->logger->info("Processing {$count} deposits.");
         $this->preprocessDeposits($deposits);
-
+        $result = null;
         foreach ($deposits as $deposit) {
             try {
                 $result = $this->processDeposit($deposit);
@@ -225,7 +225,7 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand
             }
 
             if(is_string($result)) {
-                $deposit->setSTate($result);
+                $deposit->setState($result);
                 $deposit->addToProcessingLog("Holding deposit.");
             }
             elseif ($result === true) {

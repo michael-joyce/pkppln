@@ -7,7 +7,7 @@
          backupStaticAttributes="false"
          cacheTokens="false"
          processIsolation="true"
-         colors="true"         
+         colors="false"         
          bootstrap="app/bootstrap.php.cache">
     <php>
         <ini name="error_reporting" value="-1" />
@@ -16,7 +16,7 @@
     </php>
 
     <testsuites>
-        <testsuite name="wphp">
+        <testsuite name="pkppln">
             <directory>test</directory>
         </testsuite>
     </testsuites>

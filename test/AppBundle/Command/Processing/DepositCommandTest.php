@@ -22,7 +22,7 @@ class DepositCommandTest extends AbstractCommandTestCase {
     public function testHeldDeposit() {
         $deposit = $this->em->getRepository('AppBundle:Deposit')->find(1);
         $deposit->setState('reserialized');
-        $deposit->setJournalVersion('3.0');
+        $deposit->setJournalVersion('3.0.0');
         $this->em->flush();
         
         $this->commandTester->execute(array(
@@ -44,7 +44,6 @@ class DepositCommandTest extends AbstractCommandTestCase {
         ));
         $this->em->clear();
         $processedDeposit = $this->em->getRepository('AppBundle:Deposit')->find(1);
-        // @todo should really inject a mocked sword client here.
         $this->assertEquals('deposit-error', $processedDeposit->getState());
     }
 }
