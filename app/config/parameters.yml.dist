@@ -71,4 +71,4 @@ parameters:
     max_harvest_attempts: 5
 
     # deposits from this OJS version or higher will be held.
-    held_versions: ~
+    held_versions: 3
