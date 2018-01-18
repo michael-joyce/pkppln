@@ -39,7 +39,16 @@ class ValidatePayloadCommand extends AbstractProcessingCmd
     
     protected function hashFile($algorithm, $filepath) {
         $handle = fopen($filepath, "r");
-        $context = hash_init($algorithm);
+        $context = null;
+        switch(strtolower($algorithm)) {
+            case 'sha-1':
+            case 'sha1':
+                $context = hash_init('sha1');
+            case 'md5':
+                $context = hash_init('md5');
+            default:
+                throw new \Exception("Unknown hash algorithm {$algorithm}");
+        }
         while(($data = fread($handle, 64 * 1024))) {
             hash_update($context, $data);
         }
