@@ -116,7 +116,7 @@ class ScanVirusesCommand extends AbstractProcessingCmd {
     protected function processDeposit(Deposit $deposit) {
         $report = '';
         $extractedPath = $this->filePaths->getProcessingBagPath($deposit);
-
+        $this->logger->info("Scanning {$extractedPath}");
         $result = $this->getScanner()->scan([$extractedPath]);
         if($result->hasVirus()) {
             $report .= "Virus infections found in bag files.\n";
