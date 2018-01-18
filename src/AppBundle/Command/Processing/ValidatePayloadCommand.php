@@ -44,8 +44,10 @@ class ValidatePayloadCommand extends AbstractProcessingCmd
             case 'sha-1':
             case 'sha1':
                 $context = hash_init('sha1');
+                break;
             case 'md5':
                 $context = hash_init('md5');
+                break;
             default:
                 throw new \Exception("Unknown hash algorithm {$algorithm}");
         }
