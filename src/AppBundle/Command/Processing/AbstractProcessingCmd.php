@@ -237,7 +237,7 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand
             } elseif($result === null) {
                 // dunno, do nothing I guess.
             }
-            $this->em->flush($deposit);
+            $this->em->flush($deposit); 
         }
     }
 }

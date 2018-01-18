@@ -116,7 +116,7 @@ class ScanVirusesCommand extends AbstractProcessingCmd {
     protected function processDeposit(Deposit $deposit) {
         $report = '';
         $extractedPath = $this->filePaths->getProcessingBagPath($deposit);
-        
+
         $result = $this->getScanner()->scan([$extractedPath]);
         if($result->hasVirus()) {
             $report .= "Virus infections found in bag files.\n";
@@ -133,6 +133,7 @@ class ScanVirusesCommand extends AbstractProcessingCmd {
             $this->scanEmbeddedData($filename, $report);
         }
         print $report;
+        return true;
     }
 
     public function errorState() {
