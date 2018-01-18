@@ -92,7 +92,7 @@ class ScanVirusesCommand extends AbstractProcessingCmd {
             fwrite($fh, base64_decode($chunk));
             $offset = $end;
         }
-        $result = $this->getSanner()->scan([$tmpPath]);
+        $result = $this->getScanner()->scan([$tmpPath]);
         if($result->hasVirus()) {
             $report .= "Virus infections found in embedded file:\n";
             foreach($result->getDetections() as $d) {
