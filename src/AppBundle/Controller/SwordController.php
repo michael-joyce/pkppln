@@ -113,7 +113,7 @@ class SwordController extends Controller
             return false;
         }
 
-        return $this->container->getParameter('pln_accepting');
+        return $this->getParameter('pln_accepting');
     }
 
     /**

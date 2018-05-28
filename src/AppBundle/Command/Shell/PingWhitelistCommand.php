@@ -79,7 +79,6 @@ class PingWhitelistCommand extends ContainerAwareCommand
     public function setContainer(ContainerInterface $container = null)
     {
         parent::setContainer($container);
-        $this->templating = $container->get('templating');
         $this->logger = $container->get('monolog.logger.processing');
         $this->ping = $container->get('ping');
     }

@@ -26,6 +26,7 @@
         "components/jquery": "1.11.1",
         "friendsofsymfony/user-bundle": "~2.0@dev",
         "ircmaxell/password-compat": "^1.0",
+        
         "guzzlehttp/guzzle": "5.3",
         "scholarslab/bagit": "~0.3",
         "cleentfaar/tissue": "dev-master",
