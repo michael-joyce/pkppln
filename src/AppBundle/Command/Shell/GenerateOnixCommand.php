@@ -137,7 +137,7 @@ class GenerateOnixCommand extends ContainerAwareCommand
      */
     protected function generateXml($filePath)
     {
-        $repo = $this->em->getRepository(Journal::class);
+        $repo = $this->em->getRepository('AppBundle\Entity\Journal');
         $qb = $repo->createQueryBuilder('j');
         $iterator = $qb->getQuery()->iterate();
 
