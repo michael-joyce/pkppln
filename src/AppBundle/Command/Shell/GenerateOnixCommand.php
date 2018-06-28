@@ -137,13 +137,126 @@ class GenerateOnixCommand extends ContainerAwareCommand
      */
     protected function generateXml($filePath)
     {
-        $journals = $this->getJournals();
-        $onix = $this->templating->render('AppBundle:Onix:onix.xml.twig', array(
-            'journals' => $journals,
-        ));
-        $fh = fopen($filePath, 'w');
-        fwrite($fh, $onix);
-        fclose($fh);
+        $repo = $this->em->getRepository(Journal::class);
+        $qb = $repo->createQueryBuilder('j');
+        $iterator = $qb->getQuery()->iterate();
+
+        $writer = new \XMLWriter();
+        $writer->openUri($filePath);
+        $writer->setIndent(true);
+        $writer->setIndentString(' ');
+        $writer->startDocument();
+        $writer->startElement('ONIXPreservationHoldings');
+        $writer->writeAttribute("version", "0.2");
+        $writer->writeAttribute('xmlns', 'http://www.editeur.org/onix/serials/SOH');
+
+        $writer->startElement('Header');
+        $writer->startElement('Sender');
+        $writer->writeElement('SenderName', 'Public Knowledge Project PLN');
+        $writer->endElement(); // Sender
+        $writer->writeElement('SentDateTime', date("Ymd"));
+        $writer->writeElement('CompleteFile');
+        $writer->endElement(); // Header.
+
+        $writer->startElement('HoldingsList');
+        $writer->startElement('PreservationAgency');
+        $writer->writeElement('PreservationAgencyName', 'Public Knowledge Project PLN');
+        $writer->endElement(); // PreservationAgency
+
+        foreach($iterator as $row) {
+            $journal = $row[0];
+            $deposits = $journal->getSentDeposits();
+            if(count($deposits) === 0) {
+                $this->em->detach($journal);
+                continue;
+            }
+            $writer->startElement('HoldingsRecord');
+
+            $writer->startElement('NotificationType');
+            $writer->text('00');
+            $writer->endElement(); // NotificationType
+
+            $writer->startElement('ResourceVersion');
+
+            $writer->startElement('ResourceVersionIdentifier');
+            $writer->writeElement('ResourceVersionIDType', '07');
+            $writer->writeElement('IDValue', $journal->getIssn());
+            $writer->endElement(); // ResourceVersionIdentifier
+
+            $writer->startElement('Title');
+            $writer->writeElement('TitleType', '01');
+            $writer->writeElement('TitleText', $journal->getTitle());
+            $writer->endElement(); // Title
+
+            $writer->startElement('Publisher');
+            $writer->writeElement('PublishingRole', '01');
+            $writer->writeElement('PublisherName', $journal->getPublisherName());
+            $writer->endElement(); // Publisher
+
+            $writer->startElement('OnlinePackage');
+
+            $writer->startElement('Website');
+            $writer->writeElement('WebsiteRole', '05');
+            $writer->writeElement('WebsiteLink', $journal->getUrl());
+            $writer->endElement(); // Website
+
+            foreach($deposits as $deposit) {
+                $writer->startElement('PackageDetail');
+                $writer->startElement('Coverage');
+
+                $writer->writeElement('CoverageDescriptionLevel', '03');
+                $writer->writeElement('SupplementInclusion', '04');
+                $writer->writeElement('IndexInclusion', '04');
+
+                $writer->startElement('FixedCoverage');
+                $writer->startElement('Release');
+
+                $writer->startElement('Enumeration');
+
+                $writer->startElement('Level1');
+                $writer->writeElement('Unit', 'Volume');
+                $writer->writeElement('Number', $deposit->getVolume());
+                $writer->endElement(); // Level1
+
+                $writer->startElement('Level2');
+                $writer->writeElement('Unit', 'Issue');
+                $writer->writeElement('Number', $deposit->getIssue());
+                $writer->endElement(); // Level2
+
+                $writer->endElement(); // Enumeration
+
+				$writer->startElement('NominalDate');
+                $writer->writeElement('Calendar', '00');
+                $writer->writeElement('DateFormat', '00');
+                $writer->writeElement('Date', $deposit->getPubDate()->format('Ymd'));
+                $writer->endElement(); // NominalDate
+
+                $writer->endElement(); // Release
+                $writer->endElement(); // FixedCoverage
+                $writer->endElement(); // Coverage
+
+                $writer->startElement('PreservationStatus');
+                $writer->writeElement('PreservationStatusCode', '05');
+                $writer->writeElement('DateOfStatus', $deposit->getDepositDate() ? $deposit->getDepositDate()->format('Ymd') : date('Ymd'));
+                $writer->endElement(); // PreservationStatus
+
+                $writer->writeElement('VerificationStatus', '01');
+                $writer->endElement(); // PackageDetail
+                $this->em->detach($deposit);
+            }
+            $writer->endElement(); // OnlinePackage
+            $writer->endElement(); // ResourceVersion
+            $writer->endElement(); // HoldingsRecord
+
+            $writer->flush();
+            $this->em->detach($journal);
+            $this->em->clear();
+
+        }
+
+        $writer->endElement(); // HoldingsList
+        $writer->endElement(); // ONIXPreservationHoldings
+        $writer->endDocument();
     }
 
     /**
@@ -151,6 +264,7 @@ class GenerateOnixCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
         ini_set('memory_limit', '512M');
         $files = $input->getArgument('file');
         if (!$files || count($files) === 0) {
