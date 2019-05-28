@@ -119,9 +119,10 @@
         </nav>
         <div class="container">
 
-            {% if block('pageheader') is defined %}
+            {% set _pageheader = block("pageheader") %}
+            {% if _pageheader is not empty %}
                 <div class="page-header">
-                    {{ block('pageheader')|raw }}
+                    {{ _pageheader|raw }}
                 </div>
             {% endif %}
 
