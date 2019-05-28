@@ -66,8 +66,8 @@ class CleanupCommand extends ContainerAwareCommand
         if( !file_exists($path)) {            
             return;
         }
+        $this->logger->notice($path);
         if( ! is_dir($path)) {
-            $this->logger->info("f: $path");
             if(file_exists($path) && $force === true) {
                 unlink($path);
             }
@@ -77,18 +77,15 @@ class CleanupCommand extends ContainerAwareCommand
         $fileIterator = new RecursiveIteratorIterator($directoryIterator, RecursiveIteratorIterator::CHILD_FIRST);
         foreach ($fileIterator as $file) {
             if ($file->isDir()) {
-                $this->logger->info("d: {$file->getRealPath()}");
                 if($force === true) {
                     rmdir($file->getRealPath());
                 }
             } else {
-                $this->logger->info("f: {$file->getRealPath()}");
                 if($force === true) {
                     unlink($file->getRealPath());
                 }
             }
         }
-        $this->logger->info("d: {$file->getRealPath()}");
         if($force === true) {
           rmdir($path);
         }
@@ -106,7 +103,6 @@ class CleanupCommand extends ContainerAwareCommand
     protected function processDeposit(Deposit $deposit, $force = false)
     {
         if ($deposit->getPlnState() === 'agreement') {
-            $this->logger->notice($deposit->getDepositUuid());
             $this->delFileTree($this->filePaths->getHarvestFile($deposit), $force);
             $this->delFileTree($this->filePaths->getProcessingBagPath($deposit), $force);
             $this->delFileTree($this->filePaths->getStagingBagPath($deposit), $force);
