@@ -132,7 +132,11 @@ class ScanVirusesCommand extends AbstractProcessingCmd {
             }
             $this->scanEmbeddedData($filename, $report);
         }
-        print $report;
+        if($report) {
+            $deposit->addToProcessingLog($report);
+            print $report;
+            return false;
+        }
         return true;
     }
 
