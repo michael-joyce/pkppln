@@ -37,6 +37,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class GenerateOnixCommand extends ContainerAwareCommand
 {
+    const BATCH_SIZE = 50;
+
     /**
      * @var TwigEngine
      */
@@ -82,9 +84,9 @@ class GenerateOnixCommand extends ContainerAwareCommand
      */
     protected function getJournals()
     {
-        $journals = $this->em->getRepository('AppBundle:Journal')->findAll();
-
-        return $journals;
+        $query = $this->em->createQuery('SELECT j FROM AppBundle:Journal j');
+        $iterator = $query->iterate();
+        return $iterator;
     }
 
     /**
@@ -95,7 +97,7 @@ class GenerateOnixCommand extends ContainerAwareCommand
     protected function generateCsv($filePath)
     {
         $handle = fopen($filePath, 'w');
-        $journals = $this->getJournals();
+        $iterator = $this->getJournals();
         fputcsv($handle, array('Generated', date('Y-m-d')));
         fputcsv($handle, array(
             'ISSN',
@@ -107,7 +109,9 @@ class GenerateOnixCommand extends ContainerAwareCommand
             'Published',
             'Deposited',
         ));
-        foreach ($journals as $journal) {
+        $i = 0;
+        foreach ($iterator as $row) {
+            $journal = $row[0];
             $deposits = $journal->getSentDeposits();
             if ($deposits->count() === 0) {
                 continue;
@@ -127,6 +131,11 @@ class GenerateOnixCommand extends ContainerAwareCommand
                     $deposit->getDepositDate()->format('Y-m-d'),
               ));
             }
+            $i++;
+            $this->em->detach($journal);
+            if($i % self::BATCH_SIZE) {
+                  $this->em->clear();
+            }
         }
     }
 
@@ -137,9 +146,7 @@ class GenerateOnixCommand extends ContainerAwareCommand
      */
     protected function generateXml($filePath)
     {
-        $repo = $this->em->getRepository('AppBundle\Entity\Journal');
-        $qb = $repo->createQueryBuilder('j');
-        $iterator = $qb->getQuery()->iterate();
+        $iterator = $this->getJournals();
 
         $writer = new \XMLWriter();
         $writer->openUri($filePath);
