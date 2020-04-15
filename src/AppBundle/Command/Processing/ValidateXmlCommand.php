@@ -21,6 +21,7 @@ namespace AppBundle\Command\Processing;
 
 require_once 'vendor/scholarslab/bagit/lib/bagit.php';
 
+use AppBundle\Services\SchemaValidator;
 use Exception;
 use AppBundle\Entity\Deposit;
 use AppBundle\Services\DtdValidator;
@@ -132,9 +133,18 @@ class ValidateXmlCommand extends AbstractProcessingCmd
                 $valid = false;
                 continue;
             }
-            /* @var DtdValidator */
-            $validator = $this->container->get('dtdvalidator');
-            $validator->validate($dom);
+
+            $root = $dom->documentElement;
+            $validator = null;
+            if ($root->hasAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'schemaLocation')) {
+                $validator = $this->container->get('schemavalidator');
+            } else {
+                $validator = $this->container->get('dtdvalidator');
+            }
+
+            /* @var DtdValidator|SchemaValidator */
+            $validator->validate($dom, $extractedPath . '/data');
+
             if ($validator->hasErrors()) {
                 $deposit->addErrorLog("{$basename} - XML Validation failed.");
                 $this->logErrors($validator);

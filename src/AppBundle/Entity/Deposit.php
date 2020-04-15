@@ -944,7 +944,7 @@ class Deposit
     /**
      * Add a message to the error log.
      *
-     * @param type $error
+     * @param string $error
      *
      * @return Deposit
      */
