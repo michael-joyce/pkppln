@@ -5,7 +5,7 @@ namespace AppBundle\Services;
 use AppBundle\Utility\AbstractTestCase;
 use DOMDocument;
 
-class DtdValidatorTest extends AbstractTestCase {
+class SchemaValidatorTest extends AbstractTestCase {
 	
 	/**
 	 * @var SchemaValidator
