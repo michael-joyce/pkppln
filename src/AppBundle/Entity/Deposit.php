@@ -129,7 +129,7 @@ class Deposit
      *
      * @var int
      *
-     * @ORM\Column(type="integer", nullable=false)
+     * @ORM\Column(type="string", nullable=false)
      */
     private $volume;
 
@@ -138,7 +138,7 @@ class Deposit
      *
      * @var int
      *
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string")
      */
     private $issue;
 
@@ -214,7 +214,7 @@ class Deposit
     private $errorCount;
 
     /**
-     * Stae of the deposit in LOCKSSOMatic or the PLN.
+     * State of the deposit in LOCKSSOMatic or the PLN.
      *
      * @var string
      * @ORM\Column(type="string", nullable=true)
