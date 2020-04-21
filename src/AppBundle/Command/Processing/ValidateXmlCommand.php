@@ -50,8 +50,9 @@ class ValidateXmlCommand extends AbstractProcessingCmd
 
     /**
      * Log errors generated during the validation.
+     * @param DtdValidator|SchemaValidator $validator
      */
-    private function logErrors(DtdValidator $validator)
+    private function logErrors($validator)
     {
         foreach ($validator->getErrors() as $error) {
             $this->logger->warning(implode(':', array($error['file'], $error['line'], $error['message'])));
